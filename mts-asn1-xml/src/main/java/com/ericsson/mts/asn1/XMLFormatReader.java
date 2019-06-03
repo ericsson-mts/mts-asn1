@@ -10,7 +10,6 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,7 @@ public class XMLFormatReader implements FormatReader {
     private Logger logger = LoggerFactory.getLogger(XMLFormatReader.class.getSimpleName());
     private String ignoredObject;
     private Element currentNode;
-    private Stack<Integer> arrayStack = new Stack<>();
+    private Stack<Element> arrayStack = new Stack<>();
 
     public XMLFormatReader(File file, String type) throws Exception {
         this(new FileInputStream(file), type);
@@ -48,15 +47,6 @@ public class XMLFormatReader implements FormatReader {
     public XMLFormatReader(Document document, String type) throws TransformerException {
         this.currentNode = document.getDocumentElement();
         ignoredObject = type;
-//        NodeList nodeList = currentNode.getElementsByTagName("initiatingMessage");
-//        for(int i = 0; i < nodeList.getLength(); i++){
-//            Element element = (Element) nodeList.item(i);
-//            Element element1InitiatingMessage = (Element) element.getElementsByTagName("initiatingMessage").item(0);
-//            Element element1ProcedureCode = (Element) element1InitiatingMessage.getElementsByTagName("procedureCode").item(0);
-//            System.out.println(element1ProcedureCode.getTextContent());
-////            System.out.println(element.getElementsByTagName("initiatingMessage").item(0).getFirstChild().getTextContent());
-//        }
-
     }
 
     @Override
@@ -64,15 +54,14 @@ public class XMLFormatReader implements FormatReader {
         if (!ignoredObject.equals(name)) {
             if (name != null) {
                 logger.trace("Enter object {}", name);
-                currentNode = getChildNode(name);
+                currentNode = getChildNode(getFromStack(currentNode), name);
             } else {
                 if (!currentNode.getAttribute(IS_ARRAY).equals("")) {
-                    int arrayIndice = Integer.parseInt(currentNode.getAttribute(IS_ARRAY));
-                    logger.trace("Enter array field {}", arrayIndice);
-                    NodeList nodeList = currentNode.getElementsByTagName(currentNode.getTagName());
-                    currentNode = (Element) nodeList.item(arrayIndice);
-                    arrayIndice++;
-                    ((Element) currentNode.getParentNode()).setAttribute(IS_ARRAY, String.valueOf(arrayIndice));
+                    if ("".equals(currentNode.getAttribute(IS_ARRAY))) {
+                        throw new RuntimeException();
+                    }
+                    logger.trace("Enter array field ");
+                    currentNode = getFromStack(currentNode);
                     if (currentNode == null) {
                         throw new RuntimeException();
                     }
@@ -94,7 +83,7 @@ public class XMLFormatReader implements FormatReader {
                 if (currentNode == null || currentNode.getAttribute(IS_ARRAY).equals("")) {
                     throw new RuntimeException();
                 }
-                logger.trace("Leave array field {}", Integer.valueOf(currentNode.getAttribute(IS_ARRAY)) - 1);
+                logger.trace("Leave array field");
             }
         }
     }
@@ -102,12 +91,13 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public int enterArray(String name) {
         if (name != null) {
-            currentNode = getChildNode(name);
+            //Get parent node
+            currentNode = getChildNode(currentNode, name);
         } else {
             throw new RuntimeException();
         }
-        currentNode.setAttribute(IS_ARRAY, "0");
-
+        currentNode.setAttribute(IS_ARRAY, IS_ARRAY);
+        arrayStack.push(getChildNode(currentNode, currentNode.getNodeName()));
 
         int n = 0;
         NodeList nodeList = currentNode.getChildNodes();
@@ -117,7 +107,6 @@ public class XMLFormatReader implements FormatReader {
             }
         }
         logger.trace("Enter array {}, size={}", name, n);
-//        System.out.println(currentNode.getNodeName() + " : " + currentNode.getTextContent());
         return n;
     }
 
@@ -136,13 +125,23 @@ public class XMLFormatReader implements FormatReader {
 
     @Override
     public boolean booleanValue(String name) {
-        throw new NotHandledCaseException(name);
+        if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
+            String value = getChildNode(getFromStack(currentNode), name).getTextContent();
+            if ("true".equals(value)) {
+                return true;
+            } else if ("false".equals(value)) {
+                return false;
+            } else {
+                throw new RuntimeException();
+            }
+        }
+        throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
 
     @Override
     public String bitsValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return getChildNode(name).getTextContent();
+            return getChildNode(getFromStack(currentNode), name).getTextContent();
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
@@ -150,7 +149,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public String bytesValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return getChildNode(name).getTextContent().replaceAll("[\\t\\n\\r ]", "");
+            return getChildNode(getFromStack(currentNode), name).getTextContent().replaceAll("[\\t\\n\\r ]", "");
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
@@ -158,7 +157,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public BigInteger intValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return new BigInteger(getChildNode(name).getTextContent());
+            return new BigInteger(getChildNode(getFromStack(currentNode), name).getTextContent());
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
@@ -168,8 +167,7 @@ public class XMLFormatReader implements FormatReader {
         List<String> stringList = new ArrayList<>();
         NodeList nodeList = currentNode.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
-//            System.out.println(nodeList.item(i).getNodeName() + " : " + nodeList.item(i).getTextContent());
-            if (!(nodeList.item(i).getNodeType() == Node.TEXT_NODE) || !"#text".equals(nodeList.item(i).getNodeName())) {
+            if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 stringList.add(nodeList.item(i).getNodeName());
             }
         }
@@ -179,23 +177,38 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public String stringValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return getChildNode(name).getTextContent();
+            return getChildNode(getFromStack(currentNode), name).getTextContent();
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
 
     @Override
     public String printCurrentnode() {
-        throw new NotHandledCaseException();
+        return currentNode.getTagName() + " : " + currentNode.getChildNodes().toString();
     }
 
-    private Element getChildNode(String name) {
-        NodeList nodeList = currentNode.getChildNodes();
+    private Element getChildNode(Element node, String name) {
+        NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).getNodeName().equals(name)) {
                 return (Element) nodeList.item(i);
             }
         }
-        throw new RuntimeException("Can't find child node " + name);
+        return node;
+    }
+
+    private Element getFromStack(Element node) {
+        if (!"".equals(currentNode.getAttribute(IS_ARRAY))) {
+            Element node1 = arrayStack.pop();
+            Node node2 = node1.getNextSibling();
+            while (node2 != null && node2.getNodeType() != Node.ELEMENT_NODE) {
+                node2 = node2.getNextSibling();
+            }
+            if (node2 != null) {
+                arrayStack.push((Element) node2);
+            }
+            return node1;
+        }
+        return node;
     }
 }

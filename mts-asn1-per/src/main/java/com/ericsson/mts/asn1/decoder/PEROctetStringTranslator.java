@@ -52,6 +52,8 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             }
         }
 
+        value = value.replaceAll("[\\t\\n\\r ]", "");
+
         if (BigInteger.ZERO.equals(ub)) {
             //17.5
             return;
@@ -69,10 +71,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
                 throw new NotHandledCaseException();
             } else {
                 perTranscoder.encodeSemiConstrainedWholeNumber(s, lb, new BigInteger(value, 16));
-//                length = BigInteger.valueOf(perTranscoder.decodeLengthDeterminant(s));
             }
-//            s.skipAlignedBits();
-//            perTranscoder.encodeBitField(s, new BigInteger(value, 16), value.length() * 4);
         }
 
     }

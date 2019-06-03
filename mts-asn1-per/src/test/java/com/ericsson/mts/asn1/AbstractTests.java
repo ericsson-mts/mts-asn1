@@ -43,7 +43,7 @@ public class AbstractTests {
 
     protected void test(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
         testDecode(type, binaryPath, expectedJsonPath, expectedXmlPath);
-//        testEncode(type, binaryPath, expectedJsonPath, expectedXmlPath);
+        testEncode(type, binaryPath, expectedJsonPath, expectedXmlPath);
     }
 
     protected void testDecode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws IOException, TransformerException, SAXException, ParserConfigurationException {

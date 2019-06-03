@@ -69,6 +69,7 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
         List<String> inputParameters = new ArrayList<>();
         if (parameters.isEmpty()) {
             for (int i = 0; i < numberOfComponents.intValueExact(); i++) {
+
                 typeTranslator.encode(null, s, reader, null);
             }
         } else {

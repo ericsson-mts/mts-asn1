@@ -57,6 +57,8 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
             }
         }
 
+        value = value.replaceAll("[\\t\\n\\r ]", "");
+
         if (BigInteger.ZERO.equals(ub)) {
             throw new RuntimeException();
         } else if (lb.equals(ub) && BigInteger.valueOf(16).compareTo(ub) >= 0) {

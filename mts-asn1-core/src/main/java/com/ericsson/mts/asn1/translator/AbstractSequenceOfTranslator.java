@@ -75,10 +75,10 @@ public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
     }
 
     @Override
-    public final void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
-        int numberOfComponents = reader.enterArray(name);
+    public final void encode(String inputName, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
+        int numberOfComponents = reader.enterArray(inputName);
         doEncode(s, reader, numberOfComponents, getRegister(parameters));
-        reader.leaveArray(name);
+        reader.leaveArray(inputName);
     }
 
     public abstract void doEncode(BitArray s, FormatReader reader, int numberOfComponents, Map<String, String> registry) throws Exception;
