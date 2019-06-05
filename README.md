@@ -1,4 +1,5 @@
-# mts-asn1 [![Build Status](https://travis-ci.org/ericsson-mts/mts-asn1.svg?branch=master)](https://travis-ci.org/ericsson-mts/mts-asn1)
+# **mts-asn1**
+[![Build Status](https://travis-ci.org/ericsson-mts/mts-asn1.svg?branch=master)](https://travis-ci.org/ericsson-mts/mts-asn1) [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ericsson-mts/mts-asn1/blob/master/LICENSE.txt)
 
 ## Description
 
@@ -29,6 +30,7 @@ Clone this repository and use it as a maven project
 
 See [here](https://github.com/ericsson-mts/mts-asn1/wiki/User-guide)
 
-## License
+## DISCLAIMER
 
-This project is licensed under the terms of the MIT license.
+While we do our best to support protocols described in ASN.1 and (U)PER encoding, we cannot guarantee that our project 
+is error free. mts-asn1 evolve depending of the needs Please consider to [report]() or [contributing]() if you want a new feature or revise an existing one.
