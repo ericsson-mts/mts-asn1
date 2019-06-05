@@ -27,7 +27,7 @@ Clone this repository and use it as a maven project
 
 ## Usage
 
-Multiple examples can be found [here](https://github.com/ericsson-mts/mts-asn1/tree/master/mts-asn1-per/src/test/java/com/ericsson/mts/asn1) 
+See [here](https://github.com/ericsson-mts/mts-asn1/wiki/User-guide)
 
 ## License
 
