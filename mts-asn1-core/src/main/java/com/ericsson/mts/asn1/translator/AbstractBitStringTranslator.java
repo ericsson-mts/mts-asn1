@@ -14,19 +14,18 @@ import com.ericsson.mts.asn1.ASN1Parser;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.TranslatorContext;
-import com.ericsson.mts.asn1.constraint.SizeConstraint;
+import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
-import com.ericsson.mts.asn1.visitor.ConstraintVisitor;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractBitStringTranslator extends AbstractTranslator {
-    protected SizeConstraint sizeConstraint;
+    protected Constraints constraints;
     protected HashMap<String, String> namedBitList = new HashMap<>();
 
     public AbstractTranslator init(ASN1Parser.BitStringTypeContext bitStringTypeContext, MainRegistry mainRegistry, List<ASN1Parser.ConstraintContext> constraintContexts) throws NotHandledCaseException {
@@ -38,9 +37,10 @@ public abstract class AbstractBitStringTranslator extends AbstractTranslator {
             throw new NotHandledCaseException();
         }
         if (constraintContexts.get(0) != null) {
-            sizeConstraint = (SizeConstraint) new ConstraintVisitor(ConstraintVisitor.SIZE_CONSTRAINT, mainRegistry).visitConstraint(constraintContexts.get(0));
-            if (sizeConstraint == null) {
-                throw new NotHandledCaseException();
+            constraints = new Constraints(mainRegistry);
+            constraints.addConstraint(constraintContexts.get(0));
+            if (!constraints.hasSizeConstraint() && !constraints.hasContentsConstraint()) {
+                throw new RuntimeException();
             }
         }
         return this;

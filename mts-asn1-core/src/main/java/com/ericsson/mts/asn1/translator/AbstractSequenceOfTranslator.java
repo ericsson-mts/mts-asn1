@@ -14,12 +14,11 @@ import com.ericsson.mts.asn1.ASN1Parser;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.TranslatorContext;
-import com.ericsson.mts.asn1.constraint.SizeConstraint;
+import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
-import com.ericsson.mts.asn1.visitor.ConstraintVisitor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,12 +27,17 @@ import java.util.Map;
 
 public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
     protected AbstractTranslator typeTranslator;
-    protected SizeConstraint sizeConstraint;
+    protected Constraints constraints;
     protected List<String> actualParameters = new ArrayList<>();
 
     public AbstractTranslator init(MainRegistry mainRegistry, ASN1Parser.SequenceOfTypeContext sequenceOfTypeContext) throws NotHandledCaseException {
+        constraints = new Constraints(mainRegistry);
         if (sequenceOfTypeContext.sizeConstraint() != null) {
-            sizeConstraint = (SizeConstraint) new ConstraintVisitor(ConstraintVisitor.SIZE_CONSTRAINT, mainRegistry).visitConstraint(sequenceOfTypeContext.sizeConstraint().constraint());
+
+            constraints.addSizeConstraint(sequenceOfTypeContext.sizeConstraint());
+            if (!constraints.hasSizeConstraint()) {
+                throw new RuntimeException();
+            }
         } else if (sequenceOfTypeContext.constraint() != null) {
             throw new NotHandledCaseException();
         }
@@ -96,7 +100,7 @@ public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
     public String toString() {
         return "AbstractSequenceOfTranslator{" +
                 "typeTranslator=" + typeTranslator +
-                ", sizeConstraint=" + sizeConstraint +
+                ", constraints=" + constraints +
                 ", actualParameters=" + actualParameters +
                 ", name='" + name + '\'' +
                 ", parameters=" + parameters +

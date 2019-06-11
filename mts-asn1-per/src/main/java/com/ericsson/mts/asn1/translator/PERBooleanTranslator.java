@@ -8,43 +8,40 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.constraint;
+package com.ericsson.mts.asn1.translator;
 
+import com.ericsson.mts.asn1.BitArray;
+import com.ericsson.mts.asn1.BitInputStream;
+import com.ericsson.mts.asn1.PERTranscoder;
 
-import java.math.BigInteger;
+import java.io.IOException;
 
-class SizeConstraint extends AbstractConstraint {
-    private BigInteger lower_bound;
-    private BigInteger upper_bound;
+public class PERBooleanTranslator extends AbstractBooleanTranslator {
+    private PERTranscoder perTranscoder;
 
-
-    public BigInteger getLower_bound() {
-        return lower_bound;
-    }
-
-    public void setLower_bound(BigInteger lower_bound) {
-        if (this.lower_bound != null) {
-            throw new RuntimeException();
-        }
-        this.lower_bound = lower_bound;
-    }
-
-    public BigInteger getUpper_bound() {
-        return upper_bound;
-    }
-
-    public void setUpper_bound(BigInteger upper_bound) {
-        if (this.upper_bound != null) {
-            throw new RuntimeException();
-        }
-        this.upper_bound = upper_bound;
+    public PERBooleanTranslator(PERTranscoder perTranscoder) {
+        this.perTranscoder = perTranscoder;
     }
 
     @Override
-    public String toString() {
-        return "SizeConstraint{" +
-                "lower_bound=" + lower_bound +
-                ", upper_bound=" + upper_bound +
-                '}';
+    public void doEncode(BitArray s, boolean value) throws IOException {
+        logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
+        if (value) {
+            s.writeBit(1);
+        } else {
+            s.writeBit(0);
+        }
     }
+
+    @Override
+    public boolean doDecode(BitInputStream s) {
+        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
+        try {
+            return (1 == s.readBit());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException();
+    }
+
 }

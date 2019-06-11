@@ -14,29 +14,31 @@ import com.ericsson.mts.asn1.ASN1Parser;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.TranslatorContext;
-import com.ericsson.mts.asn1.constraint.SizeConstraint;
+import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
-import com.ericsson.mts.asn1.visitor.ConstraintVisitor;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 
 public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
-    protected SizeConstraint sizeConstraint;
+    protected Constraints constraints;
 
     @SuppressWarnings("Duplicates")
     public AbstractTranslator init(MainRegistry mainRegistry, List<ASN1Parser.ConstraintContext> constraintContexts) throws NotHandledCaseException {
+        constraints = new Constraints(mainRegistry);
         if (constraintContexts.size() == 0) {
             return this;
         } else if (constraintContexts.size() != 1) {
             throw new NotHandledCaseException();
         }
         if (constraintContexts.get(0) != null) {
-            sizeConstraint = (SizeConstraint) new ConstraintVisitor(ConstraintVisitor.SIZE_CONSTRAINT, mainRegistry).visitConstraint(constraintContexts.get(0));
-            if (sizeConstraint == null) {
+            constraints.addConstraint(constraintContexts.get(0));
+            if (!constraints.hasSizeConstraint() && !constraints.hasContentsConstraint()) {
                 throw new NotHandledCaseException();
             }
         }
@@ -45,14 +47,28 @@ public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
 
     @Override
     public final void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
-        doEncode(s, reader, reader.bytesValue(name));
+        if (!constraints.hasContentsConstraint()) {
+            doEncode(s, reader, reader.bytesValue(name));
+        } else {
+            BitArray bitArray = new BitArray();
+            constraints.getContentTranslator().encode(name, bitArray, reader, translatorContext);
+            if (!bitArray.getLength().mod(BigInteger.valueOf(8)).equals(BigInteger.ZERO)) {
+                throw new RuntimeException("specification error ! X.682 : 11.4.a)");
+            }
+            doEncode(s, reader, bitArray.getBinaryMessage());
+        }
     }
 
     public abstract void doEncode(BitArray s, FormatReader reader, String value) throws IOException;
 
     @Override
     public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException {
-        writer.bytesValue(name, doDecode(s, writer));
+        if (!constraints.hasContentsConstraint()) {
+            writer.bytesValue(name, doDecode(s, writer));
+        } else {
+            BitInputStream bitInputStream = new BitInputStream(new ByteArrayInputStream(doDecode(s, writer)));
+            constraints.getContentTranslator().decode(name, bitInputStream, writer, translatorContext);
+        }
     }
 
     public abstract byte[] doDecode(BitInputStream s, FormatWriter writer) throws IOException;
@@ -60,7 +76,7 @@ public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
     @Override
     public String toString() {
         return "AbstractOctetStringTranslator{" +
-                "sizeConstraint=" + sizeConstraint +
+                "constraints=" + constraints +
                 '}';
     }
 }

@@ -12,10 +12,9 @@ package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.ASN1Parser;
 import com.ericsson.mts.asn1.classhandler.ClassHandler;
-import com.ericsson.mts.asn1.constraint.ClassFieldConstraint;
+import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.registry.MainRegistry;
-import com.ericsson.mts.asn1.visitor.ConstraintVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.List;
 public abstract class AbstractObjectClassFieldTranslator extends AbstractTranslator {
     protected ClassHandler classHandler;
     protected String fieldName;
-    protected ClassFieldConstraint classFieldConstraint;
+    protected Constraints constraints;
 
     public AbstractTranslator init(MainRegistry mainRegistry, ASN1Parser.ObjectClassFieldTypeContext objectClassFieldTypeContext, List<ASN1Parser.ConstraintContext> constraintContext) {
         if (objectClassFieldTypeContext.definedObjectClass().IDENTIFIER(0) != null) {
@@ -45,8 +44,9 @@ public abstract class AbstractObjectClassFieldTranslator extends AbstractTransla
         if (constraintContext.size() != 1) {
             throw new NotHandledCaseException(" sizeConstraint " + constraintContext.toString());
         }
-        classFieldConstraint = (ClassFieldConstraint) new ConstraintVisitor(ConstraintVisitor.CLASS_FIELD_CONSTRAINT, mainRegistry).visitConstraint(constraintContext.get(0));
-        parameters.add(new Parameter("classObjectSet", classFieldConstraint.getObjectSetName()));
+        constraints = new Constraints(mainRegistry);
+        constraints.addConstraint(constraintContext.get(0));
+        parameters.add(new Parameter("classObjectSet", constraints.getObjectSetName()));
         return this;
     }
 
@@ -54,17 +54,16 @@ public abstract class AbstractObjectClassFieldTranslator extends AbstractTransla
     public String toString() {
         return "AbstractObjectClassFieldTranslator{" +
                 "fieldName='" + fieldName + '\'' +
-                ", classFieldConstraint=" + classFieldConstraint +
                 '}';
     }
 
     @Override
     public List<String> getParameters() {
         List<String> parameterList = new ArrayList<>();
-        if (classFieldConstraint.getObjectSetName() == null) {
+        if (constraints.getObjectSetName() == null) {
             throw new RuntimeException();
         }
-        parameterList.add(classFieldConstraint.getObjectSetName());
+        parameterList.add(constraints.getObjectSetName());
         return parameterList;
     }
 }

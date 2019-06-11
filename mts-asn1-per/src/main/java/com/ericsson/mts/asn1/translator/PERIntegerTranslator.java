@@ -8,13 +8,12 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
-import com.ericsson.mts.asn1.translator.AbstractIntegerTranslator;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -32,12 +31,12 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
     public void doEncode(BitArray s, BigInteger value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger lb = null, ub = null;
-        if (sizeConstraint != null) {
-            lb = sizeConstraint.getLower_bound();
-            ub = sizeConstraint.getUpper_bound();
+        if (constraints.hasSizeConstraint()) {
+            lb = constraints.getLower_bound();
+            ub = constraints.getUpper_bound();
         }
 
-        if (sizeConstraint.isExtensible()) {
+        if (constraints.isSizeConstraintExtensible()) {
             if (value.compareTo(lb) < 0 || value.compareTo(ub) > 0) {
                 //Look at 13.2.6 b) before removing this exception !
                 throw new NotHandledCaseException();
@@ -46,7 +45,7 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
             }
         }
 
-        if (sizeConstraint == null || lb == null) {
+        if (!constraints.hasSizeConstraint() || lb == null) {
             //13.2.4
             throw new NotHandledCaseException();
         } else if (ub == null) {
@@ -79,16 +78,16 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         boolean isExtendedInteger = false;
         BigInteger number;
-        if (sizeConstraint.isExtensible()) {
+        if (constraints.isSizeConstraintExtensible()) {
             isExtendedInteger = (1 == s.readBit());
         }
 
         if (isExtendedInteger) {
             throw new NotHandledCaseException();
         } else {
-            if (sizeConstraint.getLower_bound() != null && sizeConstraint.getUpper_bound() != null) {
+            if (constraints.getLower_bound() != null && constraints.getUpper_bound() != null) {
                 logger.trace("Decode ConstrainedNumber");
-                number = perTranscoder.decodeConstrainedNumber(sizeConstraint.getLower_bound(), sizeConstraint.getUpper_bound(), s);
+                number = perTranscoder.decodeConstrainedNumber(constraints.getLower_bound(), constraints.getUpper_bound(), s);
             } else {
                 throw new RuntimeException();
             }

@@ -8,23 +8,18 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.constraint;
 
-import com.ericsson.mts.asn1.BitInputStream;
-import com.ericsson.mts.asn1.PERTranscoder;
-import com.ericsson.mts.asn1.translator.AbstractRealTranslator;
+import com.ericsson.mts.asn1.translator.AbstractTranslator;
 
-import java.math.BigDecimal;
+public class ContentsConstraint extends AbstractConstraint {
+    private final AbstractTranslator contentTranslator;
 
-public class PERRealTranslator extends AbstractRealTranslator {
-    private PERTranscoder perTranscoder;
-
-    public PERRealTranslator(PERTranscoder perTranscoder) {
-        this.perTranscoder = perTranscoder;
+    public ContentsConstraint(AbstractTranslator contentTranslator) {
+        this.contentTranslator = contentTranslator;
     }
 
-    @Override
-    public BigDecimal doDecode(BitInputStream s) {
-        throw new RuntimeException("Real decoding is not implemented yet");
+    public AbstractTranslator getContentTranslator() {
+        return contentTranslator;
     }
 }

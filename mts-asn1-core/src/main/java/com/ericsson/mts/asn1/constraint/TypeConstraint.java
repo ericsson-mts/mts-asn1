@@ -10,41 +10,8 @@
 
 package com.ericsson.mts.asn1.constraint;
 
-
-import java.math.BigInteger;
-
-class SizeConstraint extends AbstractConstraint {
-    private BigInteger lower_bound;
-    private BigInteger upper_bound;
-
-
-    public BigInteger getLower_bound() {
-        return lower_bound;
-    }
-
-    public void setLower_bound(BigInteger lower_bound) {
-        if (this.lower_bound != null) {
-            throw new RuntimeException();
-        }
-        this.lower_bound = lower_bound;
-    }
-
-    public BigInteger getUpper_bound() {
-        return upper_bound;
-    }
-
-    public void setUpper_bound(BigInteger upper_bound) {
-        if (this.upper_bound != null) {
-            throw new RuntimeException();
-        }
-        this.upper_bound = upper_bound;
-    }
-
-    @Override
-    public String toString() {
-        return "SizeConstraint{" +
-                "lower_bound=" + lower_bound +
-                ", upper_bound=" + upper_bound +
-                '}';
-    }
+public enum TypeConstraint {
+    CONTENT_CONSTRAINT,
+    SIZE_CONSTRAINT,
+    CLASS_FIELD_CONSTRAINT
 }

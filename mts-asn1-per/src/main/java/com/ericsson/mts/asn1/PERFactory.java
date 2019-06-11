@@ -10,7 +10,6 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.decoder.*;
 import com.ericsson.mts.asn1.factory.AbstractFactory;
 import com.ericsson.mts.asn1.translator.*;
 

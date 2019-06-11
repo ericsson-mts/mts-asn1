@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
@@ -17,7 +17,6 @@ import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
-import com.ericsson.mts.asn1.translator.AbstractOctetStringTranslator;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -33,16 +32,17 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
-        if (sizeConstraint == null) {
+
+        if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
-            lb = sizeConstraint.getLower_bound();
-            ub = sizeConstraint.getUpper_bound();
+            lb = constraints.getLower_bound();
+            ub = constraints.getUpper_bound();
             if (ub == null) {
                 ub = lb;
             }
-            if (sizeConstraint.isExtensible()) {
+            if (constraints.isSizeConstraintExtensible()) {
                 if (BigInteger.valueOf(value.length()).compareTo(lb) < 0 || BigInteger.valueOf(value.length()).compareTo(ub) > 0) {
                     //17.3
                     throw new NotHandledCaseException();
@@ -52,7 +52,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             }
         }
 
-        value = value.replaceAll("[\\t\\n\\r ]", "");
+        value = value.trim();
 
         if (BigInteger.ZERO.equals(ub)) {
             //17.5
@@ -82,16 +82,16 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
         byte[] octetstring;
         boolean isExtendedOctetString = false;
         BigInteger ub, lb;
-        if (sizeConstraint == null) {
+        if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
-            lb = sizeConstraint.getLower_bound();
-            ub = sizeConstraint.getUpper_bound();
+            lb = constraints.getLower_bound();
+            ub = constraints.getUpper_bound();
             if (ub == null) {
                 ub = lb;
             }
-            if (sizeConstraint.isExtensible()) {
+            if (constraints.isSizeConstraintExtensible()) {
                 isExtendedOctetString = (1 == s.readBit());
             }
         }

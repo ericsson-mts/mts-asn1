@@ -8,41 +8,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.exception;
 
-import com.ericsson.mts.asn1.BitArray;
-import com.ericsson.mts.asn1.BitInputStream;
-import com.ericsson.mts.asn1.PERTranscoder;
-import com.ericsson.mts.asn1.translator.AbstractBooleanTranslator;
-
-import java.io.IOException;
-
-public class PERBooleanTranslator extends AbstractBooleanTranslator {
-    private PERTranscoder perTranscoder;
-
-    public PERBooleanTranslator(PERTranscoder perTranscoder) {
-        this.perTranscoder = perTranscoder;
+public class ANTLRVisitorException extends RuntimeException {
+    public ANTLRVisitorException() {
+        super();
     }
 
-    @Override
-    public void doEncode(BitArray s, boolean value) throws IOException {
-        logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
-        if (value) {
-            s.writeBit(1);
-        } else {
-            s.writeBit(0);
-        }
+    public ANTLRVisitorException(String erroMessage) {
+        super(erroMessage);
     }
-
-    @Override
-    public boolean doDecode(BitInputStream s) {
-        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
-        try {
-            return (1 == s.readBit());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        throw new RuntimeException();
-    }
-
 }

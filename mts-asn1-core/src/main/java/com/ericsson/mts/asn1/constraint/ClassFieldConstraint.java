@@ -10,13 +10,12 @@
 
 package com.ericsson.mts.asn1.constraint;
 
-public class ClassFieldConstraint extends AbstractConstraint {
+class ClassFieldConstraint extends AbstractConstraint {
     private String objectSetName;
     private String targetComponent;
 
     public ClassFieldConstraint(String objectSetName, String targetComponent) {
         this.objectSetName = objectSetName;
-
         this.targetComponent = targetComponent;
     }
 

@@ -115,6 +115,14 @@ public class BitInputStream extends InputStream {
 
     public String print8bits() throws Exception {
         String str = "";
+        while (currentBit != 0) {
+            if ((this.readBit() & 0x01) == 0x01) {
+                str += "1";
+            } else {
+                str += "0";
+            }
+        }
+        str += "\t\t";
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 4; j++) {
                 if ((this.readBit() & 0x1) == 0x1) {

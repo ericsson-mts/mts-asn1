@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
@@ -16,7 +16,6 @@ import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
-import com.ericsson.mts.asn1.translator.AbstractSequenceOfTranslator;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -36,18 +35,18 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
 
-        if (sizeConstraint == null) {
+        if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
-            ub = sizeConstraint.getUpper_bound();
-            lb = sizeConstraint.getLower_bound();
+            ub = constraints.getUpper_bound();
+            lb = constraints.getLower_bound();
             if (lb == null) {
                 lb = BigInteger.ZERO;
             }
         }
 
-        if (sizeConstraint != null && sizeConstraint.isExtensible()) {
+        if (constraints.hasSizeConstraint() && constraints.isSizeConstraintExtensible()) {
             // X.691 : clause 20.4
             throw new NotHandledCaseException();
         } else if (lb.equals(ub) && ub.compareTo(BigInteger.valueOf(65536)) < 0) {
@@ -87,18 +86,18 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
 
-        if (sizeConstraint == null) {
+        if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
-            ub = sizeConstraint.getUpper_bound();
-            lb = sizeConstraint.getLower_bound();
+            ub = constraints.getUpper_bound();
+            lb = constraints.getLower_bound();
             if (lb == null) {
                 lb = BigInteger.ZERO;
             }
         }
 
-        if (sizeConstraint != null && sizeConstraint.isExtensible()) {
+        if (constraints.hasSizeConstraint() && constraints.isSizeConstraintExtensible()) {
             /* X.691 : clause 20.4
             If there is a PER-visible constraint and an extension marker is present in it, a single bit shall be added
             to the field-list in a bit-field of length one. The bit shall be set to 1 if the number of components in

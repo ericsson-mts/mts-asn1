@@ -50,23 +50,17 @@ public class ClassObjectSet {
             for (ASN1Parser.IntersectionsContext intersectionsContext : elementSetSpecContext.unions().intersections()) {
                 if (intersectionsContext.intersectionMark().size() == 0) {
                     if (intersectionsContext.intersectionElements(0).exclusions() == null) {
-                        if (intersectionsContext.intersectionElements(0).elements().subtypeElements().value().size() == 1) {
-                            if (intersectionsContext.intersectionElements(0).elements().subtypeElements().value(0).builtinValue() != null) {
-                                if (intersectionsContext.intersectionElements(0).elements().subtypeElements().value(0).builtinValue().enumeratedValue() != null) {
-                                    objects.add(intersectionsContext.intersectionElements(0).elements().subtypeElements().value(0).getText());
-                                } else if (intersectionsContext.intersectionElements(0).elements().subtypeElements().value(0).builtinValue().objectIdentifierValue() != null) {
-                                    ClassObject classObject = new ClassObject();
-                                    classObject.buildLocalObject(mainRegistry, classType, intersectionsContext.intersectionElements(0).elements().subtypeElements().value(0).builtinValue().objectIdentifierValue());
-                                    localObjects.put(String.valueOf(localObjects.size()), classObject);
-                                    objects.add(String.valueOf(localObjects.size() - 1));
-                                } else {
-                                    throw new NotHandledCaseException();
-                                }
+                        if (intersectionsContext.intersectionElements(0).elements().objectSetElements() != null) {
+                            if (intersectionsContext.intersectionElements(0).elements().objectSetElements().object().definedObject() != null) {
+                                objects.add(intersectionsContext.intersectionElements(0).elements().objectSetElements().object().definedObject().IDENTIFIER().getText());
                             } else {
-                                throw new NotHandledCaseException();
+                                ClassObject classObject = new ClassObject();
+                                classObject.buildLocalObject(mainRegistry, classType, intersectionsContext.intersectionElements(0).elements().objectSetElements().object().objectDefn());
+                                localObjects.put(String.valueOf(localObjects.size()), classObject);
+                                objects.add(String.valueOf(localObjects.size() - 1));
                             }
                         } else {
-                            throw new NotHandledCaseException("subtypeElements : other than value");
+                            throw new NotHandledCaseException("subtypeElements");
                         }
                     } else {
                         throw new NotHandledCaseException("intersectionElements : exclusions");

@@ -44,21 +44,22 @@ public class ClassObject {
         return this;
     }
 
-    public void buildLocalObject(MainRegistry mainRegistry, ClassHandler classHandler, ASN1Parser.ObjectIdentifierValueContext objectIdentifierValueContext) {
+    public void buildLocalObject(MainRegistry mainRegistry, ClassHandler classHandler, ASN1Parser.ObjectDefnContext objectDefnContext) {
         this.mainRegistry = mainRegistry;
         this.classtype = classHandler;
-        if (objectIdentifierValueContext.definedValue() != null) {
+        if (objectDefnContext.defaultSyntax() != null) {
             throw new NotHandledCaseException();
-        }
-        List<String> unknowsFields = new ArrayList<>();
-        for (ASN1Parser.ObjIdComponentsContext objIdComponentsContext : objectIdentifierValueContext.objIdComponentsList().objIdComponents()) {
-            if (objIdComponentsContext.IDENTIFIER() != null && objIdComponentsContext.numberForm() == null) {
-                unknowsFields.add(objIdComponentsContext.IDENTIFIER().getText());
-            } else {
-                throw new NotHandledCaseException();
+        } else {
+            List<String> unknowsFields = new ArrayList<>();
+            for (ASN1Parser.DefinedSyntaxTokenContext definedSyntaxTokenContext : objectDefnContext.definedSyntax().definedSyntaxToken()) {
+                if (definedSyntaxTokenContext.literal() != null && definedSyntaxTokenContext.literal().IDENTIFIER() != null) {
+                    unknowsFields.add(definedSyntaxTokenContext.literal().IDENTIFIER().getText());
+                } else {
+                    throw new NotHandledCaseException("comma or setting");
+                }
             }
+            buildFields(unknowsFields);
         }
-        buildFields(unknowsFields);
     }
 
     private void buildFields(ASN1Parser.DefinedSyntaxContext definedSyntaxContexts) {
@@ -67,36 +68,6 @@ public class ClassObject {
             unknowFields.add(definedSyntaxTokenContext.literal().IDENTIFIER().getText());
         }
         buildFields(unknowFields);
-//        int current_component = 0;
-//        int consumed_component = 0;
-//        String current_component_string = "";
-//        ArrayList<String> classfields = classtype.getSyntaxFields();
-//        HashMap<String, String> row = new HashMap<>();
-//        while (consumed_component < definedSyntaxContexts.definedSyntaxToken().size()){
-//            current_component_string = definedSyntaxContexts.definedSyntaxToken(current_component).getText();
-//            for(String syntax : classfields){
-//                if(syntax.equals(current_component_string)){
-//                    String value = definedSyntaxContexts.definedSyntaxToken(current_component  + 1).getText();
-//                    row.put(syntax, value);
-//                    current_component+=2;
-//                    consumed_component = current_component;
-//                    break;
-//                } else if(syntax.startsWith(current_component_string)){
-//                    current_component_string += " " + definedSyntaxContexts.definedSyntaxToken(current_component  + 1).getText();
-//                    current_component++;
-//                    if(0 == syntax.compareTo(current_component_string)){
-//                        String value = definedSyntaxContexts.definedSyntaxToken(current_component  + 1).getText();
-//                        row.put(syntax, value);
-//                        current_component +=2;
-//                        consumed_component = current_component;
-//                        break;
-//                    } else {
-//                        throw new RuntimeException("Can't find syntax field for " + current_component_string);
-//                    }
-//                }
-//            }
-//        }
-//        fieldMap.add(row);
     }
 
     private void buildFields(List<String> unknowFields) {

@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
@@ -16,7 +16,6 @@ import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
-import com.ericsson.mts.asn1.translator.AbstractRestrictedCharacterStringTranslator;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -32,12 +31,18 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
     @Override
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
-        BigInteger lb = sizeConstraint.getLower_bound(),
-                ub = sizeConstraint.getUpper_bound(),
+        BigInteger lb, ub,
                 bitLength = BigInteger.valueOf(value.length() * knownMultiplierCharacterString.getB2());
         boolean ubUnset = false;
 
-        if (sizeConstraint.isExtensible()) {
+        if (constraints.hasSizeConstraint()) {
+            lb = constraints.getLower_bound();
+            ub = constraints.getUpper_bound();
+        } else {
+            throw new NotHandledCaseException();
+        }
+
+        if (constraints.isSizeConstraintExtensible()) {
             //16.6
             if (bitLength.compareTo(lb) < 0 || bitLength.compareTo(ub) > 0) {
                 throw new NotHandledCaseException();
@@ -88,9 +93,16 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
 
     @Override
     public String doDecode(BitInputStream s, FormatWriter writer) throws IOException {
-        logger.trace("Enter {} decoder, name {}", this.getClass().getSimpleName(), this.name);
-        BigInteger lb = sizeConstraint.getLower_bound(), ub = sizeConstraint.getUpper_bound();
+        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
+        BigInteger lb, ub;
         boolean ubUnset = false, isExtendedRestrictedString = false;
+
+        if (constraints.hasSizeConstraint()) {
+            lb = constraints.getLower_bound();
+            ub = constraints.getUpper_bound();
+        } else {
+            throw new NotHandledCaseException();
+        }
 
         if (!isknownMultiplierCharacterStringType) {
             //30.1
@@ -109,7 +121,7 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
             ubUnset = true;
         }
 
-        if (sizeConstraint.isExtensible()) {
+        if (constraints.isSizeConstraintExtensible()) {
             //16.6
             isExtendedRestrictedString = (1 == s.readBit());
         }

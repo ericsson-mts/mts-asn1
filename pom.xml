@@ -55,4 +55,44 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>mts-asn1</name>
+            <url>http://localhost:8080/repository/internal/</url>
+        </repository>
+        <!--        <snapshotRepository>-->
+        <!--            <id>archiva.snapshots</id>-->
+        <!--            <name>mts-asn1-SNAPSHOT</name>-->
+        <!--            <url>http://reposerver.mycompany.com:8080/archiva/repository/snapshots/</url>-->
+        <!--        </snapshotRepository>-->
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://localhost:8080/repository/internal/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
+            <url>http://localhost:8080/repository/internal/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

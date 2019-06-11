@@ -8,7 +8,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1.decoder;
+package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
@@ -16,7 +16,6 @@ import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
-import com.ericsson.mts.asn1.translator.AbstractEnumeratedTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +32,7 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
 
     @Override
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
-        logger.trace("Enter {} decoder, name {}", this.getClass().getSimpleName(), this.name);
+        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         if (hasExtensionMarker && addtionnalfieldList.indexOf(value) != -1) {
 //            perTranscoder.encodeNormallySmallWholeNumber(s, BigInteger.valueOf(addtionnalfieldList.indexOf(value)));
             throw new NotHandledCaseException();
@@ -48,7 +47,6 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
     @Override
     public String doDecode(BitInputStream s, FormatWriter writer) throws IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
-
         // read the extension bit and returns the extension status, if grammar indicates it can be extended
         boolean isExtendedValue = false;
         isExtendedValue = hasExtensionMarker && (1 == s.readBit());
@@ -59,7 +57,7 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
             enumValue = fieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1), s).intValueExact());
         } else {
             throw new RuntimeException(); //"probably not working"
-            //enumValue = extensionMapping.get(decoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(extensionMapping.size() - 1), bs).intValueExact());
+            //enumValue = extensionMapping.get(translator.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(extensionMapping.size() - 1), bs).intValueExact());
         }
         return enumValue;
     }

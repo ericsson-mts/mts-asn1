@@ -10,7 +10,7 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.constraint.SizeConstraint;
+import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,7 +220,7 @@ public class PERTranscoder {
         return result;
     }
 
-    public byte[] decodeOctetString(BitInputStream stream, SizeConstraint range) throws IOException {
+    public byte[] decodeOctetString(BitInputStream stream, Constraints range) throws IOException {
         if (ZERO.equals(range.getUpper_bound())) {
             return new byte[0];
         } else if (range.getLower_bound().equals(range.getUpper_bound())) {
@@ -367,6 +367,23 @@ public class PERTranscoder {
             } else {
                 s.writeBit(0);
             }
+        }
+    }
+
+    private void addBitField(BitArray s, int[] value, int length) throws IOException {
+        int i = 0, j = 0;
+        int currentByte;
+        while (i < length) {
+            currentByte = value[j];
+            for (int l = 0; l < 8 && i + l < length; l++) {
+                if ((currentByte >> (8 - l) & 0x01) == 0x01) {
+                    s.writeBit(1);
+                } else {
+                    s.writeBit(0);
+                }
+            }
+            i += 8;
+            j++;
         }
     }
 }

@@ -14,18 +14,17 @@ import com.ericsson.mts.asn1.ASN1Parser;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.TranslatorContext;
-import com.ericsson.mts.asn1.constraint.SizeConstraint;
+import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
-import com.ericsson.mts.asn1.visitor.ConstraintVisitor;
 
 import java.io.IOException;
 import java.util.List;
 
 public abstract class AbstractRestrictedCharacterStringTranslator extends AbstractTranslator {
-    protected SizeConstraint sizeConstraint;
+    protected Constraints constraints;
     protected boolean isknownMultiplierCharacterStringType = false;
     protected MainRegistry mainRegistry;
     protected KnownMultiplierCharacterString knownMultiplierCharacterString;
@@ -33,7 +32,11 @@ public abstract class AbstractRestrictedCharacterStringTranslator extends Abstra
     public AbstractRestrictedCharacterStringTranslator init(MainRegistry mainRegistry, ASN1Parser.CharacterStringTypeContext characterStringTypeContext, List<ASN1Parser.ConstraintContext> constraintContexts) {
         this.mainRegistry = mainRegistry;
         if (characterStringTypeContext.restrictedCharacterStringType() != null && characterStringTypeContext.restrictedCharacterStringType().PRINTABLE_STRING() != null) {
-            sizeConstraint = (SizeConstraint) new ConstraintVisitor(ConstraintVisitor.SIZE_CONSTRAINT, mainRegistry).visitConstraint(constraintContexts.get(0));
+            constraints = new Constraints(mainRegistry);
+            constraints.addConstraint(constraintContexts.get(0));
+            if (!constraints.hasSizeConstraint()) {
+                throw new NotHandledCaseException();
+            }
             isknownMultiplierCharacterStringType = true;
             knownMultiplierCharacterString = KnownMultiplierCharacterString.PrintableString;
         } else {

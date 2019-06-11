@@ -251,7 +251,7 @@ defaultSyntax : L_BRACE (fieldSetting COMMA)* fieldSetting R_BRACE
 fieldSetting : primitiveFieldName setting
 ;
 
-setting :  IDENTIFIER //object | /* objectSet */ | asnType  | value | valueSet
+setting :  asnType //object | /* objectSet */ | asnType  | value | valueSet
 ;
 
 definedSyntax : L_BRACE (definedSyntaxToken)* R_BRACE
@@ -293,22 +293,24 @@ unionMark  :  PIPE  |  UNION_LITERAL
 intersectionMark  :  POWER |  INTERSECTION_LITERAL
 ;
 
-elements  : subtypeElements
-// |  objectSetElements
+elements  :
+	objectSetElements
+   |	subtypeElements
 // |  L_PARAN elementSetSpec R_PARAN
 ;
+
 objectSetElements :
-    object | definedObject /*| objectSetFromObjects | parameterizedObjectSet      */
+    object /*| definedObject | objectSetFromObjects | parameterizedObjectSet      */
 ;
 
 
 intersectionElements : elements (exclusions)?
 ;
 subtypeElements :
-  ((value | MIN_LITERAL) LESS_THAN?  DOUBLE_DOT LESS_THAN?  (value | MAX_LITERAL) )
-  |sizeConstraint
- | (PATTERN_LITERAL value)
- | value
+  ((value | MIN_LITERAL) LESS_THAN?  DOUBLE_DOT LESS_THAN?  (value | MAX_LITERAL) ) // ValueRange
+ |  sizeConstraint //SizeConstraint
+ | (PATTERN_LITERAL value) //PatternConstraint
+ | value //SingleValue
 ;
 
 

@@ -11,7 +11,7 @@
 package com.ericsson.mts.asn1.constraint;
 
 public abstract class AbstractConstraint {
-    protected boolean isExtensible = false;
+    private boolean isExtensible = false;
 
     public boolean isExtensible() {
         return isExtensible;
