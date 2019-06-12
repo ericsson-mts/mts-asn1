@@ -433,6 +433,7 @@ value  :   builtinValue
 builtinValue :
 		enumeratedValue
 	|	integerValue
+	|   realValue
 	|	choiceValue
 	|	objectIdentifierValue
 	|   octetStringValue
@@ -462,6 +463,15 @@ numberForm : NUMBER | definedValue
 ;
 
 integerValue :  signedNumber | IDENTIFIER
+;
+
+realValue : numericRealValue //| specialRealValue  | sequenceValue
+;
+
+numericRealValue : (MINUS)? realnumber
+;
+
+realnumber : NUMBER (DOT (NUMBER))? (Exponent)?
 ;
 
 choiceValue  :    IDENTIFIER COLON value

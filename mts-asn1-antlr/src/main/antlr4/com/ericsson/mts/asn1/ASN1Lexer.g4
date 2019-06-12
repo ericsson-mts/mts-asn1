@@ -411,7 +411,7 @@ WS
     :  (' '|'\r'|'\t'|'\u000C'|'\n') -> skip
     ;
 
-fragment Exponent
+Exponent
     : ('e'|'E') ('+'|'-')? NUMBER
     ;
 

@@ -10,13 +10,10 @@
 
 package com.ericsson.mts.asn1;
 
-import at.favre.lib.bytes.Bytes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SampleTests extends AbstractTests {
 
@@ -27,14 +24,6 @@ public class SampleTests extends AbstractTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void testUseless() {
-        Bytes b = Bytes.parseHex("0f");
-        byte[] result = b.array();
-        System.out.println(result[0]);
-        assertEquals(1, 1);
     }
 
     @Test
