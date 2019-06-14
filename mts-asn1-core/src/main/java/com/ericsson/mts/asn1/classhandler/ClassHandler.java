@@ -28,24 +28,24 @@ public class ClassHandler {
         this.mainRegistry = mainRegistry;
         ctx.fieldSpec().forEach(fieldSpecContext -> {
             Field field = new Field();
-            field.name = fieldSpecContext.IDENTIFIER().getText();
+            field.setName(fieldSpecContext.IDENTIFIER().getText());
             if (fieldSpecContext.typeOptionalitySpec() != null) {
                 if (fieldSpecContext.typeOptionalitySpec().OPTIONAL_LITERAL() != null) {
-                    field.qualifier = FIELDTYPE.OPTIONAL;
+                    field.setQualifier(FIELDTYPE.OPTIONAL);
                 } else if (fieldSpecContext.typeOptionalitySpec().DEFAULT_LITERAL() != null) {
-                    field.qualifier = FIELDTYPE.DEFAULT;
+                    field.setQualifier(FIELDTYPE.DEFAULT);
                     field.defaultValue = fieldSpecContext.typeOptionalitySpec().asnType().getText();
                 }
             } else if (fieldSpecContext.asnType() != null) {
-                field.type = mainRegistry.getTranslator(fieldSpecContext.asnType());
+                field.setType(mainRegistry.getTranslator(fieldSpecContext.asnType()));
                 if (fieldSpecContext.UNIQUE_LITERAL() != null) {
-                    field.qualifier = FIELDTYPE.UNIQUE;
+                    field.setQualifier(FIELDTYPE.UNIQUE);
                 }
                 if (fieldSpecContext.valueOptionalitySpec() != null) {
                     if (fieldSpecContext.valueOptionalitySpec().OPTIONAL_LITERAL() != null) {
-                        field.qualifier = FIELDTYPE.OPTIONAL;
+                        field.setQualifier(FIELDTYPE.OPTIONAL);
                     } else {
-                        field.qualifier = FIELDTYPE.DEFAULT;
+                        field.setQualifier(FIELDTYPE.DEFAULT);
                         field.defaultValue = fieldSpecContext.valueOptionalitySpec().value().getText();
                     }
                 }
@@ -67,8 +67,8 @@ public class ClassHandler {
                         }
                     } else {
                         for (Field field : fields) {
-                            if (field.name.compareTo(tokenOrGroupSpecContext.requiredToken().primitiveFieldName().IDENTIFIER().getText()) == 0) {
-                                field.syntax = syntax.substring(0, syntax.length() - 1);
+                            if (field.getName().compareTo(tokenOrGroupSpecContext.requiredToken().primitiveFieldName().IDENTIFIER().getText()) == 0) {
+                                field.setSyntax(syntax.substring(0, syntax.length() - 1));
                                 syntax = "";
                             }
                         }
@@ -85,8 +85,8 @@ public class ClassHandler {
                                 }
                             } else {
                                 for (Field field : fields) {
-                                    if (field.name.compareTo(tokenOrGroupSpecContext1.requiredToken().primitiveFieldName().IDENTIFIER().getText()) == 0) {
-                                        field.syntax = syntax.substring(0, syntax.length() - 1);
+                                    if (field.getName().compareTo(tokenOrGroupSpecContext1.requiredToken().primitiveFieldName().IDENTIFIER().getText()) == 0) {
+                                        field.setSyntax(syntax.substring(0, syntax.length() - 1));
                                         syntax = "";
                                     }
                                 }
@@ -105,11 +105,11 @@ public class ClassHandler {
 
     public String getUniqueKeyName() {
         for (Field field : fields) {
-            if (field.qualifier == FIELDTYPE.UNIQUE) {
-                if (null != field.syntax) {
-                    return field.syntax;
+            if (field.getQualifier() == FIELDTYPE.UNIQUE) {
+                if (null != field.getSyntax()) {
+                    return field.getSyntax();
                 } else {
-                    return field.name;
+                    return field.getName();
                 }
             }
         }
@@ -126,10 +126,10 @@ public class ClassHandler {
 
     public AbstractTranslator getTypeTranslator(String fieldName) {
         for (Field field : fields) {
-            if (fieldName.compareTo(field.name) == 0) {
-                return field.type;
-            } else if (fieldName.compareTo(field.syntax) == 0) {
-                return field.type;
+            if (fieldName.compareTo(field.getName()) == 0) {
+                return field.getType();
+            } else if (fieldName.compareTo(field.getSyntax()) == 0) {
+                return field.getType();
             }
         }
 
@@ -138,8 +138,8 @@ public class ClassHandler {
 
     public String getSyntaxName(String fieldName) {
         for (Field field : fields) {
-            if (fieldName.equals(field.name)) {
-                return field.syntax;
+            if (fieldName.equals(field.getName())) {
+                return field.getSyntax();
             }
         }
         return fieldName;
@@ -148,7 +148,7 @@ public class ClassHandler {
     public ArrayList<String> getSyntaxFields() {
         ArrayList<String> syntaxFields = new ArrayList<>();
         for (Field field : fields) {
-            syntaxFields.add(field.syntax);
+            syntaxFields.add(field.getSyntax());
         }
         return syntaxFields;
     }
@@ -166,14 +166,14 @@ public class ClassHandler {
     }
 
     private class Field {
-        public String name;
-        public AbstractTranslator type;
-        public FIELDTYPE qualifier = null;
-        public String syntax = null;
+        private String name;
+        private AbstractTranslator type;
+        private FIELDTYPE qualifier = null;
+        private String syntax = null;
         private String defaultValue = null;
 
         public String getDefaultValue() {
-            if (qualifier == FIELDTYPE.DEFAULT)
+            if (getQualifier() == FIELDTYPE.DEFAULT)
                 return defaultValue;
             return null;
         }
@@ -185,12 +185,44 @@ public class ClassHandler {
         @Override
         public String toString() {
             return "Field{" +
-                    "name='" + name + '\'' +
-                    ", type=" + type +
-                    ", qualifier=" + qualifier +
-                    ", syntax='" + syntax + '\'' +
+                    "name='" + getName() + '\'' +
+                    ", type=" + getType() +
+                    ", qualifier=" + getQualifier() +
+                    ", syntax='" + getSyntax() + '\'' +
                     ", defaultValue='" + defaultValue + '\'' +
                     '}';
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public AbstractTranslator getType() {
+            return type;
+        }
+
+        public void setType(AbstractTranslator type) {
+            this.type = type;
+        }
+
+        public FIELDTYPE getQualifier() {
+            return qualifier;
+        }
+
+        public void setQualifier(FIELDTYPE qualifier) {
+            this.qualifier = qualifier;
+        }
+
+        public String getSyntax() {
+            return syntax;
+        }
+
+        public void setSyntax(String syntax) {
+            this.syntax = syntax;
         }
     }
 }

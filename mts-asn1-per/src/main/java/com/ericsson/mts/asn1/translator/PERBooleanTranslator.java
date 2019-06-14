@@ -12,16 +12,10 @@ package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
-import com.ericsson.mts.asn1.PERTranscoder;
 
 import java.io.IOException;
 
 public class PERBooleanTranslator extends AbstractBooleanTranslator {
-    private PERTranscoder perTranscoder;
-
-    public PERBooleanTranslator(PERTranscoder perTranscoder) {
-        this.perTranscoder = perTranscoder;
-    }
 
     @Override
     public void doEncode(BitArray s, boolean value) throws IOException {
@@ -34,14 +28,9 @@ public class PERBooleanTranslator extends AbstractBooleanTranslator {
     }
 
     @Override
-    public boolean doDecode(BitInputStream s) {
+    public boolean doDecode(BitInputStream s) throws IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
-        try {
-            return (1 == s.readBit());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        throw new RuntimeException();
+        return (1 == s.readBit());
     }
 
 }

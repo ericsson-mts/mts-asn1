@@ -29,7 +29,7 @@ public class ASN1Translator {
     private Logger logger = LoggerFactory.getLogger(ASN1Translator.class.getSimpleName());
     private MainRegistry registry;
 
-    public ASN1Translator(AbstractFactory factory, List<InputStream> stream) {
+    public ASN1Translator(AbstractFactory factory, List<InputStream> stream) throws IOException {
         registry = new MainRegistry(factory);
         for (InputStream inputStream : stream) {
             beginVisit(inputStream);
@@ -44,13 +44,8 @@ public class ASN1Translator {
         registry.getTranslatorFromName(str).decode(str, new BitInputStream(stream), formatWriter, null);
     }
 
-    private void beginVisit(InputStream stream) {
-        CharStream inputStream = null;
-        try {
-            inputStream = CharStreams.fromStream(stream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void beginVisit(InputStream stream) throws IOException {
+        CharStream inputStream = CharStreams.fromStream(stream);
         ASN1Lexer asn1Lexer = new ASN1Lexer(inputStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(asn1Lexer);
         ASN1Parser asn1Parser = new ASN1Parser(commonTokenStream);

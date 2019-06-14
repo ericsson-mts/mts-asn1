@@ -131,12 +131,7 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
 
         if (isExtendedSequence) {
             logger.trace("isExtendedSequence");
-            boolean[] additionalBitmap = new boolean[0];
-            try {
-                additionalBitmap = new boolean[perTranscoder.decodeNormallySmallNumber(s).intValue()];
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            boolean[] additionalBitmap = new boolean[perTranscoder.decodeNormallySmallNumber(s).intValue()];
 
             logger.trace("additionalBitmap is {}", additionalBitmap);
 

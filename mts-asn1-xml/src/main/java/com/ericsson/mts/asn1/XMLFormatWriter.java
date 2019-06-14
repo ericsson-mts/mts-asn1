@@ -25,7 +25,12 @@ public class XMLFormatWriter implements FormatWriter {
     private Element currentNode;
 
     public XMLFormatWriter() throws ParserConfigurationException {
-        document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+        document = dbf.newDocumentBuilder().newDocument();
         currentNode = null;
     }
 

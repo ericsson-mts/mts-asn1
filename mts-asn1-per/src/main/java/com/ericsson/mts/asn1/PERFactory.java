@@ -28,7 +28,7 @@ public class PERFactory extends AbstractFactory {
 
     @Override
     public AbstractBooleanTranslator booleanTranslator() {
-        return new PERBooleanTranslator(perTranscoder);
+        return new PERBooleanTranslator();
     }
 
     @Override

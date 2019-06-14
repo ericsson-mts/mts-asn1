@@ -34,7 +34,7 @@ public abstract class AbstractBooleanTranslator extends AbstractTranslator {
         writer.booleanValue(name, doDecode(s));
     }
 
-    public abstract boolean doDecode(BitInputStream s);
+    public abstract boolean doDecode(BitInputStream s) throws IOException;
 
     @Override
     public String toString() {

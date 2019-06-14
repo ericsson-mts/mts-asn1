@@ -68,7 +68,7 @@ public abstract class AbstractTranslator {
     public List<String> getParameters() {
         List<String> parameterList = new ArrayList<>();
         for (Parameter parameter : parameters) {
-            parameterList.add(parameter.name);
+            parameterList.add(parameter.getName());
         }
         return parameterList;
     }
@@ -108,29 +108,53 @@ public abstract class AbstractTranslator {
         Iterator<String> parametersValuesIterator = values.iterator();
 
         while (parametersDefIterator.hasNext() && parametersValuesIterator.hasNext()) {
-            register.put(parametersDefIterator.next().name, parametersValuesIterator.next());
+            register.put(parametersDefIterator.next().getName(), parametersValuesIterator.next());
         }
 
         return register;
     }
 
     protected class Parameter {
-        public String type;
-        public String name;
-        public String value;
+        private String type;
+        private String name;
+        private String value;
 
         public Parameter(String type, String name) {
-            this.type = type;
-            this.name = name;
+            this.setType(type);
+            this.setName(name);
         }
 
         @Override
         public String toString() {
             return "Parameter{" +
-                    "type='" + type + '\'' +
-                    ", name='" + name + '\'' +
-                    ", value='" + value + '\'' +
+                    "type='" + getType() + '\'' +
+                    ", name='" + getName() + '\'' +
+                    ", value='" + getValue() + '\'' +
                     '}';
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }
