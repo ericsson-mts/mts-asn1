@@ -385,9 +385,4 @@ public class PERTranscoder {
         }
         encodeBitField(s, number, octetLength * 8);
     }
-
-    private BigInteger testTravis(BigInteger lb, BigInteger ub) {
-        lb.subtract(ub);
-        return lb;
-    }
 }
