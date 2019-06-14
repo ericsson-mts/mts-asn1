@@ -31,7 +31,7 @@ public class PERTranscoder {
     }
 
     /**
-     * Decode of the constrained whole number ITU-T X.691. 10.5. NOTE �
+     * Decode of the constrained whole number ITU-T X.691. 10.5. NOTE
      * (Tutorial) This subclause is referenced by other clauses, and itself
      * references earlier clauses for the production of a
      * nonnegative-data-integer or a 2's-complement-data-integer encoding.
@@ -384,5 +384,10 @@ public class PERTranscoder {
             s.skipAlignedBits();
         }
         encodeBitField(s, number, octetLength * 8);
+    }
+
+    private BigInteger testTravis(BigInteger lb, BigInteger ub) {
+        lb.subtract(ub);
+        return lb;
     }
 }
