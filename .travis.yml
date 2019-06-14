@@ -1,1 +1,10 @@
 language: java
+
+addons:
+  sonarcloud:
+    organization: "ericsson-mts" # the key of the org you chose at step #3
+    token:
+      secure: "I6T9NCqXnQa3R9a/HJRv/iA8+TvWNSUGojzOyl+gPm4IqJ0wRAhmh8UmS68CIZgHbh1WokvEQfO5eTtDR2nYcQXR6xumV53D8V00vwiThdarKxQaB8TlP9fSB9ip7xFM29Wdt7/75q6SafPJS/QzXbFoRHhIPufWQDFSu7hACYmfvwWABAgVNNMoqwPy/LY5gzBPgfDUUGQxuaf4tAGNqQE2h77kpm6g9v+mJatSivB9lWAMt6dYxsNIJfYlGURH0hgPgiv7o82vi+P2+2ZucFYrNmD84wpGqbRg6tryFBEtVgEI8caVQa7YCfP2Q2rkl+V9tff7azUGODc5+6wbE2fQxIjnsrR4DrpUA7nyT5k/vugPeQWR9O7JUWnHNy+TKuf5loGt/OudC+f+EFMD608My9zeyMh7Jvc/ORnIyRaZh/UEmZX4pDuaDL9p9GnSXmeJJPGWlVBex70Ed7JgX9bJ2dSAUOEeCBsh2LshCzkmWDgOifgjGvT7r+/FBGMNbfgMvqVrH9cWjb0VQTYb053qDZBl9JsnXEHa3A1WiZoHbXzu2SpuhV1c3uyAqkAiyVE4PfZryEdIYMTifUPFy+LlObg/nXxIMp5Y1xjMUP/xm3iYX1vat9GHNFrjeUOVUEAGu+9ducPQ2SUrHiuUpT+MzqKpSLYRbZjt7ncTrvc="
+script:
+  # other script steps might be done before running the actual analysis
+  - sonar-scanner
