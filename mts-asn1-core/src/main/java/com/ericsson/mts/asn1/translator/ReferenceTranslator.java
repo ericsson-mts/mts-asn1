@@ -19,7 +19,6 @@ import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +61,7 @@ public class ReferenceTranslator extends AbstractTranslator {
     }
 
     @Override
-    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException {
+    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         Map<String, String> registry = getRegister(parameters);
         List<String> parametersNeeded = referencedTranslator.getParameters();

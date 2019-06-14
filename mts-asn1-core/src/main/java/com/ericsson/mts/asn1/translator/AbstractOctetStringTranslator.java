@@ -62,7 +62,7 @@ public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
     public abstract void doEncode(BitArray s, FormatReader reader, String value) throws IOException;
 
     @Override
-    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException {
+    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         if (!constraints.hasContentsConstraint()) {
             writer.bytesValue(name, doDecode(s, writer));
         } else {

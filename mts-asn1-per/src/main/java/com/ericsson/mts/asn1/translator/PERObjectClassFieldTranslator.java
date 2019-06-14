@@ -17,7 +17,6 @@ import com.ericsson.mts.asn1.TranslatorContext;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
     }
 
     @Override
-    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws IOException {
+    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         Map<String, String> registry = getRegister(parameters);
 
         if (constraints.getTargetComponent() == null) {

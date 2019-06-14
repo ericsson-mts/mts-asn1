@@ -17,7 +17,6 @@ import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
     }
 
     @Override
-    public void doDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry) throws NotHandledCaseException, IOException {
+    public void doDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry) throws Exception {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
 
@@ -131,7 +130,7 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
         }
     }
 
-    private void launchDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry, BigInteger ub) throws IOException {
+    private void launchDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry, BigInteger ub) throws Exception {
         List<String> parameters = typeTranslator.getParameters();
         List<String> inputParameters = new ArrayList<>();
         if (parameters.isEmpty()) {

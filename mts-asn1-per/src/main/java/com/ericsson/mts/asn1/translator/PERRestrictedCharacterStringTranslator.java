@@ -32,7 +32,7 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger lb, ub,
-                bitLength = BigInteger.valueOf(value.length() * knownMultiplierCharacterString.getB2());
+                bitLength = BigInteger.valueOf((long) (value.length() * knownMultiplierCharacterString.getB2()));
         boolean ubUnset = false;
 
         if (constraints.hasSizeConstraint()) {

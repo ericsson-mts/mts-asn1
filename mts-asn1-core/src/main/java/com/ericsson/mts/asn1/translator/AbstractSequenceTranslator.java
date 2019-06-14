@@ -19,7 +19,6 @@ import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -164,13 +163,13 @@ public abstract class AbstractSequenceTranslator extends AbstractTranslator {
     public abstract void doEncode(BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> inputFieldList, Map<String, String> registry) throws Exception;
 
     @Override
-    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException {
+    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         writer.enterObject(name);
         doDecode(s, writer, new TranslatorContext(), getRegister(parameters));
         writer.leaveObject(name);
     }
 
-    protected abstract void doDecode(BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws NotHandledCaseException, IOException;
+    protected abstract void doDecode(BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws Exception;
 
     @Override
     public String toString() {

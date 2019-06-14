@@ -34,13 +34,12 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         if (hasExtensionMarker && addtionnalfieldList.indexOf(value) != -1) {
-//            perTranscoder.encodeNormallySmallWholeNumber(s, BigInteger.valueOf(addtionnalfieldList.indexOf(value)));
             throw new NotHandledCaseException();
         } else {
             if (hasExtensionMarker) {
                 s.writeBit(0);
             }
-            perTranscoder.encodeConstrainedWholeNumber(s, BigInteger.valueOf(fieldList.indexOf(value)), BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1));
+            perTranscoder.encodeConstrainedWholeNumber(s, BigInteger.valueOf(fieldList.indexOf(value)), BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L));
         }
     }
 
@@ -54,7 +53,7 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
         String enumValue = null;
 
         if (!isExtendedValue) {
-            enumValue = fieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1), s).intValueExact());
+            enumValue = fieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L), s).intValueExact());
         } else {
             throw new RuntimeException(); //"probably not working"
             //enumValue = extensionMapping.get(translator.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(extensionMapping.size() - 1), bs).intValueExact());

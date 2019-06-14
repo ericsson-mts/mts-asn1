@@ -20,7 +20,6 @@ import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,13 +87,13 @@ public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
     public abstract void doEncode(BitArray s, FormatReader reader, int numberOfComponents, Map<String, String> registry) throws Exception;
 
     @Override
-    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException {
+    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         writer.enterArray(name);
         doDecode(s, writer, getRegister(parameters));
         writer.leaveArray(name);
     }
 
-    protected abstract void doDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry) throws NotHandledCaseException, IOException;
+    protected abstract void doDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry) throws Exception;
 
     @Override
     public String toString() {

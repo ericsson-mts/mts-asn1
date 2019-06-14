@@ -18,7 +18,6 @@ import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +87,7 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
     }
 
     @Override
-    public void doDecode(BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws IOException, NotHandledCaseException {
+    public void doDecode(BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws Exception {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         boolean rootSequenceHasOptional = false;
         boolean isExtendedSequence = false;
@@ -152,7 +151,9 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
                 if (additionalbit) {
                     int len = perTranscoder.decodeLengthDeterminant(s);
                     byte[] data = new byte[len];
-                    s.read(data);
+                    if (-1 == s.read(data)) {
+                        throw new RuntimeException();
+                    }
                     throw new RuntimeException("unsupported");
                 }
             }

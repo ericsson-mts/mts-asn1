@@ -17,16 +17,12 @@ import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -46,7 +42,7 @@ public class AbstractTests {
         testEncode(type, binaryPath, expectedJsonPath, expectedXmlPath);
     }
 
-    protected void testDecode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws IOException, TransformerException, SAXException, ParserConfigurationException {
+    void testDecode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
         //JSON decode test
         {
             JSONFormatWriter formatWriter = new JSONFormatWriter();
@@ -79,7 +75,7 @@ public class AbstractTests {
         }
     }
 
-    protected void testEncode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
+    private void testEncode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
         //JSON encode test
         {
 

@@ -20,7 +20,6 @@ import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
 import org.javatuples.Pair;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,13 +69,13 @@ public abstract class AbstractChoiceTranslator extends AbstractTranslator {
     public abstract void doEncode(BitArray s, FormatReader reader, String choiceValue) throws Exception;
 
     @Override
-    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException {
+    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         writer.enterObject(name);
         doDecode(s, writer);
         writer.leaveObject(name);
     }
 
-    public abstract void doDecode(BitInputStream s, FormatWriter writer) throws NotHandledCaseException, IOException;
+    public abstract void doDecode(BitInputStream s, FormatWriter writer) throws Exception;
 
 
     @Override

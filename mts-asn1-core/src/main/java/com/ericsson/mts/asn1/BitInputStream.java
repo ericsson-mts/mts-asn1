@@ -56,7 +56,7 @@ public class BitInputStream extends InputStream {
         for (int i = 0; i < nBits; i++) {
             int index = arrayLen - i / 8;
             int bit = readBit();
-            array[index] = (byte) (array[index] | (bit << (8 - (8 - (arrayLen * 8 - i) % 8))));
+            array[index] = (byte) (array[index] | (bit << (8 - (8 - (arrayLen * 8 - i) % 8))) & 0xff);
         }
         return array;
     }
@@ -66,7 +66,7 @@ public class BitInputStream extends InputStream {
         byte[] bytes = new byte[nBytes];
         for (int i = 0; i < nBits; i++) {
             int index = i / 8;
-            bytes[index] = (byte) (bytes[index] | readBit() << (7 - (i % 8)));
+            bytes[index] = (byte) (bytes[index] | readBit() << (7 - (i % 8)) & 0xff);
         }
         return bytes;
     }
@@ -109,7 +109,9 @@ public class BitInputStream extends InputStream {
     public byte[] readAlignedByteArray(int len) throws IOException {
         skipUnreadedBits();
         byte[] arr = new byte[len];
-        byteStream.read(arr);
+        if (-1 == byteStream.read(arr)) {
+            throw new RuntimeException("reach end of buffer");
+        }
         return arr;
     }
 

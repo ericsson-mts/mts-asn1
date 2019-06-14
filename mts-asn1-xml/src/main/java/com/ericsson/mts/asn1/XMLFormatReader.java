@@ -62,9 +62,6 @@ public class XMLFormatReader implements FormatReader {
                     }
                     logger.trace("Enter array field ");
                     currentNode = getFromStack(currentNode);
-                    if (currentNode == null) {
-                        throw new RuntimeException();
-                    }
                 } else {
                     throw new RuntimeException();
                 }

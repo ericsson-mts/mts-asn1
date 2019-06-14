@@ -10,7 +10,6 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,16 +178,18 @@ public class PERTranscoder {
 
     protected BigInteger decodeUnsignedIntegerValueAsBytes(int intLen, InputStream stream) throws IOException {
         byte[] bytes = new byte[intLen + 1];
-        stream.read(bytes, 1, intLen);
-        BigInteger value = new BigInteger(bytes);
-        return value;
+        if (-1 == stream.read(bytes, 1, intLen)) {
+            throw new RuntimeException();
+        }
+        return new BigInteger(bytes);
     }
 
     protected BigInteger decodeSignedIntegerValueAsBytes(int intLen, InputStream stream) throws IOException {
         byte[] bytes = new byte[intLen];
-        stream.read(bytes);
-        BigInteger value = new BigInteger(bytes);
-        return value;
+        if (-1 == stream.read(bytes)) {
+            throw new RuntimeException();
+        }
+        return new BigInteger(bytes);
     }
 
     /**
@@ -218,16 +219,6 @@ public class PERTranscoder {
             throw new UnsupportedOperationException("number of 16k chunks not supported");
         }
         return result;
-    }
-
-    public byte[] decodeOctetString(BitInputStream stream, Constraints range) throws IOException {
-        if (ZERO.equals(range.getUpper_bound())) {
-            return new byte[0];
-        } else if (range.getLower_bound().equals(range.getUpper_bound())) {
-            return decodeOctetString(stream, range.getLower_bound());
-        } else {
-            return decodeOctetString(stream, decodeConstrainedLengthDeterminant(range.getLower_bound(), range.getUpper_bound(), stream));
-        }
     }
 
     public byte[] decodeOctetString(BitInputStream stream, BigInteger len) throws IOException {
@@ -319,7 +310,7 @@ public class PERTranscoder {
         }
     }
 
-    public static void addBitField(BitArray s, int[] value, int length) throws IOException {
+    public void addBitField(BitArray s, int[] value, int length) throws IOException {
         int i = 0, j = 0;
         int currentByte;
         while (i < length) {

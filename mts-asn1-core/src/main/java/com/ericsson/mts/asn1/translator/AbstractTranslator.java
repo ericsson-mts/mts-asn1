@@ -20,7 +20,6 @@ import com.ericsson.mts.asn1.factory.FormatWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.*;
 
 public abstract class AbstractTranslator {
@@ -83,9 +82,9 @@ public abstract class AbstractTranslator {
         this.encode(name, s, reader, translatorContext, Collections.emptyList());
     }
 
-    abstract public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws NotHandledCaseException, IOException;
+    abstract public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception;
 
-    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext) throws NotHandledCaseException, IOException {
+    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext) throws Exception {
         if (!parameters.isEmpty()) {
             throw new RuntimeException("name : " + name + " , " + "parameters : " + parameters.toString());
         }

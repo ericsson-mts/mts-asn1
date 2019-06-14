@@ -13,13 +13,11 @@ package com.ericsson.mts.asn1.translator;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.PERTranscoder;
-import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import org.javatuples.Pair;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 
 public class PERChoiceTranslator extends AbstractChoiceTranslator {
@@ -51,7 +49,7 @@ public class PERChoiceTranslator extends AbstractChoiceTranslator {
                 if (optionalExtensionMarker) {
                     s.writeBit(0);
                 }
-                perTranscoder.encodeConstrainedWholeNumber(s, BigInteger.valueOf(index), BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1));
+                perTranscoder.encodeConstrainedWholeNumber(s, BigInteger.valueOf(index), BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L));
                 abstractTranslator.encode(choiceValue, s, reader, null);
                 return;
             }
@@ -61,33 +59,27 @@ public class PERChoiceTranslator extends AbstractChoiceTranslator {
     }
 
     @Override
-    public void doDecode(BitInputStream s, FormatWriter writer) throws NotHandledCaseException, IOException {
+    public void doDecode(BitInputStream s, FormatWriter writer) throws Exception {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         boolean choiceWithinAdditionalValues = false;
         if (optionalExtensionMarker) {
             choiceWithinAdditionalValues = (1 == s.readBit());
         }
 
-        BigInteger index = null;
+        BigInteger index;
         if (!choiceWithinAdditionalValues) {
             if (fieldList.size() < 64) {
-                index = perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1), s);
+                index = perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L), s);
             } else {
-                try {
-                    index = perTranscoder.decodeNormallySmallNumber(s);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                index = perTranscoder.decodeNormallySmallNumber(s);
             }
             fieldList.get(index.intValue()).getValue1().decode(fieldList.get(index.intValue()).getValue0(), s, writer, null);
         } else {
-            try {
-                index = perTranscoder.decodeNormallySmallNumber(s);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            index = perTranscoder.decodeNormallySmallNumber(s);
             byte[] choiceData = new byte[perTranscoder.decodeLengthDeterminant(s)];
-            s.read(choiceData);
+            if (-1 == s.read(choiceData)) {
+                throw new RuntimeException();
+            }
 
             extensionFieldList.get(index.intValue() - fieldList.size() - 1).getValue1().decode(extensionFieldList.get(index.intValue() - fieldList.size() - 1).getValue0(), new BitInputStream(new ByteArrayInputStream(choiceData)), writer, null);
         }

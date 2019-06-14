@@ -70,7 +70,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             if (ub != null) {
                 throw new NotHandledCaseException();
             } else {
-                perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(value.length() / 2 + value.length() % 2).subtract(lb));
+                perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(value.length() / 2L + value.length() % 2).subtract(lb));
                 s.skipAlignedBits();
                 perTranscoder.addBitField(s, stringToBytes(value), value.length() * 4);
             }

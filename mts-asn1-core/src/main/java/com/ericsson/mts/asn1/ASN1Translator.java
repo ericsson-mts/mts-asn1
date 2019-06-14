@@ -10,7 +10,6 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.AbstractFactory;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
@@ -41,7 +40,7 @@ public class ASN1Translator {
         registry.getTranslatorFromName(string).encode(string, bitArray, formatReader, null);
     }
 
-    public void decode(String str, InputStream stream, FormatWriter formatWriter) throws NotHandledCaseException, IOException {
+    public void decode(String str, InputStream stream, FormatWriter formatWriter) throws Exception {
         registry.getTranslatorFromName(str).decode(str, new BitInputStream(stream), formatWriter, null);
     }
 
