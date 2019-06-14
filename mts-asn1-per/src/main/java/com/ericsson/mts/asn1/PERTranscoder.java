@@ -319,15 +319,21 @@ public class PERTranscoder {
         }
     }
 
-    public void encodeSemiConstrainedWholeNumber(BitArray s, BigInteger lb, BigInteger number) throws IOException {
-        BigInteger value = number.subtract(lb);
-        int octetLength = value.bitLength() / 8 + ((value.bitLength() % 8 != 0) ? 1 : 0);
-        logger.trace("encodeSemiConstrainedWholeNumber : value=" + String.format("%x", value).toUpperCase() + ", length=" + octetLength);
-        encodeLengthDeterminant(s, BigInteger.valueOf(octetLength));
-        if (aligned) {
-            s.skipAlignedBits();
+    public static void addBitField(BitArray s, int[] value, int length) throws IOException {
+        int i = 0, j = 0;
+        int currentByte;
+        while (i < length) {
+            currentByte = value[j] & 0xf;
+            for (int l = 0; l < 4 && i + l < length; l++) {
+                if ((currentByte >> (3 - l) & 0x01) == 0x01) {
+                    s.writeBit(1);
+                } else {
+                    s.writeBit(0);
+                }
+            }
+            i += 4;
+            j++;
         }
-        encodeBitField(s, value, octetLength * 8);
     }
 
     public void encodeConstrainedLengthDeterminant(BitArray s, BigInteger length, BigInteger lb, BigInteger ub) throws IOException {
@@ -370,20 +376,13 @@ public class PERTranscoder {
         }
     }
 
-    private void addBitField(BitArray s, int[] value, int length) throws IOException {
-        int i = 0, j = 0;
-        int currentByte;
-        while (i < length) {
-            currentByte = value[j];
-            for (int l = 0; l < 8 && i + l < length; l++) {
-                if ((currentByte >> (8 - l) & 0x01) == 0x01) {
-                    s.writeBit(1);
-                } else {
-                    s.writeBit(0);
-                }
-            }
-            i += 8;
-            j++;
+    public void encodeSemiConstrainedWholeNumber(BitArray s, BigInteger lb, BigInteger number) throws IOException {
+        int octetLength = number.bitLength() / 8 + ((number.bitLength() % 8 != 0) ? 1 : 0) - lb.intValueExact();
+        logger.trace("encodeSemiConstrainedWholeNumber : value=" + String.format("%x", number).toUpperCase() + ", length=" + octetLength);
+        encodeLengthDeterminant(s, BigInteger.valueOf(octetLength));
+        if (aligned) {
+            s.skipAlignedBits();
         }
+        encodeBitField(s, number, octetLength * 8);
     }
 }

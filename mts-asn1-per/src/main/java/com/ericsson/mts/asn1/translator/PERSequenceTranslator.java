@@ -51,7 +51,7 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
         BigInteger preambleLength = BigInteger.ZERO;
         for (Field field : fieldList) {
             if (field.getOptionnal()) {
-                preambleLength.add(BigInteger.ONE);
+                preambleLength = preambleLength.add(BigInteger.ONE);
                 if (inputFieldList.contains(field.getName())) {
                     s.writeBit(1);
                 } else {

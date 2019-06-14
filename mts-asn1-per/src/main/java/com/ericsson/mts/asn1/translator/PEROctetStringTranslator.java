@@ -70,7 +70,9 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             if (ub != null) {
                 throw new NotHandledCaseException();
             } else {
-                perTranscoder.encodeSemiConstrainedWholeNumber(s, lb, new BigInteger(value, 16));
+                perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(value.length() / 2 + value.length() % 2).subtract(lb));
+                s.skipAlignedBits();
+                perTranscoder.addBitField(s, stringToBytes(value), value.length() * 4);
             }
         }
 
@@ -116,12 +118,20 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             if (ub != null) {
                 length = perTranscoder.decodeConstrainedNumber(lb, ub, s);
             } else {
-                //Weird
-                length = BigInteger.valueOf(perTranscoder.decodeLengthDeterminant(s));
+                length = BigInteger.valueOf(perTranscoder.decodeLengthDeterminant(s)).add(lb);
             }
             octetstring = perTranscoder.decodeOctetString(s, length);
         }
         logger.trace("Result " + CoderUtils.bytesToHex(octetstring));
         return octetstring;
+    }
+
+    private int[] stringToBytes(String value) {
+        String[] strings = value.split("");
+        int[] result = new int[value.length()];
+        for (int i = 0; i < value.length(); i++) {
+            result[i] = Integer.parseInt(strings[i], 16);
+        }
+        return result;
     }
 }
