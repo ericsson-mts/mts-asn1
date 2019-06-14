@@ -13,13 +13,11 @@ package com.ericsson.mts.asn1;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -40,13 +38,14 @@ public class XMLFormatReader implements FormatReader {
     }
 
     public XMLFormatReader(InputStream inputStream, String type) throws Exception {
-        this(DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(inputStream), type);
-
-    }
-
-    public XMLFormatReader(Document document, String type) throws TransformerException {
-        this.currentNode = document.getDocumentElement();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+        this.currentNode = dbf.newDocumentBuilder().parse(inputStream).getDocumentElement();
         ignoredObject = type;
+
     }
 
     @Override

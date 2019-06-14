@@ -224,7 +224,7 @@ public class PERTranscoder {
     public byte[] decodeOctetString(BitInputStream stream, BigInteger len) throws IOException {
         if (len.compareTo(new BigInteger("2")) <= 0) {
             return stream.readUnalignedByteArray(len.intValueExact());
-        } else if (len.compareTo(BigInteger.valueOf(64 * 1024)) < 0) {
+        } else if (len.compareTo(BigInteger.valueOf(64L * 1024L)) < 0) {
             return stream.readAlignedByteArray(len.intValueExact());
         } else {
             throw new RuntimeException("unsupported case");
