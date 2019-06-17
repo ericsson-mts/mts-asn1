@@ -1,5 +1,5 @@
 # **mts-asn1**
-[![Build Status](https://travis-ci.org/ericsson-mts/mts-asn1.svg?branch=master)](https://travis-ci.org/ericsson-mts/mts-asn1) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.ericsson.mts%3Amts-asn1&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.ericsson.mts%3Amts-asn1)
+[![Build Status](https://travis-ci.org/ericsson-mts/mts-asn1.svg?branch=master)](https://travis-ci.org/ericsson-mts/mts-asn1) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.ericsson.mts%3Amts-asn1&metric=bugs)](https://sonarcloud.io/dashboard?id=com.ericsson.mts%3Amts-asn1)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ericsson-mts/mts-asn1/blob/master/LICENSE.txt)
 
 ## Description
