@@ -13,21 +13,26 @@ package com.ericsson.mts.asn1;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 
-public class SampleTests extends AbstractTests {
+class SampleTests extends AbstractTests {
 
     @BeforeAll
-    static public void init() {
+    static void init() {
         try {
-            asn1Translator = new ASN1Translator(new PERFactory(true), Arrays.asList(SampleTests.class.getResourceAsStream("/grammar/sample/examplev2.asn")));
+            asn1Translator = new ASN1Translator(new PERFactory(true), Collections.singletonList(SampleTests.class.getResourceAsStream("/grammar/sample/examplev2.asn")));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testSample() throws Exception {
+    void parseSampleGrammar() {
+        testParsingANTLR();
+    }
+
+    @Test
+    void testSample() throws Exception {
         test("Message", "/data/sample/sample.bin", "/data/sample/sample.json", "/data/sample/sample.xml");
     }
 }

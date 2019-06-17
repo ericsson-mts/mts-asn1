@@ -51,4 +51,11 @@ public class ASN1Translator {
         ASN1Parser asn1Parser = new ASN1Parser(commonTokenStream);
         new TopLevelVisitor(registry).visitModuleDefinition(asn1Parser.moduleDefinition());
     }
+
+    public void parseTranslators() {
+        registry.parseTranslators();
+        registry.parseClassHandler();
+        registry.parseClassObject();
+        registry.parseClassObjectSet();
+    }
 }

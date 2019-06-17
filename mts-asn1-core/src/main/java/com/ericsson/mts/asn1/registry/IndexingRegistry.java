@@ -14,17 +14,21 @@ import com.ericsson.mts.asn1.ASN1Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class IndexingRegistry {
-    private HashMap<String, ASN1Parser.ValueAssignmentContext> valueindicingregistry = new HashMap<>();
-    private HashMap<String, ASN1Parser.TypeAssignmentContext> typeindicingregistry = new HashMap<>();
-    private HashMap<String, ASN1Parser.ParameterizedAssignmentContext> parameterizedindicingregistry = new HashMap<>();
-    private HashMap<String, ASN1Parser.ObjectClassAssignmentContext> objectclassindicingregistry = new HashMap<>();
-    private HashMap<String, ASN1Parser.ObjectAssignmentContext> objectAssignmentContextHashMap = new HashMap<>();
+class IndexingRegistry {
+    private Map<String, ASN1Parser.ValueAssignmentContext> valueindicingregistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.TypeAssignmentContext> typeindicingregistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.ParameterizedAssignmentContext> parameterizedindicingregistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.ObjectClassAssignmentContext> objectclassindicingregistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.ObjectAssignmentContext> objectAssignmentContextHashMap = new ConcurrentHashMap<>();
     private Logger logger = LoggerFactory.getLogger(IndexingRegistry.class.getSimpleName());
 
-    public void addAssignment(ASN1Parser.AssignmentContext assignmentContext) {
+    void addAssignment(ASN1Parser.AssignmentContext assignmentContext) {
         if (null != assignmentContext.valueAssignment()) {
             valueindicingregistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.valueAssignment());
         } else if (null != assignmentContext.typeAssignment()) {
@@ -38,23 +42,60 @@ public class IndexingRegistry {
         }
     }
 
-    public ASN1Parser.ValueAssignmentContext getConstantContext(String identifier) {
+    ASN1Parser.ValueAssignmentContext getConstantContext(String identifier) {
         return valueindicingregistry.remove(identifier);
     }
 
-    public ASN1Parser.TypeAssignmentContext getTranslatorContext(String identifier) {
+
+    ASN1Parser.TypeAssignmentContext getTranslatorContext(String identifier) {
         return typeindicingregistry.remove(identifier);
     }
 
-    public ASN1Parser.ParameterizedAssignmentContext getParameterizedAssignementContext(String identifier) {
+    List<String> getTranslatorsIdentifier() {
+        Iterator it = typeindicingregistry.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            arrayList.add((String) it.next());
+        }
+        return arrayList;
+    }
+
+    ASN1Parser.ParameterizedAssignmentContext getParameterizedAssignementContext(String identifier) {
         return parameterizedindicingregistry.remove(identifier);
     }
 
-    public ASN1Parser.ObjectAssignmentContext getObjectContext(String identifier) {
+    List<String> getParameterizedAssignementsdentifier() {
+        Iterator it = parameterizedindicingregistry.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            arrayList.add((String) it.next());
+        }
+        return arrayList;
+    }
+
+    ASN1Parser.ObjectAssignmentContext getObjectContext(String identifier) {
         return objectAssignmentContextHashMap.remove(identifier);
     }
 
-    public ASN1Parser.ObjectClassAssignmentContext getClassHandlerContext(String identifier) {
+    List<String> getObjectsContextdentifier() {
+        Iterator it = objectAssignmentContextHashMap.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            arrayList.add((String) it.next());
+        }
+        return arrayList;
+    }
+
+    ASN1Parser.ObjectClassAssignmentContext getClassHandlerContext(String identifier) {
         return objectclassindicingregistry.remove(identifier);
+    }
+
+    List<String> getClassHandlersdentifier() {
+        Iterator it = objectclassindicingregistry.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            arrayList.add((String) it.next());
+        }
+        return arrayList;
     }
 }

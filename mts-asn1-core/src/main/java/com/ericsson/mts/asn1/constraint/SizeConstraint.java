@@ -10,34 +10,69 @@
 
 package com.ericsson.mts.asn1.constraint;
 
+import com.ericsson.mts.asn1.registry.MainRegistry;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 class SizeConstraint extends AbstractConstraint {
-    private BigInteger lower_bound;
-    private BigInteger upper_bound;
+    private String lower_bound;
+    private String upper_bound;
+    private boolean arelbNumber;
+    private boolean areubNumber;
+    private MainRegistry mainRegistry;
 
-
-    public BigInteger getLower_bound() {
-        return lower_bound;
+    SizeConstraint(MainRegistry mainRegistry) {
+        this.mainRegistry = mainRegistry;
     }
 
-    public void setLower_bound(BigInteger lower_bound) {
+    BigInteger getLower_bound() {
+        if (arelbNumber) {
+            return new BigInteger(lower_bound);
+        } else {
+            return new BigInteger(mainRegistry.getConstantFromName(lower_bound).getValue());
+        }
+    }
+
+    void setLower_bound(String lower_bound, boolean isNumber) {
         if (this.lower_bound != null) {
             throw new RuntimeException();
         }
         this.lower_bound = lower_bound;
+        this.arelbNumber = isNumber;
     }
 
-    public BigInteger getUpper_bound() {
-        return upper_bound;
+    BigInteger getUpper_bound() {
+        if (null == upper_bound) {
+            return null;
+        }
+        if (areubNumber) {
+            return new BigInteger(upper_bound);
+        } else {
+            return new BigInteger(mainRegistry.getConstantFromName(upper_bound).getValue());
+        }
     }
 
-    public void setUpper_bound(BigInteger upper_bound) {
+    void setUpper_bound(String upper_bound, boolean isNumber) {
         if (this.upper_bound != null) {
             throw new RuntimeException();
         }
         this.upper_bound = upper_bound;
+        this.areubNumber = isNumber;
+    }
+
+    void updateValue(Map<String, String> registry) {
+        if (arelbNumber && areubNumber) {
+            return;
+        }
+        for (String key : registry.keySet()) {
+            if (key.equals(lower_bound)) {
+                lower_bound = registry.get(key);
+            }
+            if (key.equals(upper_bound)) {
+                upper_bound = registry.get(key);
+            }
+        }
     }
 
     @Override

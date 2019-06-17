@@ -33,7 +33,7 @@ public class ReferenceTranslator extends AbstractTranslator {
         String identifier = referencedTypeContext.definedType().IDENTIFIER(0).getText();
         referencedTranslator = mainRegistry.getTranslatorFromName(identifier);
         if (referencedTranslator == null) {
-            throw new RuntimeException("Can't find translator " + identifier);
+            throw new RuntimeException("Can't find translator " + identifier + " , context : " + referencedTypeContext.getText());
         }
         return this;
     }

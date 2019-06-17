@@ -81,13 +81,13 @@ public class MainRegistry {
         if (valueAssignmentContext.value().builtinValue().integerValue() != null) {
             return new IntegerConstant().init(valueAssignmentContext.value().builtinValue().integerValue().getText());
         } else {
-            throw new NotHandledCaseException();
+            throw new NotHandledCaseException(identifier);
         }
     }
 
     /****** Translators ******/
 
-    public synchronized AbstractTranslator getTranslatorFromName(String identifier) {
+    public synchronized AbstractTranslator getTranslatorFromName(final String identifier) {
         AbstractTranslator abstractTranslator = typeTranslatorParsedRegistry.get(identifier);
         if (null != abstractTranslator) {
             return abstractTranslator;
@@ -100,7 +100,19 @@ public class MainRegistry {
             typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
             return abstractTranslator;
         }
-        return null;
+
+        ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
+        if (parameterizedAssignmentContext != null) {
+            if (parameterizedAssignmentContext.asnType() != null) {
+                abstractTranslator = createTranslator(parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
+                abstractTranslator.setName(identifier);
+                typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
+                return abstractTranslator;
+            } else {
+                throw new NotHandledCaseException(parameterizedAssignmentContext.getChild(2).getClass().getSimpleName());
+            }
+        }
+        throw new RuntimeException("Can't find translator : " + identifier);
     }
 
     public AbstractTranslator getTranslator(ASN1Parser.AsnTypeContext asnTypeContext) {
@@ -191,6 +203,15 @@ public class MainRegistry {
         }
     }
 
+    public void parseTranslators() {
+        List<String> identifiers = indexingRegistry.getTranslatorsIdentifier();
+        for (String identifier : identifiers) {
+            if (null == getTranslatorFromName(identifier)) {
+                throw new RuntimeException("Identifier : " + identifier);
+            }
+        }
+    }
+
     /****** Objects ******/
 
     public ClassObject getClassObject(String identifier) {
@@ -209,6 +230,14 @@ public class MainRegistry {
         return classObject;
     }
 
+    public void parseClassObject() {
+        List<String> identifiers = indexingRegistry.getObjectsContextdentifier();
+        for (String identifier : identifiers) {
+            if (null == getTranslatorFromName(identifier)) {
+                throw new RuntimeException("Identifier : " + identifier);
+            }
+        }
+    }
 
     /****** Object Sets ******/
 
@@ -232,6 +261,15 @@ public class MainRegistry {
         }
     }
 
+    public void parseClassObjectSet() {
+        List<String> identifiers = indexingRegistry.getParameterizedAssignementsdentifier();
+        for (String identifier : identifiers) {
+            if (null == getTranslatorFromName(identifier)) {
+                throw new RuntimeException("Identifier : " + identifier);
+            }
+        }
+    }
+
     /****** Classes ******/
 
     public ClassHandler getClassHandler(String identifier) {
@@ -250,5 +288,14 @@ public class MainRegistry {
 
     private ClassHandler createClassHandler(ASN1Parser.ObjectClassAssignmentContext objectClassAssignmentContext) {
         return new ClassHandler(this, objectClassAssignmentContext.objectClass().objectClassDefn());
+    }
+
+    public void parseClassHandler() {
+        List<String> identifiers = indexingRegistry.getClassHandlersdentifier();
+        for (String identifier : identifiers) {
+            if (null == getTranslatorFromName(identifier)) {
+                throw new RuntimeException("Identifier : " + identifier);
+            }
+        }
     }
 }

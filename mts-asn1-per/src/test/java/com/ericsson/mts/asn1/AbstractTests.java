@@ -32,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AbstractTests {
-    protected static ASN1Translator asn1Translator;
-    protected ObjectMapper mapper = new ObjectMapper();
-    protected ObjectWriter writer = mapper.writer();
+    static ASN1Translator asn1Translator;
+    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectWriter writer = mapper.writer();
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    protected void test(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
+    void test(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
         testDecode(type, binaryPath, expectedJsonPath, expectedXmlPath);
         testEncode(type, binaryPath, expectedJsonPath, expectedXmlPath);
     }
@@ -107,5 +107,9 @@ public class AbstractTests {
 
             assertEquals(bitArray1.getBinaryMessage(), bitArray.getBinaryMessage());
         }
+    }
+
+    void testParsingANTLR() {
+        asn1Translator.parseTranslators();
     }
 }

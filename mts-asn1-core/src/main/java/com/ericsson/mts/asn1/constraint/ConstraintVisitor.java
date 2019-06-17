@@ -18,21 +18,19 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
-
 class ConstraintVisitor {
     //Wrapper
     private InnerConstraintVisitor innerConstraintVisitor;
 
-    public ConstraintVisitor(MainRegistry mainRegistry) {
+    ConstraintVisitor(MainRegistry mainRegistry) {
         innerConstraintVisitor = new InnerConstraintVisitor(mainRegistry);
     }
 
-    public void addConstraint(ASN1Parser.ConstraintContext constraintContext, Constraints constraints) {
+    void addConstraint(ASN1Parser.ConstraintContext constraintContext, Constraints constraints) {
         innerConstraintVisitor.addConstraint(constraintContext, constraints);
     }
 
-    public void addSizeConstraint(ASN1Parser.SizeConstraintContext sizeConstraintContext, Constraints constraints) {
+    void addSizeConstraint(ASN1Parser.SizeConstraintContext sizeConstraintContext, Constraints constraints) {
         innerConstraintVisitor.addSizeConstraint(sizeConstraintContext, constraints);
     }
 
@@ -143,7 +141,7 @@ class ConstraintVisitor {
         @Override
         public Void visitUnions(ASN1Parser.UnionsContext ctx) {
             if (ctx.unionMark(0) != null) {
-                throw new NotHandledCaseException();
+                throw new NotHandledCaseException(ctx.getText());
             }
             return super.visitUnions(ctx);
         }
@@ -164,15 +162,17 @@ class ConstraintVisitor {
                 if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
                     sizeConstraint = (SizeConstraint) abstractConstraint;
                 } else {
-                    sizeConstraint = new SizeConstraint();
+                    sizeConstraint = new SizeConstraint(mainRegistry);
                     typeConstraint = TypeConstraint.SIZE_CONSTRAINT;
                 }
 
                 if (ctx.MIN_LITERAL() != null) {
-                    sizeConstraint.setLower_bound(null);
+                    sizeConstraint.setLower_bound(null, true);
                 } else {
-                    if (ctx.value(0).builtinValue().integerValue() != null || ctx.value(0).builtinValue().enumeratedValue() != null) {
-                        sizeConstraint.setLower_bound(new BigInteger(ctx.value(0).getText()));
+                    if (ctx.value(0).builtinValue().integerValue() != null) {
+                        sizeConstraint.setLower_bound((ctx.value(0).getText()), true);
+                    } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
+                        sizeConstraint.setLower_bound((ctx.value(0).getText()), false);
                     } else {
                         throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                     }
@@ -183,21 +183,21 @@ class ConstraintVisitor {
                 }
 
                 if (ctx.MAX_LITERAL() != null) {
-                    sizeConstraint.setUpper_bound(null);
+                    sizeConstraint.setUpper_bound(null, true);
                 } else {
                     if (ctx.MIN_LITERAL() != null) {
                         if (ctx.value(0).builtinValue().integerValue() != null) {
-                            sizeConstraint.setUpper_bound(new BigInteger(ctx.value(0).getText()));
+                            sizeConstraint.setUpper_bound((ctx.value(0).getText()), true);
                         } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                            sizeConstraint.setUpper_bound(new BigInteger(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue()));
+                            sizeConstraint.setUpper_bound(ctx.value(0).builtinValue().getText(), false);
                         } else {
                             throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                         }
                     } else {
                         if (ctx.value(1).builtinValue().integerValue() != null) {
-                            sizeConstraint.setUpper_bound(new BigInteger(ctx.value(1).getText()));
+                            sizeConstraint.setUpper_bound((ctx.value(1).getText()), true);
                         } else if (ctx.value(1).builtinValue().enumeratedValue() != null) {
-                            sizeConstraint.setUpper_bound(new BigInteger(mainRegistry.getConstant(ctx.value(1).builtinValue()).getValue()));
+                            sizeConstraint.setUpper_bound(ctx.value(1).builtinValue().getText(), false);
                         } else {
                             throw new ANTLRVisitorException(ctx.value(1).builtinValue().getText());
                         }
@@ -214,11 +214,11 @@ class ConstraintVisitor {
                 throw new ANTLRVisitorException();
             } else if (ctx.value(0) != null) {
                 //SingleValue
-                SizeConstraint sizeConstraint = new SizeConstraint();
+                SizeConstraint sizeConstraint = new SizeConstraint(mainRegistry);
                 if (ctx.value(0).builtinValue().integerValue() != null) {
-                    sizeConstraint.setLower_bound(new BigInteger(ctx.value(0).getText()));
+                    sizeConstraint.setLower_bound((ctx.value(0).getText()), true);
                 } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                    sizeConstraint.setLower_bound(new BigInteger(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue()));
+                    sizeConstraint.setLower_bound(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
                 } else {
                     throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                 }
@@ -233,7 +233,7 @@ class ConstraintVisitor {
         @Override
         public Void visitSizeConstraint(ASN1Parser.SizeConstraintContext ctx) {
             //Check sequenceOfType and AbstractSequenceOfTranslator before any change here
-            abstractConstraint = new SizeConstraint();
+            abstractConstraint = new SizeConstraint(mainRegistry);
             typeConstraint = TypeConstraint.SIZE_CONSTRAINT;
             return super.visitSizeConstraint(ctx);
         }

@@ -32,7 +32,6 @@ public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
     public AbstractTranslator init(MainRegistry mainRegistry, ASN1Parser.SequenceOfTypeContext sequenceOfTypeContext) throws NotHandledCaseException {
         constraints = new Constraints(mainRegistry);
         if (sequenceOfTypeContext.sizeConstraint() != null) {
-
             constraints.addSizeConstraint(sequenceOfTypeContext.sizeConstraint());
             if (!constraints.hasSizeConstraint()) {
                 throw new RuntimeException();

@@ -110,30 +110,30 @@ public class BitInputStream extends InputStream {
         skipUnreadedBits();
         byte[] arr = new byte[len];
         if (-1 == byteStream.read(arr)) {
-            throw new RuntimeException("reach end of buffer");
+            throw new IOException("reach end of buffer");
         }
         return arr;
     }
 
     public String print8bits() throws Exception {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         while (currentBit != 0) {
             if ((this.readBit() & 0x01) == 0x01) {
-                str += "1";
+                str.append("1");
             } else {
-                str += "0";
+                str.append("0");
             }
         }
-        str += "\t\t";
+        str.append("\t\t");
         for (int i = 0; i < 24; i++) {
             for (int j = 0; j < 4; j++) {
                 if ((this.readBit() & 0x1) == 0x1) {
-                    str += "1";
+                    str.append("1");
                 } else {
-                    str += "0";
+                    str.append("0");
                 }
             }
-            str += "\t";
+            str.append("\t");
         }
         System.out.println("Tra-number " + str);
         throw new Exception();

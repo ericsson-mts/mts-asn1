@@ -17,11 +17,10 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 import com.ericsson.mts.asn1.translator.AbstractTranslator;
 
 import java.math.BigInteger;
-import java.util.List;
+import java.util.Map;
 
 public class Constraints {
     private ConstraintVisitor constraintVisitor;
-
     private ClassFieldConstraint classFieldConstraint;
     private SizeConstraint sizeConstraint;
     private ContentsConstraint contentsConstraint;
@@ -35,12 +34,6 @@ public class Constraints {
         constraintVisitor.addConstraint(constraintContext, this);
     }
 
-    public void addConstraints(List<ASN1Parser.ConstraintContext> constraintContextList) {
-        for (ASN1Parser.ConstraintContext constraintContext : constraintContextList) {
-            constraintVisitor.addConstraint(constraintContext, this);
-        }
-    }
-
     public void addSizeConstraint(ASN1Parser.SizeConstraintContext sizeConstraintContext) {
         constraintVisitor.addSizeConstraint(sizeConstraintContext, this);
         if (!hasSizeConstraint()) {
@@ -52,7 +45,7 @@ public class Constraints {
         return sizeConstraint != null;
     }
 
-    public boolean hasClassFieldConstraint() {
+    private boolean hasClassFieldConstraint() {
         return classFieldConstraint != null;
     }
 
@@ -95,6 +88,10 @@ public class Constraints {
 
     public BigInteger getUpper_bound() {
         return sizeConstraint.getUpper_bound();
+    }
+
+    public void updateSizeConstraint(Map<String, String> registry) {
+        sizeConstraint.updateValue(registry);
     }
 
     public boolean isSizeConstraintExtensible() {

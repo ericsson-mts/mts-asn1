@@ -33,11 +33,12 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
     public void doEncode(BitArray s, FormatReader reader, int numberOfComponents, Map<String, String> registry) throws Exception {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
-
         if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
+
+            constraints.updateSizeConstraint(registry);
             ub = constraints.getUpper_bound();
             lb = constraints.getLower_bound();
             if (lb == null) {
@@ -89,6 +90,7 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
+            constraints.updateSizeConstraint(registry);
             ub = constraints.getUpper_bound();
             lb = constraints.getLower_bound();
             if (lb == null) {

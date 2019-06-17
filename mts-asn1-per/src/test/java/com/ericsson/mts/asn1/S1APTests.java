@@ -13,21 +13,22 @@ package com.ericsson.mts.asn1;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 
-public class S1APTests extends AbstractTests {
+class S1APTests extends AbstractTests {
 
     @BeforeAll
-    static public void init() {
+    static void init() {
         try {
-            asn1Translator = new ASN1Translator(new PERFactory(true), Arrays.asList(S1APTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
+            asn1Translator = new ASN1Translator(new PERFactory(true), Collections.singletonList(S1APTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     @Test
-    public void testS1AP() throws Exception {
+    void testS1AP() throws Exception {
         test("S1AP-PDU", "/data/S1AP/S1AP-1.bin", "/data/S1AP/S1AP-1.json", "/data/S1AP/S1AP-1.xml");
     }
 }
