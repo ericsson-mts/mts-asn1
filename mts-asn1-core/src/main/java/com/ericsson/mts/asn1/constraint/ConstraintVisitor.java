@@ -167,12 +167,12 @@ class ConstraintVisitor {
                 }
 
                 if (ctx.MIN_LITERAL() != null) {
-                    sizeConstraint.setLower_bound(null, true);
+                    sizeConstraint.setLowerBound(null, true);
                 } else {
                     if (ctx.value(0).builtinValue().integerValue() != null) {
-                        sizeConstraint.setLower_bound((ctx.value(0).getText()), true);
+                        sizeConstraint.setLowerBound((ctx.value(0).getText()), true);
                     } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                        sizeConstraint.setLower_bound((ctx.value(0).getText()), false);
+                        sizeConstraint.setLowerBound((ctx.value(0).getText()), false);
                     } else {
                         throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                     }
@@ -183,21 +183,21 @@ class ConstraintVisitor {
                 }
 
                 if (ctx.MAX_LITERAL() != null) {
-                    sizeConstraint.setUpper_bound(null, true);
+                    sizeConstraint.setUpperBound(null, true);
                 } else {
                     if (ctx.MIN_LITERAL() != null) {
                         if (ctx.value(0).builtinValue().integerValue() != null) {
-                            sizeConstraint.setUpper_bound((ctx.value(0).getText()), true);
+                            sizeConstraint.setUpperBound((ctx.value(0).getText()), true);
                         } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                            sizeConstraint.setUpper_bound(ctx.value(0).builtinValue().getText(), false);
+                            sizeConstraint.setUpperBound(ctx.value(0).builtinValue().getText(), false);
                         } else {
                             throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                         }
                     } else {
                         if (ctx.value(1).builtinValue().integerValue() != null) {
-                            sizeConstraint.setUpper_bound((ctx.value(1).getText()), true);
+                            sizeConstraint.setUpperBound((ctx.value(1).getText()), true);
                         } else if (ctx.value(1).builtinValue().enumeratedValue() != null) {
-                            sizeConstraint.setUpper_bound(ctx.value(1).builtinValue().getText(), false);
+                            sizeConstraint.setUpperBound(ctx.value(1).builtinValue().getText(), false);
                         } else {
                             throw new ANTLRVisitorException(ctx.value(1).builtinValue().getText());
                         }
@@ -216,9 +216,9 @@ class ConstraintVisitor {
                 //SingleValue
                 SizeConstraint sizeConstraint = new SizeConstraint(mainRegistry);
                 if (ctx.value(0).builtinValue().integerValue() != null) {
-                    sizeConstraint.setLower_bound((ctx.value(0).getText()), true);
+                    sizeConstraint.setLowerBound((ctx.value(0).getText()), true);
                 } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                    sizeConstraint.setLower_bound(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
+                    sizeConstraint.setLowerBound(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
                 } else {
                     throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                 }

@@ -10,7 +10,7 @@ addons:
 
 script:
   # other script steps might be done before running the actual analysis
-  - mvn clean verify sonar:sonar -Pcoverage
+  - mvn clean verify sonar:sonar
 
 cache:
   directories:

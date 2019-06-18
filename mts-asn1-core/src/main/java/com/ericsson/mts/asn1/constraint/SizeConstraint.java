@@ -16,8 +16,8 @@ import java.math.BigInteger;
 import java.util.Map;
 
 class SizeConstraint extends AbstractConstraint {
-    private String lower_bound;
-    private String upper_bound;
+    private String lowerBound;
+    private String upperBound;
     private boolean arelbNumber;
     private boolean areubNumber;
     private MainRegistry mainRegistry;
@@ -26,38 +26,38 @@ class SizeConstraint extends AbstractConstraint {
         this.mainRegistry = mainRegistry;
     }
 
-    BigInteger getLower_bound() {
+    BigInteger getLowerBound() {
         if (arelbNumber) {
-            return new BigInteger(lower_bound);
+            return new BigInteger(lowerBound);
         } else {
-            return new BigInteger(mainRegistry.getConstantFromName(lower_bound).getValue());
+            return new BigInteger(mainRegistry.getConstantFromName(lowerBound).getValue());
         }
     }
 
-    void setLower_bound(String lower_bound, boolean isNumber) {
-        if (this.lower_bound != null) {
+    void setLowerBound(String lower_bound, boolean isNumber) {
+        if (this.lowerBound != null) {
             throw new RuntimeException();
         }
-        this.lower_bound = lower_bound;
+        this.lowerBound = lower_bound;
         this.arelbNumber = isNumber;
     }
 
-    BigInteger getUpper_bound() {
-        if (null == upper_bound) {
+    BigInteger getUpperBound() {
+        if (null == upperBound) {
             return null;
         }
         if (areubNumber) {
-            return new BigInteger(upper_bound);
+            return new BigInteger(upperBound);
         } else {
-            return new BigInteger(mainRegistry.getConstantFromName(upper_bound).getValue());
+            return new BigInteger(mainRegistry.getConstantFromName(upperBound).getValue());
         }
     }
 
-    void setUpper_bound(String upper_bound, boolean isNumber) {
-        if (this.upper_bound != null) {
+    void setUpperBound(String upper_bound, boolean isNumber) {
+        if (this.upperBound != null) {
             throw new RuntimeException();
         }
-        this.upper_bound = upper_bound;
+        this.upperBound = upper_bound;
         this.areubNumber = isNumber;
     }
 
@@ -66,11 +66,11 @@ class SizeConstraint extends AbstractConstraint {
             return;
         }
         for (String key : registry.keySet()) {
-            if (key.equals(lower_bound)) {
-                lower_bound = registry.get(key);
+            if (key.equals(lowerBound)) {
+                lowerBound = registry.get(key);
             }
-            if (key.equals(upper_bound)) {
-                upper_bound = registry.get(key);
+            if (key.equals(upperBound)) {
+                upperBound = registry.get(key);
             }
         }
     }
@@ -78,8 +78,8 @@ class SizeConstraint extends AbstractConstraint {
     @Override
     public String toString() {
         return "SizeConstraint{" +
-                "lower_bound=" + lower_bound +
-                ", upper_bound=" + upper_bound +
+                "lowerBound=" + lowerBound +
+                ", upperBound=" + upperBound +
                 '}';
     }
 }

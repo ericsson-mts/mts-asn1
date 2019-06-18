@@ -83,11 +83,11 @@ public class Constraints {
 
 
     public BigInteger getLower_bound() {
-        return sizeConstraint.getLower_bound();
+        return sizeConstraint.getLowerBound();
     }
 
     public BigInteger getUpper_bound() {
-        return sizeConstraint.getUpper_bound();
+        return sizeConstraint.getUpperBound();
     }
 
     public void updateSizeConstraint(Map<String, String> registry) {
