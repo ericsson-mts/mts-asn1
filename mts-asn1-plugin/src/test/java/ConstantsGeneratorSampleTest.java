@@ -8,31 +8,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1;
-
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-class S1APTests extends AbstractTests {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @BeforeAll
-    static void init() {
-        try {
-            asn1Translator = new ASN1Translator(new PERFactory(true), Collections.singletonList(S1APTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-//    @Test
-//    void parseS1APGrammar() {
-//        testParsingANTLR();
-//    }
+public class ConstantsGeneratorSampleTest {
 
     @Test
-    void testS1AP() throws Exception {
-        test("S1AP-PDU", "/data/S1AP/S1AP-1.bin", "/data/S1AP/S1AP-1.json", "/data/S1AP/S1AP-1.xml");
+    void testSample() throws IOException {
+        List<String> grammarFiles = new ArrayList<>();
+        grammarFiles.add("/grammar/sample/examplev2.asn");
+        ConstantsGenerator constantsGenerator = new ConstantsGenerator("SampleConstants",
+                grammarFiles,
+                "");
+        String result = constantsGenerator.getCode();
+        String expected = IOUtils.toString(this.getClass().getResourceAsStream("/result/SampleConstants.java"), StandardCharsets.UTF_8);
+        assertEquals(result, expected);
     }
+
 }
