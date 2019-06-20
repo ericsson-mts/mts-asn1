@@ -39,7 +39,7 @@ public abstract class AbstractBitStringTranslator extends AbstractTranslator {
         if (constraintContexts.get(0) != null) {
             constraints = new Constraints(mainRegistry);
             constraints.addConstraint(constraintContexts.get(0));
-            if (!constraints.hasSizeConstraint() && !constraints.hasContentsConstraint()) {
+            if (!constraints.hasSizeConstraint() && !constraints.hasContentsConstraint() && !constraints.hasSingleValueConstraints()) {
                 throw new RuntimeException();
             }
         }

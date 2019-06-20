@@ -33,6 +33,10 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
     public void doEncode(BitArray s, FormatReader reader, int numberOfComponents, Map<String, String> registry) throws Exception {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
+
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
         if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
@@ -46,7 +50,7 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
             }
         }
 
-        if (constraints.hasSizeConstraint() && constraints.isSizeConstraintExtensible()) {
+        if (constraints.hasSizeConstraint() && constraints.isExtensible()) {
             // X.691 : clause 20.4
             throw new NotHandledCaseException();
         } else if (lb.equals(ub) && ub.compareTo(BigInteger.valueOf(65536)) < 0) {
@@ -86,6 +90,10 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
 
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
+
         if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
@@ -98,7 +106,7 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
             }
         }
 
-        if (constraints.hasSizeConstraint() && constraints.isSizeConstraintExtensible()) {
+        if (constraints.hasSizeConstraint() && constraints.isExtensible()) {
             /* X.691 : clause 20.4
             If there is a PER-visible constraint and an extension marker is present in it, a single bit shall be added
             to the field-list in a bit-field of length one. The bit shall be set to 1 if the number of components in

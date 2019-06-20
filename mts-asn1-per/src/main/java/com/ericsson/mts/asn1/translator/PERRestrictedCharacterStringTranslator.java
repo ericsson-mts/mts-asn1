@@ -31,6 +31,10 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
     @Override
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
+
         BigInteger lb, ub,
                 bitLength = BigInteger.valueOf((long) (value.length() * knownMultiplierCharacterString.getB2()));
         boolean ubUnset = false;
@@ -42,7 +46,7 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
             throw new NotHandledCaseException();
         }
 
-        if (constraints.isSizeConstraintExtensible()) {
+        if (constraints.isExtensible()) {
             //16.6
             if (bitLength.compareTo(lb) < 0 || bitLength.compareTo(ub) > 0) {
                 throw new NotHandledCaseException();
@@ -94,6 +98,9 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
     @Override
     public String doDecode(BitInputStream s, FormatWriter writer) throws IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
         BigInteger lb, ub;
         boolean ubUnset = false, isExtendedRestrictedString = false;
 
@@ -121,7 +128,7 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
             ubUnset = true;
         }
 
-        if (constraints.isSizeConstraintExtensible()) {
+        if (constraints.isExtensible()) {
             //16.6
             isExtendedRestrictedString = (1 == s.readBit());
         }

@@ -14,6 +14,7 @@ import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.TranslatorContext;
+import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 
@@ -32,6 +33,11 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
     @Override
     public void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         Map<String, String> registry = getRegister(parameters);
+
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
+
         if (constraints.getTargetComponent() == null) {
             AbstractTranslator typeTranslator = classHandler.getTypeTranslator(fieldName);
             if (typeTranslator == null) {
@@ -70,6 +76,10 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
     @Override
     public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         Map<String, String> registry = getRegister(parameters);
+
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
 
         if (constraints.getTargetComponent() == null) {
             AbstractTranslator typeTranslator = classHandler.getTypeTranslator(fieldName);

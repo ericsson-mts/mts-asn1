@@ -31,12 +31,17 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
     public void doEncode(BitArray s, BigInteger value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger lb = null, ub = null;
+
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
+
         if (constraints.hasValueRangeConstraint()) {
             lb = constraints.getLowerRange();
             ub = constraints.getUpperRange();
         }
 
-        if (constraints.isValueRangeConstraintExtensible()) {
+        if (constraints.isExtensible()) {
             if (value.compareTo(lb) < 0 || value.compareTo(ub) > 0) {
                 //Look at 13.2.6 b) before removing this exception !
                 throw new NotHandledCaseException();
@@ -78,7 +83,12 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         boolean isExtendedInteger = false;
         BigInteger number;
-        if (constraints.isValueRangeConstraintExtensible()) {
+
+        if (constraints.hasSingleValueConstraints()) {
+            throw new NotHandledCaseException();
+        }
+
+        if (constraints.isExtensible()) {
             isExtendedInteger = (1 == s.readBit());
         }
 

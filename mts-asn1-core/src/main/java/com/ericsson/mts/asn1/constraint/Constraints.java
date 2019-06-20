@@ -17,6 +17,8 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 import com.ericsson.mts.asn1.translator.AbstractTranslator;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Constraints {
@@ -25,11 +27,14 @@ public class Constraints {
     private SizeConstraint sizeConstraint;
     private ContentsConstraint contentsConstraint;
     private ValueRangeConstraint valueRangeConstraint;
+    private List<SingleValueConstraint> singleValueConstraintList = new ArrayList<>();
 
 
     public Constraints(MainRegistry mainRegistry) {
         constraintVisitor = new ConstraintVisitor(mainRegistry);
     }
+
+    /**********Core methods **********/
 
     public void addConstraint(ASN1Parser.ConstraintContext constraintContext) {
         constraintVisitor.addConstraint(constraintContext, this);
@@ -41,6 +46,7 @@ public class Constraints {
             throw new RuntimeException();
         }
     }
+
 
     public boolean hasSizeConstraint() {
         return sizeConstraint != null;
@@ -56,6 +62,27 @@ public class Constraints {
 
     public boolean hasValueRangeConstraint() {
         return valueRangeConstraint != null;
+    }
+
+    public boolean hasSingleValueConstraints() {
+        return !singleValueConstraintList.isEmpty();
+    }
+
+    public boolean isExtensible() {
+        if (sizeConstraint != null && sizeConstraint.isExtensible() ||
+                classFieldConstraint != null && classFieldConstraint.isExtensible() ||
+                contentsConstraint != null && contentsConstraint.isExtensible() ||
+                valueRangeConstraint != null && valueRangeConstraint.isExtensible()
+        ) {
+            return true;
+        } else if (hasSingleValueConstraints()) {
+            for (SingleValueConstraint singleValueConstraint : singleValueConstraintList) {
+                if (singleValueConstraint.isExtensible()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**********Methods for ConstraintVisitor **********/
@@ -92,8 +119,14 @@ public class Constraints {
         }
     }
 
-    /********** Methods of SizeConstraint **********/
+    void addSingleValueConstraint(AbstractConstraint singleValueConstraint) {
+        SingleValueConstraint singleValueConstraint1 = (SingleValueConstraint) singleValueConstraint;
+        if (!singleValueConstraintList.contains(singleValueConstraint1)) {
+            singleValueConstraintList.add(singleValueConstraint1);
+        }
+    }
 
+    /********** Methods of SizeConstraint **********/
 
     public BigInteger getLowerBound() {
         return sizeConstraint.getLowerBound();
@@ -105,10 +138,6 @@ public class Constraints {
 
     public void updateSizeConstraint(Map<String, String> registry) {
         sizeConstraint.updateValue(registry);
-    }
-
-    public boolean isSizeConstraintExtensible() {
-        return sizeConstraint.isExtensible();
     }
 
     /********** Methods of ClassFieldConstraint **********/
@@ -138,11 +167,21 @@ public class Constraints {
     }
 
     public void updateValueRangeConstraint(Map<String, String> registry) {
-        sizeConstraint.updateValue(registry);
+        valueRangeConstraint.updateValue(registry);
     }
 
-    public boolean isValueRangeConstraintExtensible() {
-        return valueRangeConstraint.isExtensible();
+    /********** Methods of SingleValueConstraint **********/
+
+    public BigInteger getSingleValueConstraint() {
+        if (singleValueConstraintList.size() != 1) {
+            throw new RuntimeException();
+        }
+        return singleValueConstraintList.get(0).getValue();
     }
 
+    public void updateSingleValueConstraints(Map<String, String> registry) {
+        singleValueConstraintList.forEach(singleValueConstraint -> {
+            singleValueConstraint.updateValue(registry);
+        });
+    }
 }

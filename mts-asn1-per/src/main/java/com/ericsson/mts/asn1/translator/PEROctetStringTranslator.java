@@ -33,7 +33,9 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger ub, lb;
 
-        if (!constraints.hasSizeConstraint()) {
+        if (constraints.hasSingleValueConstraints()) {
+            ub = lb = constraints.getSingleValueConstraint();
+        } else if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
@@ -42,7 +44,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             if (ub == null) {
                 ub = lb;
             }
-            if (constraints.isSizeConstraintExtensible()) {
+            if (constraints.isExtensible()) {
                 if (BigInteger.valueOf(value.length()).compareTo(lb) < 0 || BigInteger.valueOf(value.length()).compareTo(ub) > 0) {
                     //17.3
                     throw new NotHandledCaseException();
@@ -84,7 +86,10 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
         byte[] octetstring;
         boolean isExtendedOctetString = false;
         BigInteger ub, lb;
-        if (!constraints.hasSizeConstraint()) {
+
+        if (constraints.hasSingleValueConstraints()) {
+            ub = lb = constraints.getSingleValueConstraint();
+        } else if (!constraints.hasSizeConstraint()) {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
@@ -93,7 +98,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             if (ub == null) {
                 ub = lb;
             }
-            if (constraints.isSizeConstraintExtensible()) {
+            if (constraints.isExtensible()) {
                 isExtendedOctetString = (1 == s.readBit());
             }
         }

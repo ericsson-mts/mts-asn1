@@ -118,8 +118,6 @@ class ConstraintVisitor {
                     classFieldConstraint = new ClassFieldConstraint(ctx.IDENTIFIER(0).getText(), ctx.atNotation(0).componentIdList().getText());
                 }
                 constraints.addClassFieldConstraint(classFieldConstraint);
-//                abstractConstraint = classFieldConstraint;
-//                typeConstraint = TypeConstraint.CLASS_FIELD_CONSTRAINT;
                 return null;
             }
         }
@@ -138,15 +136,20 @@ class ConstraintVisitor {
                 //Reset typeConstraint if change here
                 throw new NotHandledCaseException();
             }
+            boolean isExtensible = (abstractConstraint != null && abstractConstraint.isExtensible());
             super.visitIntersections(ctx);
             if (abstractConstraint == null) {
                 throw new RuntimeException();
             }
-
+            if (isExtensible) {
+                abstractConstraint.setExtensible(true);
+            }
             if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
                 constraints.addSizeConstraint(abstractConstraint);
             } else if (typeConstraint == TypeConstraint.VALUE_RANGE_CONSTRAINT) {
                 constraints.addValueRangeConstraint(abstractConstraint);
+            } else if (typeConstraint == TypeConstraint.SINGLE_VALUE_CONSTRAINT) {
+                constraints.addSingleValueConstraint(abstractConstraint);
             } else {
                 throw new NotHandledCaseException();
             }
@@ -213,16 +216,16 @@ class ConstraintVisitor {
                 throw new ANTLRVisitorException();
             } else if (ctx.value(0) != null) {
                 //SingleValue
-                SizeConstraint sizeConstraint = new SizeConstraint(mainRegistry);
+                SingleValueConstraint singleValueConstraint = new SingleValueConstraint(mainRegistry);
                 if (ctx.value(0).builtinValue().integerValue() != null) {
-                    sizeConstraint.setLowerBound((ctx.value(0).getText()), true);
+                    singleValueConstraint.setValue((ctx.value(0).getText()), true);
                 } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                    sizeConstraint.setLowerBound(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
+                    singleValueConstraint.setValue(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
                 } else {
                     throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                 }
-                typeConstraint = TypeConstraint.SIZE_CONSTRAINT;
-                abstractConstraint = sizeConstraint;
+                typeConstraint = TypeConstraint.SINGLE_VALUE_CONSTRAINT;
+                abstractConstraint = singleValueConstraint;
                 return null;
             } else {
                 throw new ANTLRVisitorException();

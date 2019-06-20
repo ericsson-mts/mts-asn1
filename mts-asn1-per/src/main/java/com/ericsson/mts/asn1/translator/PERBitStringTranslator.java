@@ -30,9 +30,19 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
     @Override
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
-        BigInteger ub = constraints.getUpperBound();
-        BigInteger lb = constraints.getLowerBound();
+        BigInteger ub;
+        BigInteger lb;
         boolean ubUnset = false;
+
+        if (constraints.hasSingleValueConstraints()) {
+            ub = lb = constraints.getSingleValueConstraint();
+        } else if (constraints.hasSizeConstraint()) {
+            ub = constraints.getUpperBound();
+            lb = constraints.getLowerBound();
+        } else {
+            ub = null;
+            lb = BigInteger.ZERO;
+        }
 
         if (constraints.hasContentsConstraint()) {
             throw new NotHandledCaseException();
@@ -51,7 +61,7 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
             throw new NotHandledCaseException();
         }
 
-        if (constraints.isSizeConstraintExtensible()) {
+        if (constraints.isExtensible()) {
             //16.6
             if (lb.compareTo(BigInteger.valueOf(value.length())) > 0 || ub.compareTo(BigInteger.valueOf(value.length())) < 0) {
                 throw new NotHandledCaseException();
@@ -90,10 +100,21 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
     @Override
     public String doDecode(BitInputStream s, FormatWriter writer) throws NotHandledCaseException, IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
-        BigInteger ub = constraints.getUpperBound();
-        BigInteger lb = constraints.getLowerBound();
+        BigInteger ub;
+        BigInteger lb;
         boolean isExtendedBitString = false;
         boolean ubUnset = false;
+
+
+        if (constraints.hasSingleValueConstraints()) {
+            ub = lb = constraints.getSingleValueConstraint();
+        } else if (constraints.hasSizeConstraint()) {
+            ub = constraints.getUpperBound();
+            lb = constraints.getLowerBound();
+        } else {
+            ub = null;
+            lb = BigInteger.ZERO;
+        }
 
         if (constraints.hasContentsConstraint()) {
             throw new NotHandledCaseException();
@@ -112,7 +133,7 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
             throw new NotHandledCaseException();
         }
 
-        if (constraints.isSizeConstraintExtensible()) {
+        if (constraints.isExtensible()) {
             //16.6
             isExtendedBitString = (1 == s.readBit());
         }
