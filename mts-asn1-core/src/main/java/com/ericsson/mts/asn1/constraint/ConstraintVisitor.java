@@ -39,38 +39,22 @@ class ConstraintVisitor {
         private final MainRegistry mainRegistry;
         private TypeConstraint typeConstraint;
         private AbstractConstraint abstractConstraint;
+        private Constraints constraints;
 
         InnerConstraintVisitor(MainRegistry mainRegistry) {
             this.mainRegistry = mainRegistry;
         }
 
         void addConstraint(ASN1Parser.ConstraintContext constraintContext, Constraints constraints) {
+            this.constraints = constraints;
             visitConstraint(constraintContext);
-            if (abstractConstraint == null) {
-                throw new RuntimeException();
-            }
-
-            if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
-                constraints.addSizeConstraint(abstractConstraint);
-            } else if (typeConstraint == TypeConstraint.CLASS_FIELD_CONSTRAINT) {
-                constraints.addClassFieldConstraint(abstractConstraint);
-            } else if (typeConstraint == TypeConstraint.CONTENT_CONSTRAINT) {
-                constraints.addContentConstraint(abstractConstraint);
-            } else {
-                throw new NotHandledCaseException();
-            }
             resetAttributes();
         }
 
         void addSizeConstraint(ASN1Parser.SizeConstraintContext sizeConstraintContext, Constraints constraints) {
+            this.constraints = constraints;
             this.visitSizeConstraint(sizeConstraintContext);
-            if (abstractConstraint == null) {
-                throw new RuntimeException();
-            }
-
-            if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
-                constraints.addSizeConstraint(abstractConstraint);
-            } else {
+            if (!constraints.hasSizeConstraint()) {
                 throw new RuntimeException();
             }
             resetAttributes();
@@ -79,6 +63,7 @@ class ConstraintVisitor {
         private void resetAttributes() {
             typeConstraint = null;
             abstractConstraint = null;
+            constraints = null;
         }
 
         @Override
@@ -100,7 +85,7 @@ class ConstraintVisitor {
         public Void visitContentsConstraint(ASN1Parser.ContentsConstraintContext ctx) {
             if (ctx.CONTAINING_LITERAL() != null && ctx.ENCODED_LITERAL() == null) {
                 abstractConstraint = new ContentsConstraint(mainRegistry.getTranslator(ctx.asnType()));
-                typeConstraint = TypeConstraint.CONTENT_CONSTRAINT;
+                constraints.addContentConstraint(abstractConstraint);
                 return null;
             } else {
                 throw new ANTLRVisitorException("in contentsConstraint");
@@ -132,8 +117,9 @@ class ConstraintVisitor {
                 } else {
                     classFieldConstraint = new ClassFieldConstraint(ctx.IDENTIFIER(0).getText(), ctx.atNotation(0).componentIdList().getText());
                 }
-                abstractConstraint = classFieldConstraint;
-                typeConstraint = TypeConstraint.CLASS_FIELD_CONSTRAINT;
+                constraints.addClassFieldConstraint(classFieldConstraint);
+//                abstractConstraint = classFieldConstraint;
+//                typeConstraint = TypeConstraint.CLASS_FIELD_CONSTRAINT;
                 return null;
             }
         }
@@ -149,30 +135,44 @@ class ConstraintVisitor {
         @Override
         public Void visitIntersections(ASN1Parser.IntersectionsContext ctx) {
             if (ctx.intersectionMark(0) != null) {
+                //Reset typeConstraint if change here
                 throw new NotHandledCaseException();
             }
-            return super.visitIntersections(ctx);
+            super.visitIntersections(ctx);
+            if (abstractConstraint == null) {
+                throw new RuntimeException();
+            }
+
+            if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
+                constraints.addSizeConstraint(abstractConstraint);
+            } else if (typeConstraint == TypeConstraint.VALUE_RANGE_CONSTRAINT) {
+                constraints.addValueRangeConstraint(abstractConstraint);
+            } else {
+                throw new NotHandledCaseException();
+            }
+
+            return null;
         }
 
         @Override
         public Void visitSubtypeElements(ASN1Parser.SubtypeElementsContext ctx) {
             if (ctx.DOUBLE_DOT() != null) {
                 //ValueRange
-                SizeConstraint sizeConstraint;
+                AbstractRangeConstraint rangeConstraint;
                 if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
-                    sizeConstraint = (SizeConstraint) abstractConstraint;
+                    rangeConstraint = (SizeConstraint) abstractConstraint;
                 } else {
-                    sizeConstraint = new SizeConstraint(mainRegistry);
-                    typeConstraint = TypeConstraint.SIZE_CONSTRAINT;
+                    rangeConstraint = new ValueRangeConstraint(mainRegistry);
+                    typeConstraint = TypeConstraint.VALUE_RANGE_CONSTRAINT;
                 }
 
                 if (ctx.MIN_LITERAL() != null) {
-                    sizeConstraint.setLowerBound(null, true);
+                    rangeConstraint.setLowerBound(null, true);
                 } else {
                     if (ctx.value(0).builtinValue().integerValue() != null) {
-                        sizeConstraint.setLowerBound((ctx.value(0).getText()), true);
+                        rangeConstraint.setLowerBound((ctx.value(0).getText()), true);
                     } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                        sizeConstraint.setLowerBound((ctx.value(0).getText()), false);
+                        rangeConstraint.setLowerBound((ctx.value(0).getText()), false);
                     } else {
                         throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                     }
@@ -183,31 +183,30 @@ class ConstraintVisitor {
                 }
 
                 if (ctx.MAX_LITERAL() != null) {
-                    sizeConstraint.setUpperBound(null, true);
+                    rangeConstraint.setUpperBound(null, true);
                 } else {
                     if (ctx.MIN_LITERAL() != null) {
                         if (ctx.value(0).builtinValue().integerValue() != null) {
-                            sizeConstraint.setUpperBound((ctx.value(0).getText()), true);
+                            rangeConstraint.setUpperBound((ctx.value(0).getText()), true);
                         } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                            sizeConstraint.setUpperBound(ctx.value(0).builtinValue().getText(), false);
+                            rangeConstraint.setUpperBound(ctx.value(0).builtinValue().getText(), false);
                         } else {
                             throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
                         }
                     } else {
                         if (ctx.value(1).builtinValue().integerValue() != null) {
-                            sizeConstraint.setUpperBound((ctx.value(1).getText()), true);
+                            rangeConstraint.setUpperBound((ctx.value(1).getText()), true);
                         } else if (ctx.value(1).builtinValue().enumeratedValue() != null) {
-                            sizeConstraint.setUpperBound(ctx.value(1).builtinValue().getText(), false);
+                            rangeConstraint.setUpperBound(ctx.value(1).builtinValue().getText(), false);
                         } else {
                             throw new ANTLRVisitorException(ctx.value(1).builtinValue().getText());
                         }
                     }
                 }
-                abstractConstraint = sizeConstraint;
+                abstractConstraint = rangeConstraint;
                 return null;
             } else if (ctx.sizeConstraint() != null) {
                 //SizeConstraint
-
                 return visitSizeConstraint(ctx.sizeConstraint());
             } else if (ctx.PATTERN_LITERAL() != null) {
                 //PatternConstraint

@@ -24,6 +24,7 @@ public class Constraints {
     private ClassFieldConstraint classFieldConstraint;
     private SizeConstraint sizeConstraint;
     private ContentsConstraint contentsConstraint;
+    private ValueRangeConstraint valueRangeConstraint;
 
 
     public Constraints(MainRegistry mainRegistry) {
@@ -53,12 +54,16 @@ public class Constraints {
         return contentsConstraint != null;
     }
 
+    public boolean hasValueRangeConstraint() {
+        return valueRangeConstraint != null;
+    }
+
     /**********Methods for ConstraintVisitor **********/
 
     void addSizeConstraint(AbstractConstraint sizeConstraint) {
         if (!hasSizeConstraint()) {
             this.sizeConstraint = (SizeConstraint) sizeConstraint;
-        } else {
+        } else if (!(this.sizeConstraint == sizeConstraint)) {
             throw new NotHandledCaseException("Multiple size constraint");
         }
     }
@@ -79,14 +84,22 @@ public class Constraints {
         }
     }
 
+    void addValueRangeConstraint(AbstractConstraint valueRangeConstraint) {
+        if (!hasValueRangeConstraint()) {
+            this.valueRangeConstraint = (ValueRangeConstraint) valueRangeConstraint;
+        } else {
+            throw new NotHandledCaseException("Multiple value range constraint");
+        }
+    }
+
     /********** Methods of SizeConstraint **********/
 
 
-    public BigInteger getLower_bound() {
+    public BigInteger getLowerBound() {
         return sizeConstraint.getLowerBound();
     }
 
-    public BigInteger getUpper_bound() {
+    public BigInteger getUpperBound() {
         return sizeConstraint.getUpperBound();
     }
 
@@ -113,4 +126,23 @@ public class Constraints {
     public AbstractTranslator getContentTranslator() {
         return contentsConstraint.getContentTranslator();
     }
+
+    /********** Methods of ValueRangeConstraint **********/
+
+    public BigInteger getLowerRange() {
+        return valueRangeConstraint.getLowerRange();
+    }
+
+    public BigInteger getUpperRange() {
+        return valueRangeConstraint.getUpperRange();
+    }
+
+    public void updateValueRangeConstraint(Map<String, String> registry) {
+        sizeConstraint.updateValue(registry);
+    }
+
+    public boolean isValueRangeConstraintExtensible() {
+        return valueRangeConstraint.isExtensible();
+    }
+
 }

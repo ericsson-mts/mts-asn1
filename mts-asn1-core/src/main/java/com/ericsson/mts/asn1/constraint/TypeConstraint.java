@@ -13,5 +13,6 @@ package com.ericsson.mts.asn1.constraint;
 public enum TypeConstraint {
     CONTENT_CONSTRAINT,
     SIZE_CONSTRAINT,
-    CLASS_FIELD_CONSTRAINT
+    CLASS_FIELD_CONSTRAINT,
+    VALUE_RANGE_CONSTRAINT
 }

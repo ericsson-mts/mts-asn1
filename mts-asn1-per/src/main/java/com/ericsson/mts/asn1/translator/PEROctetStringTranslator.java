@@ -37,8 +37,8 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
-            lb = constraints.getLower_bound();
-            ub = constraints.getUpper_bound();
+            lb = constraints.getLowerBound();
+            ub = constraints.getUpperBound();
             if (ub == null) {
                 ub = lb;
             }
@@ -88,8 +88,8 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
             ub = null;
             lb = BigInteger.ZERO;
         } else {
-            lb = constraints.getLower_bound();
-            ub = constraints.getUpper_bound();
+            lb = constraints.getLowerBound();
+            ub = constraints.getUpperBound();
             if (ub == null) {
                 ub = lb;
             }

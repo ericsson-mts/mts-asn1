@@ -38,8 +38,8 @@ public class AbstractTests {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     void test(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
-        testDecode(type, binaryPath, expectedJsonPath, expectedXmlPath);
         testEncode(type, binaryPath, expectedJsonPath, expectedXmlPath);
+        testDecode(type, binaryPath, expectedJsonPath, expectedXmlPath);
     }
 
     void testDecode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {

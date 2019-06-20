@@ -35,6 +35,4 @@ Foo ::= SEQUENCE {
     extension3 NULL
   }
 
-  
-
 END

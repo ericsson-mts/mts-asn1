@@ -31,12 +31,12 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
     public void doEncode(BitArray s, BigInteger value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger lb = null, ub = null;
-        if (constraints.hasSizeConstraint()) {
-            lb = constraints.getLower_bound();
-            ub = constraints.getUpper_bound();
+        if (constraints.hasValueRangeConstraint()) {
+            lb = constraints.getLowerRange();
+            ub = constraints.getUpperRange();
         }
 
-        if (constraints.isSizeConstraintExtensible()) {
+        if (constraints.isValueRangeConstraintExtensible()) {
             if (value.compareTo(lb) < 0 || value.compareTo(ub) > 0) {
                 //Look at 13.2.6 b) before removing this exception !
                 throw new NotHandledCaseException();
@@ -45,7 +45,7 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
             }
         }
 
-        if (!constraints.hasSizeConstraint() || lb == null) {
+        if (!constraints.hasValueRangeConstraint() || lb == null) {
             //13.2.4
             throw new NotHandledCaseException();
         } else if (ub == null) {
@@ -78,16 +78,16 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         boolean isExtendedInteger = false;
         BigInteger number;
-        if (constraints.isSizeConstraintExtensible()) {
+        if (constraints.isValueRangeConstraintExtensible()) {
             isExtendedInteger = (1 == s.readBit());
         }
 
         if (isExtendedInteger) {
             throw new NotHandledCaseException();
         } else {
-            if (constraints.getLower_bound() != null && constraints.getUpper_bound() != null) {
+            if (constraints.getLowerRange() != null && constraints.getUpperRange() != null) {
                 logger.trace("Decode ConstrainedNumber");
-                number = perTranscoder.decodeConstrainedNumber(constraints.getLower_bound(), constraints.getUpper_bound(), s);
+                number = perTranscoder.decodeConstrainedNumber(constraints.getLowerRange(), constraints.getUpperRange(), s);
             } else {
                 throw new RuntimeException();
             }

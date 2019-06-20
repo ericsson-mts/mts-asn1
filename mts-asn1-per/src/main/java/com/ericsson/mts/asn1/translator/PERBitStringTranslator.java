@@ -30,8 +30,8 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
     @Override
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
-        BigInteger ub = constraints.getUpper_bound();
-        BigInteger lb = constraints.getLower_bound();
+        BigInteger ub = constraints.getUpperBound();
+        BigInteger lb = constraints.getLowerBound();
         boolean ubUnset = false;
 
         if (constraints.hasContentsConstraint()) {
@@ -90,8 +90,8 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
     @Override
     public String doDecode(BitInputStream s, FormatWriter writer) throws NotHandledCaseException, IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
-        BigInteger ub = constraints.getUpper_bound();
-        BigInteger lb = constraints.getLower_bound();
+        BigInteger ub = constraints.getUpperBound();
+        BigInteger lb = constraints.getLowerBound();
         boolean isExtendedBitString = false;
         boolean ubUnset = false;
 

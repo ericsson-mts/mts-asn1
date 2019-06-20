@@ -36,8 +36,8 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
         boolean ubUnset = false;
 
         if (constraints.hasSizeConstraint()) {
-            lb = constraints.getLower_bound();
-            ub = constraints.getUpper_bound();
+            lb = constraints.getLowerBound();
+            ub = constraints.getUpperBound();
         } else {
             throw new NotHandledCaseException();
         }
@@ -98,8 +98,8 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
         boolean ubUnset = false, isExtendedRestrictedString = false;
 
         if (constraints.hasSizeConstraint()) {
-            lb = constraints.getLower_bound();
-            ub = constraints.getUpper_bound();
+            lb = constraints.getLowerBound();
+            ub = constraints.getUpperBound();
         } else {
             throw new NotHandledCaseException();
         }

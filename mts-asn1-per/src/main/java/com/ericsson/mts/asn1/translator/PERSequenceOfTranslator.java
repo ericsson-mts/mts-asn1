@@ -39,8 +39,8 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
         } else {
 
             constraints.updateSizeConstraint(registry);
-            ub = constraints.getUpper_bound();
-            lb = constraints.getLower_bound();
+            ub = constraints.getUpperBound();
+            lb = constraints.getLowerBound();
             if (lb == null) {
                 lb = BigInteger.ZERO;
             }
@@ -91,8 +91,8 @@ public class PERSequenceOfTranslator extends AbstractSequenceOfTranslator {
             lb = BigInteger.ZERO;
         } else {
             constraints.updateSizeConstraint(registry);
-            ub = constraints.getUpper_bound();
-            lb = constraints.getLower_bound();
+            ub = constraints.getUpperBound();
+            lb = constraints.getLowerBound();
             if (lb == null) {
                 lb = BigInteger.ZERO;
             }

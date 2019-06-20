@@ -14,13 +14,13 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 
 import java.math.BigInteger;
 
-class SizeConstraint extends AbstractRangeConstraint {
+public class ValueRangeConstraint extends AbstractRangeConstraint {
 
-    SizeConstraint(MainRegistry mainRegistry) {
+    ValueRangeConstraint(MainRegistry mainRegistry) {
         super(mainRegistry);
     }
 
-    BigInteger getLowerBound() {
+    BigInteger getLowerRange() {
         if (arelbNumber) {
             return new BigInteger(lowerBound);
         } else {
@@ -28,7 +28,7 @@ class SizeConstraint extends AbstractRangeConstraint {
         }
     }
 
-    BigInteger getUpperBound() {
+    BigInteger getUpperRange() {
         if (null == upperBound) {
             return null;
         }

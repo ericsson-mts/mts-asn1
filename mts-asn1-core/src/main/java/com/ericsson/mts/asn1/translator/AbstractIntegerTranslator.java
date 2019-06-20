@@ -30,7 +30,6 @@ public abstract class AbstractIntegerTranslator extends AbstractTranslator {
     protected HashMap<BigInteger, String> namedNumbers = new HashMap<>();
 
     public AbstractTranslator init(MainRegistry mainRegistry, ASN1Parser.IntegerTypeContext integerTypeContext, List<ASN1Parser.ConstraintContext> constraintContext) throws NotHandledCaseException {
-
         if (integerTypeContext.namedNumberList() != null) {
             for (ASN1Parser.NamedNumberContext namedNumberContext : integerTypeContext.namedNumberList().namedNumber()) {
                 if (namedNumberContext.signedNumber() != null) {
@@ -48,7 +47,7 @@ public abstract class AbstractIntegerTranslator extends AbstractTranslator {
         if (constraintContext.get(0) != null) {
             constraints = new Constraints(mainRegistry);
             constraints.addConstraint(constraintContext.get(0));
-            if (!constraints.hasSizeConstraint()) {
+            if (!constraints.hasValueRangeConstraint() || constraints.hasSizeConstraint()) {
                 throw new RuntimeException();
             }
         }

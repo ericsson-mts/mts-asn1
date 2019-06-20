@@ -39,7 +39,7 @@ public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
         if (constraintContexts.get(0) != null) {
             constraints.addConstraint(constraintContexts.get(0));
             if (!constraints.hasSizeConstraint() && !constraints.hasContentsConstraint()) {
-                throw new NotHandledCaseException();
+                throw new NotHandledCaseException(constraintContexts.get(0).getText());
             }
         }
         return this;

@@ -43,11 +43,13 @@ class IndexingRegistry {
     }
 
     ASN1Parser.ValueAssignmentContext getConstantContext(String identifier) {
+        logger.trace("Parse " + identifier + " as a constant");
         return valueindicingregistry.remove(identifier);
     }
 
 
     ASN1Parser.TypeAssignmentContext getTranslatorContext(String identifier) {
+        logger.trace("Parse " + identifier + " as a translator");
         return typeindicingregistry.remove(identifier);
     }
 
@@ -61,6 +63,7 @@ class IndexingRegistry {
     }
 
     ASN1Parser.ParameterizedAssignmentContext getParameterizedAssignementContext(String identifier) {
+        logger.trace("Parse " + identifier + " as a parameterized assignment");
         return parameterizedindicingregistry.remove(identifier);
     }
 
@@ -74,6 +77,7 @@ class IndexingRegistry {
     }
 
     ASN1Parser.ObjectAssignmentContext getObjectContext(String identifier) {
+        logger.trace("Parse " + identifier + " as an object");
         return objectAssignmentContextHashMap.remove(identifier);
     }
 
@@ -87,6 +91,7 @@ class IndexingRegistry {
     }
 
     ASN1Parser.ObjectClassAssignmentContext getClassHandlerContext(String identifier) {
+        logger.trace("Parse " + identifier + " as a class");
         return objectclassindicingregistry.remove(identifier);
     }
 
