@@ -47,10 +47,35 @@ class IndexingRegistry {
         return valueindicingregistry.remove(identifier);
     }
 
-
     ASN1Parser.TypeAssignmentContext getTranslatorContext(String identifier) {
         logger.trace("Parse " + identifier + " as a translator");
         return typeindicingregistry.remove(identifier);
+    }
+
+    ASN1Parser.ParameterizedAssignmentContext getParameterizedAssignementContext(String identifier) {
+        logger.trace("Parse " + identifier + " as a parameterized assignment");
+        return parameterizedindicingregistry.remove(identifier);
+    }
+
+    ASN1Parser.ObjectAssignmentContext getObjectContext(String identifier) {
+        logger.trace("Parse " + identifier + " as an object");
+        return objectAssignmentContextHashMap.remove(identifier);
+    }
+
+    ASN1Parser.ObjectClassAssignmentContext getClassHandlerContext(String identifier) {
+        logger.trace("Parse " + identifier + " as a class");
+        return objectclassindicingregistry.remove(identifier);
+    }
+
+    /***** Use to pre-parse ASN.1 object *****/
+
+    List<String> getConstantsIdentifier() {
+        Iterator it = valueindicingregistry.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            arrayList.add((String) it.next());
+        }
+        return arrayList;
     }
 
     List<String> getTranslatorsIdentifier() {
@@ -62,13 +87,20 @@ class IndexingRegistry {
         return arrayList;
     }
 
-    ASN1Parser.ParameterizedAssignmentContext getParameterizedAssignementContext(String identifier) {
-        logger.trace("Parse " + identifier + " as a parameterized assignment");
-        return parameterizedindicingregistry.remove(identifier);
+    List<String> getParameterizedTranslatorsIdentifier() {
+        Iterator it = parameterizedindicingregistry.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            if (parameterizedindicingregistry.get(key).asnType() != null) {
+                arrayList.add(key);
+            }
+        }
+        return arrayList;
     }
 
-    List<String> getParameterizedAssignementsdentifier() {
-        Iterator it = parameterizedindicingregistry.keySet().iterator();
+    List<String> getClassHandlersdentifier() {
+        Iterator it = objectclassindicingregistry.keySet().iterator();
         List<String> arrayList = new ArrayList<>();
         while (it.hasNext()) {
             arrayList.add((String) it.next());
@@ -76,9 +108,16 @@ class IndexingRegistry {
         return arrayList;
     }
 
-    ASN1Parser.ObjectAssignmentContext getObjectContext(String identifier) {
-        logger.trace("Parse " + identifier + " as an object");
-        return objectAssignmentContextHashMap.remove(identifier);
+    List<String> getObjectSetAssignment() {
+        Iterator it = parameterizedindicingregistry.keySet().iterator();
+        List<String> arrayList = new ArrayList<>();
+        while (it.hasNext()) {
+            String key = (String) it.next();
+            if (parameterizedindicingregistry.get(key).objectSet() != null) {
+                arrayList.add(key);
+            }
+        }
+        return arrayList;
     }
 
     List<String> getObjectsContextdentifier() {
@@ -90,17 +129,7 @@ class IndexingRegistry {
         return arrayList;
     }
 
-    ASN1Parser.ObjectClassAssignmentContext getClassHandlerContext(String identifier) {
-        logger.trace("Parse " + identifier + " as a class");
-        return objectclassindicingregistry.remove(identifier);
-    }
-
-    List<String> getClassHandlersdentifier() {
-        Iterator it = objectclassindicingregistry.keySet().iterator();
-        List<String> arrayList = new ArrayList<>();
-        while (it.hasNext()) {
-            arrayList.add((String) it.next());
-        }
-        return arrayList;
+    boolean checkRegistry() {
+        return valueindicingregistry.isEmpty() && typeindicingregistry.isEmpty() && parameterizedindicingregistry.isEmpty() && objectclassindicingregistry.isEmpty() && objectAssignmentContextHashMap.isEmpty();
     }
 }

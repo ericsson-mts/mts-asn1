@@ -28,6 +28,7 @@ public class ClassObject {
     private ClassHandler classtype;
     private Logger logger = LoggerFactory.getLogger(ClassObject.class.getSimpleName());
     private List<Map<String, String>> fieldMap = new ArrayList<>();
+    private Map<String, ASN1Parser.AsnTypeContext> settingsMap = new HashMap<>();
 
     public ClassObject init(MainRegistry mainRegistry, ASN1Parser.ObjectAssignmentContext objectAssignmentContext) throws NotHandledCaseException {
         if (objectAssignmentContext.definedObjectClass().IDENTIFIER().size() != 1) {
@@ -54,8 +55,11 @@ public class ClassObject {
             for (ASN1Parser.DefinedSyntaxTokenContext definedSyntaxTokenContext : objectDefnContext.definedSyntax().definedSyntaxToken()) {
                 if (definedSyntaxTokenContext.literal() != null && definedSyntaxTokenContext.literal().IDENTIFIER() != null) {
                     unknowsFields.add(definedSyntaxTokenContext.literal().IDENTIFIER().getText());
+                } else if (definedSyntaxTokenContext.setting() != null) {
+                    unknowsFields.add("In settingsMap at " + settingsMap.size());
+                    settingsMap.put(unknowsFields.get(unknowsFields.size() - 1), definedSyntaxTokenContext.setting().asnType());
                 } else {
-                    throw new NotHandledCaseException("comma or setting");
+                    throw new NotHandledCaseException("comma");
                 }
             }
             buildFields(unknowsFields);
@@ -120,7 +124,12 @@ public class ClassObject {
             if (correctKey) {
                 for (Map.Entry<String, String> entry : map.entrySet()) {
                     if (entry.getKey().equals(componentName)) {
-                        AbstractTranslator abstractTranslator = mainRegistry.getTranslatorFromName(entry.getValue());
+                        AbstractTranslator abstractTranslator;
+                        if (settingsMap.containsKey(componentName)) {
+                            abstractTranslator = mainRegistry.getTranslator(settingsMap.get(componentName));
+                        } else {
+                            abstractTranslator = mainRegistry.getTranslatorFromName(entry.getValue());
+                        }
                         if (null != abstractTranslator) {
                             return abstractTranslator;
                         } else {

@@ -75,4 +75,9 @@ public class PERFactory extends AbstractFactory {
     public AbstractObjectClassFieldTranslator objectClassFieldTypeTranslator() {
         return new PERObjectClassFieldTranslator(perTranscoder);
     }
+
+    @Override
+    public AbstractObjectIdentifierTranslator objectIdentifierTranslator() {
+        return new PERObjectIdentifierTranslator(perTranscoder);
+    }
 }

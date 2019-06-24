@@ -40,6 +40,7 @@ class ConstraintVisitor {
         private TypeConstraint typeConstraint;
         private AbstractConstraint abstractConstraint;
         private Constraints constraints;
+        private boolean nextConstraintIsExtensible = false;
 
         InnerConstraintVisitor(MainRegistry mainRegistry) {
             this.mainRegistry = mainRegistry;
@@ -64,6 +65,7 @@ class ConstraintVisitor {
             typeConstraint = null;
             abstractConstraint = null;
             constraints = null;
+            nextConstraintIsExtensible = false;
         }
 
         @Override
@@ -95,14 +97,14 @@ class ConstraintVisitor {
 
         @Override
         public Void visitElementSetSpecs(ASN1Parser.ElementSetSpecsContext ctx) {
-            super.visitElementSetSpecs(ctx);
             if (ctx.COMMA(0) != null) {
-                abstractConstraint.setExtensible(true);
+                nextConstraintIsExtensible = true;
                 if (null != ctx.COMMA(1)) {
                     throw new ANTLRVisitorException("additionalElementSetSpec");
                 }
             }
-            return null;
+            return super.visitElementSetSpecs(ctx);
+
         }
 
 
@@ -124,16 +126,12 @@ class ConstraintVisitor {
 
         @Override
         public Void visitUnions(ASN1Parser.UnionsContext ctx) {
-            if (ctx.unionMark(0) != null) {
-                throw new NotHandledCaseException(ctx.getText());
-            }
             return super.visitUnions(ctx);
         }
 
         @Override
         public Void visitIntersections(ASN1Parser.IntersectionsContext ctx) {
             if (ctx.intersectionMark(0) != null) {
-                //Reset typeConstraint if change here
                 throw new NotHandledCaseException();
             }
             boolean isExtensible = (abstractConstraint != null && abstractConstraint.isExtensible());
@@ -141,11 +139,16 @@ class ConstraintVisitor {
             if (abstractConstraint == null) {
                 throw new RuntimeException();
             }
+
             if (isExtensible) {
                 abstractConstraint.setExtensible(true);
+            } else if (nextConstraintIsExtensible) {
+                abstractConstraint.setExtensible(true);
+                nextConstraintIsExtensible = false;
             }
+
             if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
-                constraints.addSizeConstraint(abstractConstraint);
+                return null;
             } else if (typeConstraint == TypeConstraint.VALUE_RANGE_CONSTRAINT) {
                 constraints.addValueRangeConstraint(abstractConstraint);
             } else if (typeConstraint == TypeConstraint.SINGLE_VALUE_CONSTRAINT) {
@@ -153,7 +156,8 @@ class ConstraintVisitor {
             } else {
                 throw new NotHandledCaseException();
             }
-
+            abstractConstraint = null;
+            typeConstraint = null;
             return null;
         }
 
@@ -215,18 +219,31 @@ class ConstraintVisitor {
                 //PatternConstraint
                 throw new ANTLRVisitorException();
             } else if (ctx.value(0) != null) {
-                //SingleValue
-                SingleValueConstraint singleValueConstraint = new SingleValueConstraint(mainRegistry);
-                if (ctx.value(0).builtinValue().integerValue() != null) {
-                    singleValueConstraint.setValue((ctx.value(0).getText()), true);
-                } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
-                    singleValueConstraint.setValue(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
+                if (typeConstraint == TypeConstraint.SIZE_CONSTRAINT) {
+                    SizeConstraint sizeConstraint = (SizeConstraint) abstractConstraint;
+                    if (ctx.value(0).builtinValue().integerValue() != null) {
+                        sizeConstraint.setLowerBound((ctx.value(0).getText()), true);
+                    } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
+                        sizeConstraint.setLowerBound(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
+                    } else {
+                        throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
+                    }
+                    sizeConstraint.setUpperBound(null, true);
+                    return null;
                 } else {
-                    throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
+                    //SingleValue
+                    SingleValueConstraint singleValueConstraint = new SingleValueConstraint(mainRegistry);
+                    if (ctx.value(0).builtinValue().integerValue() != null) {
+                        singleValueConstraint.setValue((ctx.value(0).getText()), true);
+                    } else if (ctx.value(0).builtinValue().enumeratedValue() != null) {
+                        singleValueConstraint.setValue(mainRegistry.getConstant(ctx.value(0).builtinValue()).getValue(), false);
+                    } else {
+                        throw new ANTLRVisitorException(ctx.value(0).builtinValue().getText());
+                    }
+                    typeConstraint = TypeConstraint.SINGLE_VALUE_CONSTRAINT;
+                    abstractConstraint = singleValueConstraint;
+                    return null;
                 }
-                typeConstraint = TypeConstraint.SINGLE_VALUE_CONSTRAINT;
-                abstractConstraint = singleValueConstraint;
-                return null;
             } else {
                 throw new ANTLRVisitorException();
             }
@@ -237,7 +254,12 @@ class ConstraintVisitor {
             //Check sequenceOfType and AbstractSequenceOfTranslator before any change here
             abstractConstraint = new SizeConstraint(mainRegistry);
             typeConstraint = TypeConstraint.SIZE_CONSTRAINT;
-            return super.visitSizeConstraint(ctx);
+            super.visitSizeConstraint(ctx);
+            if (typeConstraint != TypeConstraint.SIZE_CONSTRAINT) {
+                throw new RuntimeException();
+            }
+            constraints.addSizeConstraint(abstractConstraint);
+            return null;
         }
     }
 }

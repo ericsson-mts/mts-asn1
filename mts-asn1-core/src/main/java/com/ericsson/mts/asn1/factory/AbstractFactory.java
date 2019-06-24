@@ -39,4 +39,6 @@ public abstract class AbstractFactory {
     public abstract AbstractSequenceOfTranslator sequenceOfTranslator();
 
     public abstract AbstractSequenceTranslator sequenceTranslator();
+
+    public abstract AbstractObjectIdentifierTranslator objectIdentifierTranslator();
 }

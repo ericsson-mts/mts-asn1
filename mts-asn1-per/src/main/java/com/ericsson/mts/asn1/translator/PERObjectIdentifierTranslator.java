@@ -8,31 +8,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1;
+package com.ericsson.mts.asn1.translator;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import com.ericsson.mts.asn1.PERTranscoder;
 
-import java.util.Collections;
+public class PERObjectIdentifierTranslator extends AbstractObjectIdentifierTranslator {
+    private PERTranscoder perTranscoder;
 
-class S1APTests extends AbstractTests {
-
-    @BeforeAll
-    static void init() {
-        try {
-            asn1Translator = new ASN1Translator(new PERFactory(true), Collections.singletonList(S1APTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    void parseS1APGrammar() {
-        testParsingANTLR();
-    }
-
-    @Test
-    void testS1AP() throws Exception {
-        test("S1AP-PDU", "/data/S1AP/S1AP-1.bin", "/data/S1AP/S1AP-1.json", "/data/S1AP/S1AP-1.xml");
+    public PERObjectIdentifierTranslator(PERTranscoder perTranscoder) {
+        this.perTranscoder = perTranscoder;
     }
 }

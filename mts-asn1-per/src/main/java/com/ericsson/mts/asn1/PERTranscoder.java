@@ -132,7 +132,7 @@ public class PERTranscoder {
     }
 
     /**
-     * Decode the normally small number ITU-T X.691. 10.6 NOTE � (Tutorial) This
+     * Decode the normally small number ITU-T X.691. 10.6 NOTE  (Tutorial) This
      * procedure is used when encoding a non-negative whole number that is
      * expected to be small, but whose size is potentially unlimited due to the
      * presence of an extension marker. An example is a choice index.
@@ -161,7 +161,7 @@ public class PERTranscoder {
     }
 
     /**
-     * Decode the semi-constrained whole number ITU-T X.691. 10.7. NOTE �
+     * Decode the semi-constrained whole number ITU-T X.691. 10.7. NOTE
      * (Tutorial) This procedure is used when a lower bound can be identified
      * but not an upper bound. The encoding procedure places the offset from the
      * lower bound into the minimum number of octets as a

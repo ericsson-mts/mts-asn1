@@ -8,31 +8,25 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.ericsson.mts.asn1;
+package com.ericsson.mts.asn1.translator;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import com.ericsson.mts.asn1.BitArray;
+import com.ericsson.mts.asn1.BitInputStream;
+import com.ericsson.mts.asn1.TranslatorContext;
+import com.ericsson.mts.asn1.factory.FormatReader;
+import com.ericsson.mts.asn1.factory.FormatWriter;
 
-import java.util.Collections;
+import java.util.List;
 
-class S1APTests extends AbstractTests {
+public class AbstractObjectIdentifierTranslator extends AbstractTranslator {
 
-    @BeforeAll
-    static void init() {
-        try {
-            asn1Translator = new ASN1Translator(new PERFactory(true), Collections.singletonList(S1APTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Override
+    public final void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
+        throw new RuntimeException();
     }
 
-    @Test
-    void parseS1APGrammar() {
-        testParsingANTLR();
-    }
-
-    @Test
-    void testS1AP() throws Exception {
-        test("S1AP-PDU", "/data/S1AP/S1AP-1.bin", "/data/S1AP/S1AP-1.json", "/data/S1AP/S1AP-1.xml");
+    @Override
+    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
+        throw new RuntimeException();
     }
 }

@@ -53,9 +53,14 @@ public class ASN1Translator {
     }
 
     public void parseTranslators() {
+        registry.parseConstants();
         registry.parseTranslators();
         registry.parseClassHandler();
         registry.parseClassObject();
         registry.parseClassObjectSet();
+        if (!registry.checkIndexingRegistry()) {
+            //Use debugger : registry -> indexingRegistry to see what's left
+            throw new RuntimeException("IndexingRegistry isn't empty !");
+        }
     }
 }

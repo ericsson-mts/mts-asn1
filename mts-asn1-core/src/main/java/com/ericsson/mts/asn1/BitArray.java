@@ -69,16 +69,13 @@ public class BitArray {
         return length;
     }
 
-    public int getNextBit() {
-        return nextBit;
-    }
-
     public String getBinaryMessage() throws IOException {
         this.skipAlignedBits();
         return FormatWriter.bytesToHex(outputStream.toByteArray());
     }
 
     public String getActualBinaryMessage() {
+        //Use for debug
         return FormatWriter.bytesToHex(outputStream.toByteArray()) + Integer.toString(currentByte, 16);
     }
 }

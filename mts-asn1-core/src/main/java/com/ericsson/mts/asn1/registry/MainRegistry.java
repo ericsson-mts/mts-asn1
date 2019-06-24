@@ -50,6 +50,9 @@ public class MainRegistry {
         indexingRegistry.addAssignment(assignmentContext);
     }
 
+    public boolean checkIndexingRegistry() {
+        return indexingRegistry.checkRegistry();
+    }
     /****** Constants ******/
 
     public AbstractConstant getConstantFromName(String identifier) {
@@ -82,6 +85,15 @@ public class MainRegistry {
             return new IntegerConstant().init(valueAssignmentContext.value().builtinValue().integerValue().getText());
         } else {
             throw new NotHandledCaseException(identifier);
+        }
+    }
+
+    public void parseConstants() {
+        List<String> identifiers = indexingRegistry.getConstantsIdentifier();
+        for (String identifier : identifiers) {
+            if (null == getConstantFromName(identifier)) {
+                throw new RuntimeException("Identifier : " + identifier);
+            }
         }
     }
 
@@ -198,6 +210,8 @@ public class MainRegistry {
             return abstractFactory.booleanTranslator();
         } else if (builtinTypeContext.NULL_LITERAL() != null) {
             return abstractFactory.nullTranslator();
+        } else if (builtinTypeContext.objectidentifiertype() != null) {
+            return abstractFactory.objectIdentifierTranslator();
         } else {
             throw new NotHandledCaseException("Can't create a translator for " + builtinTypeContext.getText());
         }
@@ -205,6 +219,13 @@ public class MainRegistry {
 
     public void parseTranslators() {
         List<String> identifiers = indexingRegistry.getTranslatorsIdentifier();
+        for (String identifier : identifiers) {
+            if (null == getTranslatorFromName(identifier)) {
+                throw new RuntimeException("Identifier : " + identifier);
+            }
+        }
+
+        identifiers = indexingRegistry.getParameterizedTranslatorsIdentifier();
         for (String identifier : identifiers) {
             if (null == getTranslatorFromName(identifier)) {
                 throw new RuntimeException("Identifier : " + identifier);
@@ -233,7 +254,7 @@ public class MainRegistry {
     public void parseClassObject() {
         List<String> identifiers = indexingRegistry.getObjectsContextdentifier();
         for (String identifier : identifiers) {
-            if (null == getTranslatorFromName(identifier)) {
+            if (null == getClassObject(identifier)) {
                 throw new RuntimeException("Identifier : " + identifier);
             }
         }
@@ -253,7 +274,7 @@ public class MainRegistry {
         }
 
         if (null == parameterizedAssignmentContext.objectSet() || null == parameterizedAssignmentContext.definedObjectClass()) {
-            throw new RuntimeException(identifier + "is not an object set");
+            throw new RuntimeException(identifier + " is not an object set");
         } else {
             classObjectSet = new ClassObjectSet().init(this, this.getClassHandler(parameterizedAssignmentContext.definedObjectClass().getText()), parameterizedAssignmentContext.objectSet());
             classObjectSetParsedRegistry.add(identifier, classObjectSet);
@@ -262,9 +283,9 @@ public class MainRegistry {
     }
 
     public void parseClassObjectSet() {
-        List<String> identifiers = indexingRegistry.getParameterizedAssignementsdentifier();
+        List<String> identifiers = indexingRegistry.getObjectSetAssignment();
         for (String identifier : identifiers) {
-            if (null == getTranslatorFromName(identifier)) {
+            if (null == getClassObjectSet(identifier)) {
                 throw new RuntimeException("Identifier : " + identifier);
             }
         }
@@ -293,7 +314,7 @@ public class MainRegistry {
     public void parseClassHandler() {
         List<String> identifiers = indexingRegistry.getClassHandlersdentifier();
         for (String identifier : identifiers) {
-            if (null == getTranslatorFromName(identifier)) {
+            if (null == getClassHandler(identifier)) {
                 throw new RuntimeException("Identifier : " + identifier);
             }
         }
