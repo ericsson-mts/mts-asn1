@@ -51,7 +51,7 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
             if (bitLength.compareTo(lb) < 0 || bitLength.compareTo(ub) > 0) {
                 throw new NotHandledCaseException();
             } else {
-                perTranscoder.writeBit(s, 0);
+                perTranscoder.writePreambleBit(s, 0);
             }
         }
 

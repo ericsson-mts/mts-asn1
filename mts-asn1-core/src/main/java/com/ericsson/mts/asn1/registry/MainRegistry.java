@@ -53,7 +53,7 @@ public class MainRegistry {
     public boolean checkIndexingRegistry() {
         return indexingRegistry.checkRegistry();
     }
-    /****** Constants ******/
+    //Constants
 
     public AbstractConstant getConstantFromName(String identifier) {
         AbstractConstant abstractConstant = valueTranslatorParsedRegistry.get(identifier);
@@ -97,7 +97,7 @@ public class MainRegistry {
         }
     }
 
-    /****** Translators ******/
+    //Translators
 
     public synchronized AbstractTranslator getTranslatorFromName(final String identifier) {
         AbstractTranslator abstractTranslator = typeTranslatorParsedRegistry.get(identifier);
@@ -233,7 +233,7 @@ public class MainRegistry {
         }
     }
 
-    /****** Objects ******/
+    // Objects
 
     public ClassObject getClassObject(String identifier) {
         ClassObject classObject = classObjectParsedRegistry.get(identifier);
@@ -260,7 +260,7 @@ public class MainRegistry {
         }
     }
 
-    /****** Object Sets ******/
+    //Object Sets
 
     public ClassObjectSet getClassObjectSet(String identifier) {
         ClassObjectSet classObjectSet = classObjectSetParsedRegistry.get(identifier);
@@ -291,7 +291,7 @@ public class MainRegistry {
         }
     }
 
-    /****** Classes ******/
+    //Classes
 
     public ClassHandler getClassHandler(String identifier) {
         if (null == identifier) {

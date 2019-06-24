@@ -49,7 +49,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
                     //17.3
                     throw new NotHandledCaseException();
                 } else {
-                    perTranscoder.writeBit(s, 0);
+                    perTranscoder.writePreambleBit(s, 0);
                 }
             }
         }

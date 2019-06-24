@@ -34,7 +34,7 @@ public class Constraints {
         constraintVisitor = new ConstraintVisitor(mainRegistry);
     }
 
-    /**********Core methods **********/
+    //Core methods
 
     public void addConstraint(ASN1Parser.ConstraintContext constraintContext) {
         constraintVisitor.addConstraint(constraintContext, this);
@@ -126,7 +126,7 @@ public class Constraints {
         }
     }
 
-    /********** Methods of SizeConstraint **********/
+    //Methods of SizeConstraint
 
     public BigInteger getLowerBound() {
         return sizeConstraint.getLowerBound();
@@ -140,7 +140,7 @@ public class Constraints {
         sizeConstraint.updateValue(registry);
     }
 
-    /********** Methods of ClassFieldConstraint **********/
+    //Methods of ClassFieldConstraint
 
     public String getObjectSetName() {
         return classFieldConstraint.getObjectSetName();
@@ -150,13 +150,13 @@ public class Constraints {
         return classFieldConstraint.getTargetComponent();
     }
 
-    /********** Methods of ContentsConstraint **********/
+    //Methods of ContentsConstraint
 
     public AbstractTranslator getContentTranslator() {
         return contentsConstraint.getContentTranslator();
     }
 
-    /********** Methods of ValueRangeConstraint **********/
+    //Methods of ValueRangeConstraint
 
     public BigInteger getLowerRange() {
         return valueRangeConstraint.getLowerRange();
@@ -170,7 +170,7 @@ public class Constraints {
         valueRangeConstraint.updateValue(registry);
     }
 
-    /********** Methods of SingleValueConstraint **********/
+    //Methods of SingleValueConstraint
 
     public BigInteger getSingleValueConstraint() {
         if (singleValueConstraintList.size() != 1) {

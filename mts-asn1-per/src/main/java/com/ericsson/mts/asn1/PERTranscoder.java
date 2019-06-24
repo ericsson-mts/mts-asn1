@@ -34,10 +34,14 @@ public class PERTranscoder {
      * (Tutorial) This subclause is referenced by other clauses, and itself
      * references earlier clauses for the production of a
      * nonnegative-data-integer or a 2's-complement-data-integer encoding.
+     * @param lb lower bound
+     * @param ub upper bound
+     * @param stream binary stream
+     * @return number decoded
+     * @throws IOException Input exception
      */
     public BigInteger decodeConstrainedNumber(BigInteger lb, BigInteger ub, BitInputStream stream) throws IOException {
         logger.trace("decodeConstrainedNumber min=" + lb + ", max=" + ub);
-
         BigInteger n;
         BigInteger max = ub.subtract(lb);
         BigInteger range = max.add(ONE);
@@ -110,8 +114,13 @@ public class PERTranscoder {
     /**
      * Decode the constraint length determinant. ITU-T X.691. 10.9. General
      * rules for encoding a length determinant
+     * @param min lower bound
+     * @param max upper bound
+     * @param stream binary stream
+     * @return length decoded
+     * @throws IOException Input exception
      */
-    protected BigInteger decodeConstrainedLengthDeterminant(BigInteger min, BigInteger max, BitInputStream stream) throws IOException {
+    private BigInteger decodeConstrainedLengthDeterminant(BigInteger min, BigInteger max, BitInputStream stream) throws IOException {
         logger.trace("decodeConstrainedLengthDeterminant : " + min + " - " + max);
 
         BigInteger len;
@@ -136,9 +145,12 @@ public class PERTranscoder {
      * procedure is used when encoding a non-negative whole number that is
      * expected to be small, but whose size is potentially unlimited due to the
      * presence of an extension marker. An example is a choice index.
+     * @param stream binary stream
+     * @return normally small number
+     * @throws IOException input exception
      */
-    public BigInteger decodeNormallySmallNumber(BitInputStream stream) throws Exception {
-        BigInteger result = BigInteger.ZERO;
+    public BigInteger decodeNormallySmallNumber(BitInputStream stream) throws IOException {
+        BigInteger result;
         int bitIndicator = stream.readBit();
         if (bitIndicator == 0) {
             /* 10.6.1 If the non-negative whole number, "n", is less than
@@ -167,25 +179,45 @@ public class PERTranscoder {
      * lower bound into the minimum number of octets as a
      * non-negative-data-integer, and requires an explicit length encoding
      * (typically a single octet) as specified in later procedures.
+     * @param lb lower bound
+     * @param stream binary input
+     * @return unsigned integer
+     * @throws IOException input exception
      */
-    public BigInteger decodeSemiConstraintNumber(int min, BitInputStream stream) throws IOException {
+    public BigInteger decodeSemiConstraintNumber(int lb, BitInputStream stream) throws IOException {
         int intLen = decodeLengthDeterminant(stream);
         if (aligned) {
             skipAlignedBits(stream);
         }
-        return decodeUnsignedIntegerValueAsBytes(intLen, stream).add(BigInteger.valueOf(min));
+        return decodeUnsignedIntegerValueAsBytes(intLen, stream).add(BigInteger.valueOf(lb));
     }
 
-    protected BigInteger decodeUnsignedIntegerValueAsBytes(int intLen, InputStream stream) throws IOException {
-        byte[] bytes = new byte[intLen + 1];
-        if (-1 == stream.read(bytes, 1, intLen)) {
+    /**
+     * Decode n bytes as a unsigned integer
+     *
+     * @param n      the maximum number of bytes to read
+     * @param stream binary stream
+     * @return unsigned integer decoded
+     * @throws IOException input exception
+     */
+    private BigInteger decodeUnsignedIntegerValueAsBytes(int n, InputStream stream) throws IOException {
+        byte[] bytes = new byte[n + 1];
+        if (-1 == stream.read(bytes, 1, n)) {
             throw new RuntimeException();
         }
         return new BigInteger(bytes);
     }
 
-    protected BigInteger decodeSignedIntegerValueAsBytes(int intLen, InputStream stream) throws IOException {
-        byte[] bytes = new byte[intLen];
+    /**
+     * Decode n bytes as a signed integer
+     *
+     * @param n      the maximum number of bytes to read
+     * @param stream input stream
+     * @return decoded integer
+     * @throws IOException input exception
+     */
+    protected BigInteger decodeSignedIntegerValueAsBytes(int n, InputStream stream) throws IOException {
+        byte[] bytes = new byte[n];
         if (-1 == stream.read(bytes)) {
             throw new RuntimeException();
         }
@@ -195,6 +227,9 @@ public class PERTranscoder {
     /**
      * Decode the length determinant ITU-T X.691. 10.9. General rules for
      * encoding a length determinant
+     * @param stream binary streaù
+     * @return length determinant
+     * @throws IOException input exception
      */
     public int decodeLengthDeterminant(BitInputStream stream) throws IOException {
         skipAlignedBits(stream);
@@ -221,6 +256,13 @@ public class PERTranscoder {
         return result;
     }
 
+    /**
+     * Decode an octet string ITU-T X.691. 17. Encoding the octetstring type
+     * @param stream binary stream
+     * @param len octet string length
+     * @return octet string as a byte array
+     * @throws IOException input exception
+     */
     public byte[] decodeOctetString(BitInputStream stream, BigInteger len) throws IOException {
         if (len.compareTo(new BigInteger("2")) <= 0) {
             return stream.readUnalignedByteArray(len.intValueExact());
@@ -231,18 +273,34 @@ public class PERTranscoder {
         }
     }
 
-    public byte[] readBits(BitInputStream s, int nBits) throws IOException {
+    /**
+     * Read n bits
+     *
+     * @param s binary stream
+     * @param n number of bits read
+     * @return byte array containing n bits read (aligned left)
+     * @throws IOException input exception
+     */
+    public byte[] readBits(BitInputStream s, int n) throws IOException {
         if (aligned) {
-            return s.readAlignedBitArray(nBits);
+            return s.readAlignedBitArray(n);
         } else {
             throw new NotHandledCaseException();
         }
     }
 
-    public String readsBitsAsString(BitInputStream s, int nBits) throws IOException {
-        StringBuilder sb = new StringBuilder(nBits);
+    /**
+     * Read n bits and return it as a string
+     *
+     * @param s input stream
+     * @param n nomber of bits read
+     * @return string containing n bits read (aligned left)
+     * @throws IOException input stream
+     */
+    public String readsBitsAsString(BitInputStream s, int n) throws IOException {
+        StringBuilder sb = new StringBuilder(n);
         if (aligned) {
-            for (int i = 0; i < nBits; i++) {
+            for (int i = 0; i < n; i++) {
                 sb.append(s.readBit() == 0 ? '0' : '1');
             }
 
@@ -252,20 +310,47 @@ public class PERTranscoder {
         return sb.toString();
     }
 
+    /**
+     * Aligned bits of the binary input stream
+     * @param stream binary stream
+     */
     public void skipAlignedBits(InputStream stream) {
         ((BitInputStream) stream).skipUnreadedBits();
     }
 
+    //Output stream part
+
+
+    /**
+     * Aligned bits of the binary output stream
+     * @param stream binary stream
+     * @throws IOException output stream exception
+     */
     public void skipAlignedBits(BitArray stream) throws IOException {
         if (aligned) {
             stream.skipAlignedBits();
         }
     }
 
-    public void writeBit(BitArray bitArray, int bit) throws IOException {
+    /**
+     * Write preamble bit for extension marker of ASN.1 string type
+     *
+     * @param bitArray binary stream
+     * @param bit      first bit to be written (0x01)
+     * @throws IOException output stream exception
+     */
+    public void writePreambleBit(BitArray bitArray, int bit) throws IOException {
         bitArray.writeBit(bit);
     }
 
+    /**
+     * Encode a constrained whole number : X.691 11.5
+     * @param s binary ouput stream
+     * @param number value to encode
+     * @param lb lower bound
+     * @param ub upper bound
+     * @throws IOException ouput stream exception
+     */
     public void encodeConstrainedWholeNumber(BitArray s, BigInteger number, BigInteger lb, BigInteger ub) throws IOException {
         logger.trace("encodeConstrainedWholeNumber : number(DEC)=" + number.toString(10) + ", lb=" + lb + ", ub=" + ub);
         BigInteger range = ub.subtract(lb).add(ONE);
@@ -295,7 +380,12 @@ public class PERTranscoder {
         }
     }
 
-
+    /**
+     * Encode a normally  whole number : X.691 11.6
+     * @param s binary ouput streaù
+     * @param number value to encode
+     * @throws IOException ouput stream exception
+     */
     public void encodeNormallySmallWholeNumber(BitArray s, BigInteger number) throws IOException {
         if ((number.compareTo(BigInteger.valueOf(63)) <= 0) && (number.compareTo(BigInteger.valueOf(0)) >= 0)) {
             logger.trace("encodeNormallySmallWholeNumber : number=" + number.intValueExact() + " , length=6");
@@ -310,6 +400,13 @@ public class PERTranscoder {
         }
     }
 
+    /**
+     * Add a bits array to a given binary output stream
+     * @param s binary output stream
+     * @param value bits array (aligned left)
+     * @param length bits array length
+     * @throws IOException ouput stream exception
+     */
     public void addBitField(BitArray s, int[] value, int length) throws IOException {
         int i = 0, j = 0;
         int currentByte;
@@ -327,6 +424,14 @@ public class PERTranscoder {
         }
     }
 
+    /**
+     * Encoding a constrained length determinant X.691 13.2.6
+     * @param s binary output stream
+     * @param length length to encode
+     * @param lb lower bound
+     * @param ub upper bound
+     * @throws IOException output stream exception
+     */
     public void encodeConstrainedLengthDeterminant(BitArray s, BigInteger length, BigInteger lb, BigInteger ub) throws IOException {
         logger.trace("encodeConstrainedLengthDeterminant : length=" + length + " , lb=" + lb + " , ub=" + ub);
         if (ub.compareTo(BigInteger.valueOf(65536)) < 0) {
@@ -336,6 +441,12 @@ public class PERTranscoder {
         }
     }
 
+    /**
+     * Encode a length determinant X.691 11.9
+     * @param s binary ouput streaù
+     * @param length length to encode
+     * @throws IOException output stream exception
+     */
     public void encodeLengthDeterminant(BitArray s, BigInteger length) throws IOException {
         logger.trace("encodeLengthDeterminant : length=" + length);
         if (aligned) {
@@ -352,6 +463,14 @@ public class PERTranscoder {
         }
     }
 
+    /**
+     * Write a bit field (should use addBitField instead), can cause bug with a bit field who begin with zero
+     * @param s binary output stream
+     * @param number bit field to encode
+     * @param length bit field length
+     * @throws IOException output stream exception
+     */
+    @Deprecated
     public void encodeBitField(BitArray s, BigInteger number, int length) throws IOException {
         logger.trace("encodeBitField : number=" + String.format("%x", number).toUpperCase() + " , length=" + length);
         addBitField(s, number, length);
@@ -367,6 +486,13 @@ public class PERTranscoder {
         }
     }
 
+    /**
+     * Encode a semi constrained whole number X.691 11.7
+     * @param s binary ouput streaù
+     * @param lb lower bound
+     * @param number number to encode
+     * @throws IOException output stream exception
+     */
     public void encodeSemiConstrainedWholeNumber(BitArray s, BigInteger lb, BigInteger number) throws IOException {
         int octetLength = number.bitLength() / 8 + ((number.bitLength() % 8 != 0) ? 1 : 0) - lb.intValueExact();
         logger.trace("encodeSemiConstrainedWholeNumber : value=" + String.format("%x", number).toUpperCase() + ", length=" + octetLength);
