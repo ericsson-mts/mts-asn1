@@ -30,22 +30,34 @@ public class ClassObject {
     private List<Map<String, String>> fieldMap = new ArrayList<>();
     private Map<String, ASN1Parser.AsnTypeContext> settingsMap = new HashMap<>();
 
-    public ClassObject init(MainRegistry mainRegistry, ASN1Parser.ObjectAssignmentContext objectAssignmentContext) throws NotHandledCaseException {
+    /**
+     * Intialize ClassObject by parsing objectAssignmentContext
+     *
+     * @param mainRegistry            main registry
+     * @param objectAssignmentContext object assignment context
+     * @return initialized object
+     */
+    public ClassObject init(MainRegistry mainRegistry, ASN1Parser.ObjectAssignmentContext objectAssignmentContext) {
         if (objectAssignmentContext.definedObjectClass().IDENTIFIER().size() != 1) {
             throw new NotHandledCaseException();
         }
         this.mainRegistry = mainRegistry;
         this.classtype = mainRegistry.getClassHandler(objectAssignmentContext.definedObjectClass().IDENTIFIER(0).getText());
-
         if (objectAssignmentContext.object().objectDefn() == null) {
             throw new NotHandledCaseException();
         }
-
-        buildFields(objectAssignmentContext.object().objectDefn().definedSyntax());
+        parseUnknowFields(objectAssignmentContext.object().objectDefn().definedSyntax());
         return this;
     }
 
-    public void buildLocalObject(MainRegistry mainRegistry, ClassHandler classHandler, ASN1Parser.ObjectDefnContext objectDefnContext) {
+    /**
+     * Use to create a local object within an object set. It won't be register in the main registry.
+     *
+     * @param mainRegistry      main registry
+     * @param classHandler      associate class
+     * @param objectDefnContext object context
+     */
+    void buildLocalObject(MainRegistry mainRegistry, ClassHandler classHandler, ASN1Parser.ObjectDefnContext objectDefnContext) {
         this.mainRegistry = mainRegistry;
         this.classtype = classHandler;
         if (objectDefnContext.defaultSyntax() != null) {
@@ -62,19 +74,29 @@ public class ClassObject {
                     throw new NotHandledCaseException("comma");
                 }
             }
-            buildFields(unknowsFields);
+            parseUnknowFields(unknowsFields);
         }
     }
 
-    private void buildFields(ASN1Parser.DefinedSyntaxContext definedSyntaxContexts) {
+    /**
+     * Parse definedSyntaxContexts and add fields
+     *
+     * @param definedSyntaxContexts contexts
+     */
+    private void parseUnknowFields(ASN1Parser.DefinedSyntaxContext definedSyntaxContexts) {
         List<String> unknowFields = new ArrayList<>();
         for (ASN1Parser.DefinedSyntaxTokenContext definedSyntaxTokenContext : definedSyntaxContexts.definedSyntaxToken()) {
             unknowFields.add(definedSyntaxTokenContext.literal().IDENTIFIER().getText());
         }
-        buildFields(unknowFields);
+        parseUnknowFields(unknowFields);
     }
 
-    private void buildFields(List<String> unknowFields) {
+    /**
+     * Parse definedSyntaxToken (literal or setting). It's needed because a field can be in multiple word (example INITIATING MESSAGE in S1AP grammar)
+     *
+     * @param unknowFields unknowns literals
+     */
+    private void parseUnknowFields(List<String> unknowFields) {
         int current_component = 0;
         int consumed_component = 0;
         String current_component_string = "";
@@ -107,6 +129,13 @@ public class ClassObject {
         fieldMap.add(row);
     }
 
+    /**
+     * Search a translator associate with a componentName for a given key
+     * @param uniqueKeySyntax unique key syntax
+     * @param uniqueKeyValue unique key value
+     * @param componentName target translator name
+     * @return target translator
+     */
     public AbstractTranslator getTranslatorFromUniqueKey(String uniqueKeySyntax, String uniqueKeyValue, String componentName) {
         boolean correctKey = false;
         componentName = classtype.getSyntaxName(componentName);
@@ -120,8 +149,8 @@ public class ClassObject {
                     }
                 }
             }
-
             if (correctKey) {
+                //Unique key syntax isn't at the first position everytime, so we have to restart iteration
                 for (Map.Entry<String, String> entry : map.entrySet()) {
                     if (entry.getKey().equals(componentName)) {
                         AbstractTranslator abstractTranslator;

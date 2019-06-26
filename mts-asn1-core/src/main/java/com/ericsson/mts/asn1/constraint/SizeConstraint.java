@@ -14,6 +14,9 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 
 import java.math.BigInteger;
 
+/**
+ * Use when SIZE keyword appears X.680 51.5
+ */
 class SizeConstraint extends AbstractRangeConstraint {
 
     SizeConstraint(MainRegistry mainRegistry) {

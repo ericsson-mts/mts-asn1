@@ -10,14 +10,14 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.factory.AbstractFactory;
+import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
 import com.ericsson.mts.asn1.translator.*;
 
-public class PERFactory extends AbstractFactory {
+public class PERTranslatorFactory extends AbstractTranslatorFactory {
 
     private PERTranscoder perTranscoder;
 
-    public PERFactory(boolean aligned) {
+    public PERTranslatorFactory(boolean aligned) {
         perTranscoder = new PERTranscoder(aligned);
     }
 

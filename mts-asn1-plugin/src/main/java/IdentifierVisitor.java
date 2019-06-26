@@ -26,7 +26,7 @@ import java.util.Stack;
 public class IdentifierVisitor {
     private IdentifierVisitorInner identifierVisitorInner;
     private Stack<String> parentNameStack = new Stack<>();
-    private HashSet insertedName = new HashSet<String>() {
+    private HashSet<String> insertedName = new HashSet<String>() {
         @Override
         public boolean add(String o) {
             if (this.contains(o)) {

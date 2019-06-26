@@ -20,6 +20,11 @@ public class SingleValueConstraint extends AbstractConstraint {
     private boolean isNumber;
     private MainRegistry mainRegistry;
 
+    /**
+     * Use when only a number/identifier appear in a constraint X.680 51.2.1
+     *
+     * @param mainRegistry main registry
+     */
     public SingleValueConstraint(MainRegistry mainRegistry) {
         this.mainRegistry = mainRegistry;
     }

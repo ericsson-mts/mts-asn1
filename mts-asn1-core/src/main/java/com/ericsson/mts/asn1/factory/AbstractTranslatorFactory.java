@@ -12,7 +12,7 @@ package com.ericsson.mts.asn1.factory;
 
 import com.ericsson.mts.asn1.translator.*;
 
-public abstract class AbstractFactory {
+public abstract class AbstractTranslatorFactory {
 
     public abstract AbstractBitStringTranslator bitStringTranslator();
 

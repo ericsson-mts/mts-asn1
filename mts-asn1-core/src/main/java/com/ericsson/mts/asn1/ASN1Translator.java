@@ -10,7 +10,7 @@
 
 package com.ericsson.mts.asn1;
 
-import com.ericsson.mts.asn1.factory.AbstractFactory;
+import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
@@ -29,7 +29,7 @@ public class ASN1Translator {
     private Logger logger = LoggerFactory.getLogger(ASN1Translator.class.getSimpleName());
     private MainRegistry registry;
 
-    public ASN1Translator(AbstractFactory factory, List<InputStream> stream) throws IOException {
+    public ASN1Translator(AbstractTranslatorFactory factory, List<InputStream> stream) throws IOException {
         registry = new MainRegistry(factory);
         for (InputStream inputStream : stream) {
             beginVisit(inputStream);

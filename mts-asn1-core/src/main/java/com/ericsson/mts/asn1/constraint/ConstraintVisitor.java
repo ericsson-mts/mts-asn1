@@ -26,14 +26,28 @@ class ConstraintVisitor {
         innerConstraintVisitor = new InnerConstraintVisitor(mainRegistry);
     }
 
+    /**
+     * Call constraintVisitor which will parse and append constraint
+     *
+     * @param constraintContext context of the constraint
+     */
     void addConstraint(ASN1Parser.ConstraintContext constraintContext, Constraints constraints) {
         innerConstraintVisitor.addConstraint(constraintContext, constraints);
     }
 
+    /**
+     * Use by SET OF and SEQUENCE OF keywords according to X.680 49.5
+     *
+     * @param sizeConstraintContext context of the constraint
+     * @param constraints           Constraints to store SizeConstraint
+     */
     void addSizeConstraint(ASN1Parser.SizeConstraintContext sizeConstraintContext, Constraints constraints) {
         innerConstraintVisitor.addSizeConstraint(sizeConstraintContext, constraints);
     }
 
+    /**
+     * Parse a given context constraint and had to Constraints object
+     */
     private class InnerConstraintVisitor extends ASN1ParserBaseVisitor<Void> {
         private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
         private final MainRegistry mainRegistry;
@@ -251,7 +265,7 @@ class ConstraintVisitor {
 
         @Override
         public Void visitSizeConstraint(ASN1Parser.SizeConstraintContext ctx) {
-            //Check sequenceOfType and AbstractSequenceOfTranslator before any change here
+            //WARNING ! Check sequenceOfType and AbstractSequenceOfTranslator before any change here
             abstractConstraint = new SizeConstraint(mainRegistry);
             typeConstraint = TypeConstraint.SIZE_CONSTRAINT;
             super.visitSizeConstraint(ctx);

@@ -14,6 +14,9 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 
 import java.math.BigInteger;
 
+/**
+ * Use when (value1..value2) without SIZE keyword appear X.680 51.4
+ */
 public class ValueRangeConstraint extends AbstractRangeConstraint {
 
     ValueRangeConstraint(MainRegistry mainRegistry) {

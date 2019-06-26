@@ -17,7 +17,7 @@ import com.ericsson.mts.asn1.classhandler.ClassObjectSet;
 import com.ericsson.mts.asn1.constant.AbstractConstant;
 import com.ericsson.mts.asn1.constant.IntegerConstant;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
-import com.ericsson.mts.asn1.factory.AbstractFactory;
+import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
 import com.ericsson.mts.asn1.translator.AbstractTranslator;
 import com.ericsson.mts.asn1.translator.ReferenceTranslator;
 import org.slf4j.Logger;
@@ -25,8 +25,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+/**
+ * Parse(lazy parsing) and store all ASN.1 objects.
+ */
 public class MainRegistry {
-    private AbstractFactory abstractFactory;
+    private AbstractTranslatorFactory abstractTranslatorFactory;
     private IndexingRegistry indexingRegistry = new IndexingRegistry();
 
     //Constants
@@ -42,8 +45,8 @@ public class MainRegistry {
 
     private Logger logger = LoggerFactory.getLogger(MainRegistry.class.getSimpleName());
 
-    public MainRegistry(AbstractFactory abstractFactory) {
-        this.abstractFactory = abstractFactory;
+    public MainRegistry(AbstractTranslatorFactory abstractTranslatorFactory) {
+        this.abstractTranslatorFactory = abstractTranslatorFactory;
     }
 
     public void addAssignment(ASN1Parser.AssignmentContext assignmentContext) {
@@ -174,9 +177,9 @@ public class MainRegistry {
     private AbstractTranslator createTranslator(ASN1Parser.AsnTypeContext asnTypeContext, ASN1Parser.ParameterListContext parameterListContext) {
         if (asnTypeContext.builtinType() != null) {
             if (asnTypeContext.builtinType().sequenceOfType() != null) {
-                return abstractFactory.sequenceOfTranslator().init(this, asnTypeContext.builtinType().sequenceOfType(), parameterListContext);
+                return abstractTranslatorFactory.sequenceOfTranslator().init(this, asnTypeContext.builtinType().sequenceOfType(), parameterListContext);
             } else if (asnTypeContext.builtinType().sequenceType() != null) {
-                return abstractFactory.sequenceTranslator().init(this, asnTypeContext.builtinType().sequenceType(), parameterListContext);
+                return abstractTranslatorFactory.sequenceTranslator().init(this, asnTypeContext.builtinType().sequenceType(), parameterListContext);
             } else {
                 throw new NotHandledCaseException(asnTypeContext.getText());
             }
@@ -187,31 +190,31 @@ public class MainRegistry {
 
     private AbstractTranslator createTranslator(ASN1Parser.BuiltinTypeContext builtinTypeContext, List<ASN1Parser.ConstraintContext> constraintContexts) throws NotHandledCaseException {
         if (builtinTypeContext.octetStringType() != null) {
-            return abstractFactory.octetStringTranslator().init(this, constraintContexts);
+            return abstractTranslatorFactory.octetStringTranslator().init(this, constraintContexts);
         } else if (builtinTypeContext.bitStringType() != null) {
-            return abstractFactory.bitStringTranslator().init(builtinTypeContext.bitStringType(), this, constraintContexts);
+            return abstractTranslatorFactory.bitStringTranslator().init(builtinTypeContext.bitStringType(), this, constraintContexts);
         } else if (builtinTypeContext.choiceType() != null) {
-            return abstractFactory.choiceTranslator().init(this, builtinTypeContext.choiceType());
+            return abstractTranslatorFactory.choiceTranslator().init(this, builtinTypeContext.choiceType());
         } else if (builtinTypeContext.enumeratedType() != null) {
-            return abstractFactory.enumeratedTranslator().init(builtinTypeContext.enumeratedType());
+            return abstractTranslatorFactory.enumeratedTranslator().init(builtinTypeContext.enumeratedType());
         } else if (builtinTypeContext.integerType() != null) {
-            return abstractFactory.integerTranslator().init(this, builtinTypeContext.integerType(), constraintContexts);
+            return abstractTranslatorFactory.integerTranslator().init(this, builtinTypeContext.integerType(), constraintContexts);
         } else if (builtinTypeContext.sequenceType() != null) {
-            return abstractFactory.sequenceTranslator().init(this, builtinTypeContext.sequenceType());
+            return abstractTranslatorFactory.sequenceTranslator().init(this, builtinTypeContext.sequenceType());
         } else if (builtinTypeContext.sequenceOfType() != null) {
-            return abstractFactory.sequenceOfTranslator().init(this, builtinTypeContext.sequenceOfType());
+            return abstractTranslatorFactory.sequenceOfTranslator().init(this, builtinTypeContext.sequenceOfType());
         } else if (builtinTypeContext.objectClassFieldType() != null) {
-            return abstractFactory.objectClassFieldTypeTranslator().init(this, builtinTypeContext.objectClassFieldType(), constraintContexts);
+            return abstractTranslatorFactory.objectClassFieldTypeTranslator().init(this, builtinTypeContext.objectClassFieldType(), constraintContexts);
         } else if (builtinTypeContext.characterStringType() != null) {
-            return abstractFactory.characterStringTranslator().init(this, builtinTypeContext.characterStringType(), constraintContexts);
+            return abstractTranslatorFactory.characterStringTranslator().init(this, builtinTypeContext.characterStringType(), constraintContexts);
         } else if (builtinTypeContext.realType() != null) {
-            return abstractFactory.realTranslator();
+            return abstractTranslatorFactory.realTranslator();
         } else if (builtinTypeContext.BOOLEAN_LITERAL() != null) {
-            return abstractFactory.booleanTranslator();
+            return abstractTranslatorFactory.booleanTranslator();
         } else if (builtinTypeContext.NULL_LITERAL() != null) {
-            return abstractFactory.nullTranslator();
+            return abstractTranslatorFactory.nullTranslator();
         } else if (builtinTypeContext.objectidentifiertype() != null) {
-            return abstractFactory.objectIdentifierTranslator();
+            return abstractTranslatorFactory.objectIdentifierTranslator();
         } else {
             throw new NotHandledCaseException("Can't create a translator for " + builtinTypeContext.getText());
         }

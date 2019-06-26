@@ -10,6 +10,9 @@
 
 package com.ericsson.mts.asn1.constraint;
 
+/**
+ * Use within sequence to store target translator of an object set
+ */
 class ClassFieldConstraint extends AbstractConstraint {
     private String objectSetName;
     private String targetComponent;

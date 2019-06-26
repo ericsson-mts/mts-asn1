@@ -14,11 +14,14 @@ import com.ericsson.mts.asn1.registry.MainRegistry;
 
 import java.util.Map;
 
+/**
+ * Abstract class for SizeConstraint and ValueRangeCosntraint
+ */
 public abstract class AbstractRangeConstraint extends AbstractConstraint {
-    protected String lowerBound;
-    protected String upperBound;
-    protected boolean arelbNumber;
-    protected boolean areubNumber;
+    String lowerBound;
+    String upperBound;
+    boolean arelbNumber;
+    boolean areubNumber;
     protected MainRegistry mainRegistry;
 
     AbstractRangeConstraint(MainRegistry mainRegistry) {

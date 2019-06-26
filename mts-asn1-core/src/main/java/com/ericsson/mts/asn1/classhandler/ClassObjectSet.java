@@ -28,6 +28,14 @@ public class ClassObjectSet {
     private HashMap<String, ClassObject> localObjects = new HashMap<>();
     private boolean hasEllipsis = false;
 
+    /**
+     * Initialize objectSet by parsing associate context
+     *
+     * @param mainRegistry     main registry
+     * @param classHandler     object set class
+     * @param objectSetContext context
+     * @return object set initialized
+     */
     public ClassObjectSet init(MainRegistry mainRegistry, ClassHandler classHandler, ASN1Parser.ObjectSetContext objectSetContext) {
         this.mainRegistry = mainRegistry;
         this.classType = classHandler;
@@ -45,6 +53,10 @@ public class ClassObjectSet {
         return this;
     }
 
+    /**
+     * Parse context
+     * @param elementSetSpecContext context
+     */
     private void parseElementSetSpecContext(ASN1Parser.ElementSetSpecContext elementSetSpecContext) {
         if (elementSetSpecContext.unions() != null) {
             for (ASN1Parser.IntersectionsContext intersectionsContext : elementSetSpecContext.unions().intersections()) {
@@ -74,11 +86,19 @@ public class ClassObjectSet {
         }
     }
 
+    /**
+     * Open type : Return translator for a given key and name
+     * @param uniqueKey unique key value
+     * @param componentName translator name
+     * @return target translator
+     */
     public AbstractTranslator getTranslatorForField(String uniqueKey, String componentName) {
         ClassObject classObject;
         ClassObjectSet classObjectSet;
         AbstractTranslator abstractTranslator;
+        //Loop
         for (String object : objects) {
+            //Check if the object is local
             classObject = localObjects.get(object);
             if (classObject == null) {
                 classObject = mainRegistry.getClassObject(object);
@@ -89,6 +109,7 @@ public class ClassObjectSet {
                     return abstractTranslator;
                 }
             } else {
+                //if the object is an object set
                 classObjectSet = mainRegistry.getClassObjectSet(object);
                 if (classObjectSet != null) {
                     abstractTranslator = classObjectSet.getTranslatorForField(uniqueKey, componentName);

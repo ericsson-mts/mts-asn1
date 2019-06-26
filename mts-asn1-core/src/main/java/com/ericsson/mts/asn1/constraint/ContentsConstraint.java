@@ -12,6 +12,9 @@ package com.ericsson.mts.asn1.constraint;
 
 import com.ericsson.mts.asn1.translator.AbstractTranslator;
 
+/**
+ * Use when CONTAINING keyword appears
+ */
 public class ContentsConstraint extends AbstractConstraint {
     private final AbstractTranslator contentTranslator;
 

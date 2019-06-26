@@ -19,11 +19,20 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
+/**
+ * Handle keyword CLASS
+ */
 public class ClassHandler {
     private static Logger logger = LoggerFactory.getLogger(ClassHandler.class.getSimpleName());
     private ArrayList<Field> fields = new ArrayList<>();
     private MainRegistry mainRegistry;
 
+    /**
+     * Parse CLASS keyword context
+     *
+     * @param mainRegistry main registry
+     * @param ctx          CLASS keyword context
+     */
     public ClassHandler(MainRegistry mainRegistry, ASN1Parser.ObjectClassDefnContext ctx) {
         this.mainRegistry = mainRegistry;
         ctx.fieldSpec().forEach(fieldSpecContext -> {
@@ -103,6 +112,10 @@ public class ClassHandler {
         }
     }
 
+    /**
+     * Return the unique key syntax or the name otherwise ( example : CODE or code in oss made simple 6)
+     * @return unique key
+     */
     public String getUniqueKeyName() {
         for (Field field : fields) {
             if (field.getQualifier() == FIELDTYPE.UNIQUE) {
@@ -116,6 +129,13 @@ public class ClassHandler {
         throw new RuntimeException("Can't find unique key for class " + toString());
     }
 
+    /**
+     * Use in open type case. Get the translator with an objectSet and identify with a field name and an unique key
+     * @param fieldName open type field name
+     * @param objectSetIdentifier target object set
+     * @param uniqueKey unique key which identify an object
+     * @return open type translator
+     */
     public AbstractTranslator getTypeTranslator(String fieldName, String objectSetIdentifier, String uniqueKey) {
         AbstractTranslator abstractTranslator = mainRegistry.getClassObjectSet(objectSetIdentifier).getTranslatorForField(uniqueKey, fieldName);
         if (abstractTranslator == null) {
@@ -124,6 +144,12 @@ public class ClassHandler {
         return abstractTranslator;
     }
 
+    /**
+     * USe to get translator associate with a field name
+     * @param fieldName field name
+     * @return translator if it's not an open type field, null if it's an open type field or throw an Exception if
+     * field isn't in the class
+     */
     public AbstractTranslator getTypeTranslator(String fieldName) {
         for (Field field : fields) {
             if (fieldName.compareTo(field.getName()) == 0) {
@@ -132,10 +158,14 @@ public class ClassHandler {
                 return field.getType();
             }
         }
-
         throw new RuntimeException("Can't find field " + fieldName);
     }
 
+    /**
+     * For a given field name, get its syntax
+     * @param fieldName field name
+     * @return syntax name
+     */
     public String getSyntaxName(String fieldName) {
         for (Field field : fields) {
             if (fieldName.equals(field.getName())) {
@@ -145,6 +175,10 @@ public class ClassHandler {
         return fieldName;
     }
 
+    /**
+     * Use during classObject parsing.
+     * @return syntax fields
+     */
     public ArrayList<String> getSyntaxFields() {
         ArrayList<String> syntaxFields = new ArrayList<>();
         for (Field field : fields) {
@@ -165,6 +199,9 @@ public class ClassHandler {
         OPTIONAL, UNIQUE, DEFAULT
     }
 
+    /**
+     * Handle field within class
+     */
     private class Field {
         private String name;
         private AbstractTranslator type;

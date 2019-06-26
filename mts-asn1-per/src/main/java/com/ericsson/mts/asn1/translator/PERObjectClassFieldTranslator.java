@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTranslator {
+    //Use for debug
     private static int OPEN_TYPE_TAG = 0;
     private PERTranscoder perTranscoder;
 

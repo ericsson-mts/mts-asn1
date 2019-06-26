@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Use to store context from .asn files which is parse with TopLevelVisitor
+ */
 class IndexingRegistry {
     private Map<String, ASN1Parser.ValueAssignmentContext> valueindicingregistry = new ConcurrentHashMap<>();
     private Map<String, ASN1Parser.TypeAssignmentContext> typeindicingregistry = new ConcurrentHashMap<>();
@@ -129,6 +132,9 @@ class IndexingRegistry {
         return arrayList;
     }
 
+    /**
+     * @return true if all contexts are consume, false otherwise
+     */
     boolean checkRegistry() {
         return valueindicingregistry.isEmpty() && typeindicingregistry.isEmpty() && parameterizedindicingregistry.isEmpty() && objectclassindicingregistry.isEmpty() && objectAssignmentContextHashMap.isEmpty();
     }
