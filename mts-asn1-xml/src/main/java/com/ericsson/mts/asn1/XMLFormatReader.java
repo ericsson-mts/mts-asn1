@@ -33,6 +33,10 @@ public class XMLFormatReader implements FormatReader {
     private Element currentNode;
     private Stack<Element> arrayStack = new Stack<>();
 
+    public XMLFormatReader(Element rootNode, String type) {
+        currentNode = rootNode;
+        ignoredObject = type;
+    }
     public XMLFormatReader(File file, String type) throws Exception {
         this(new FileInputStream(file), type);
     }
@@ -45,7 +49,6 @@ public class XMLFormatReader implements FormatReader {
         dbf.setExpandEntityReferences(false);
         this.currentNode = dbf.newDocumentBuilder().parse(inputStream).getDocumentElement();
         ignoredObject = type;
-
     }
 
     @Override

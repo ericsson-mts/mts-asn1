@@ -20,7 +20,8 @@ class SampleTests extends AbstractTests {
     @BeforeAll
     static void init() {
         try {
-            asn1Translator = new ASN1Translator(new PERTranslatorFactory(true), Collections.singletonList(SampleTests.class.getResourceAsStream("/grammar/sample/examplev2.asn")));
+            asn1Translator = new ASN1Translator(new PERTranslatorFactory(true),
+                    Collections.singletonList(SampleTests.class.getResourceAsStream("/grammar/sample/examplev2.asn")));
         } catch (Exception e) {
             e.printStackTrace();
         }

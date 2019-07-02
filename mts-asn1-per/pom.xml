@@ -14,11 +14,7 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>at.favre.lib</groupId>
-            <artifactId>bytes</artifactId>
-            <version>1.1.0</version>
-        </dependency>
+
         <dependency>
             <groupId>com.ericsson.mts</groupId>
             <artifactId>mts-asn1-core</artifactId>

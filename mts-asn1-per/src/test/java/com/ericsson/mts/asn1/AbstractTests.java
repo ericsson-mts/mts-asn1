@@ -104,7 +104,6 @@ public class AbstractTests {
             while (expectedInputStream.available() != 0) {
                 bitArray1.write(expectedInputStream.read());
             }
-
             assertEquals(bitArray1.getBinaryMessage(), bitArray.getBinaryMessage());
         }
     }
