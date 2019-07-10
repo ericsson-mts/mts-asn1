@@ -126,7 +126,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public boolean booleanValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            String value = getChildNode(getFromStack(currentNode), name).getTextContent();
+            String value = getChildNode(getFromStack(currentNode), name).getTextContent().trim();
             if ("true".equals(value)) {
                 return true;
             } else if ("false".equals(value)) {
@@ -141,7 +141,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public String bitsValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return getChildNode(getFromStack(currentNode), name).getTextContent();
+            return getChildNode(getFromStack(currentNode), name).getTextContent().trim();
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
@@ -157,7 +157,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public BigInteger intValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return new BigInteger(getChildNode(getFromStack(currentNode), name).getTextContent());
+            return new BigInteger(getChildNode(getFromStack(currentNode), name).getTextContent().trim());
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
@@ -177,7 +177,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public String stringValue(String name) {
         if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-            return getChildNode(getFromStack(currentNode), name).getTextContent();
+            return getChildNode(getFromStack(currentNode), name).getTextContent().trim();
         }
         throw new RuntimeException(String.valueOf(currentNode.getNodeType()));
     }
