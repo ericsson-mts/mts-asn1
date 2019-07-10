@@ -19,7 +19,6 @@ import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Map;
 
 public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTranslator {
@@ -32,8 +31,7 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
     }
 
     @Override
-    public void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
-        Map<String, String> registry = getRegister(parameters);
+    public void doEncode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, Map<String, String> registry) throws Exception {
 
         if (constraints.hasSingleValueConstraints()) {
             throw new NotHandledCaseException();
@@ -64,7 +62,10 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
                 int tag = OPEN_TYPE_TAG;
                 OPEN_TYPE_TAG++;
                 logger.trace("Enter open type : tag=" + tag + " , name=" + name);
-                typeTranslator.encode(name, bitArray, reader, translatorContext);
+
+                reader.enterObject(name);
+                typeTranslator.encode(typeTranslator.getName(), bitArray, reader, translatorContext);
+                reader.leaveObject(name);
                 logger.trace("Leave open type : tag=" + tag + " , name=" + name);
                 logger.trace("Open type for field " + name + ": octet length=" + perTranscoder.toByteCount(bitArray.getLength().intValueExact()));
                 perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(perTranscoder.toByteCount((bitArray.getLength()).intValueExact())));
@@ -75,8 +76,7 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
     }
 
     @Override
-    public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
-        Map<String, String> registry = getRegister(parameters);
+    public void doDecode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws Exception {
 
         if (constraints.hasSingleValueConstraints()) {
             throw new NotHandledCaseException();
@@ -105,7 +105,9 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
                 }
 
                 int n = perTranscoder.decodeLengthDeterminant(s);
-                typeTranslator.decode(name, s, writer, translatorContext);
+                writer.enterObject(name);
+                typeTranslator.decode(typeTranslator.getName(), s, writer, translatorContext);
+                writer.leaveObject(name);
             }
         }
     }
