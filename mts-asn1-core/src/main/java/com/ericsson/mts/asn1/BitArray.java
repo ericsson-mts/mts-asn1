@@ -74,6 +74,10 @@ public class BitArray {
         return FormatWriter.bytesToHex(outputStream.toByteArray());
     }
 
+    public byte[] getBinaryArray() {
+        return outputStream.toByteArray();
+    }
+
     public String getActualBinaryMessage() {
         //Use for debug
         return FormatWriter.bytesToHex(outputStream.toByteArray()) + Integer.toString(currentByte, 16);

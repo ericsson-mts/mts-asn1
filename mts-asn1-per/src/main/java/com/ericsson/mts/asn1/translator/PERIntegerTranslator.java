@@ -31,7 +31,6 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
     public void doEncode(BitArray s, BigInteger value) throws IOException {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         BigInteger lb = null, ub = null;
-
         if (constraints.hasSingleValueConstraints()) {
             throw new NotHandledCaseException();
         }

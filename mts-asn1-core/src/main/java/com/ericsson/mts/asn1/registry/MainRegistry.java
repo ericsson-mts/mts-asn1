@@ -18,8 +18,7 @@ import com.ericsson.mts.asn1.constant.AbstractConstant;
 import com.ericsson.mts.asn1.constant.IntegerConstant;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
-import com.ericsson.mts.asn1.translator.AbstractTranslator;
-import com.ericsson.mts.asn1.translator.ReferenceTranslator;
+import com.ericsson.mts.asn1.translator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,8 +118,7 @@ public class MainRegistry {
         ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
         if (parameterizedAssignmentContext != null) {
             if (parameterizedAssignmentContext.asnType() != null) {
-                abstractTranslator = createTranslator(parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
-                abstractTranslator.setName(identifier);
+                abstractTranslator = createTranslator(identifier, parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
                 typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
                 return abstractTranslator;
             } else {
@@ -132,7 +130,7 @@ public class MainRegistry {
 
     public AbstractTranslator getTranslator(ASN1Parser.AsnTypeContext asnTypeContext) {
         if (asnTypeContext.builtinType() != null) {
-            return createTranslator(asnTypeContext.builtinType(), asnTypeContext.constraint());
+            return createTranslator(null, asnTypeContext.builtinType(), asnTypeContext.constraint());
         } else {
             String identifier = asnTypeContext.referencedType().definedType().IDENTIFIER(0).getText();
             AbstractTranslator abstractTranslator = typeTranslatorParsedRegistry.get(identifier);
@@ -153,8 +151,7 @@ public class MainRegistry {
                 ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
                 if (parameterizedAssignmentContext != null) {
                     if (parameterizedAssignmentContext.asnType() != null) {
-                        abstractTranslator = createTranslator(parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
-                        abstractTranslator.setName(identifier);
+                        abstractTranslator = createTranslator(identifier, parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
                         typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
                         return abstractTranslator;
                     } else {
@@ -164,57 +161,89 @@ public class MainRegistry {
                 throw new NullPointerException(identifier);
             }
             if (typeAssignmentContext.asnType().builtinType() != null) {
-                abstractTranslator = createTranslator(typeAssignmentContext.asnType().builtinType(), typeAssignmentContext.asnType().constraint());
+                abstractTranslator = createTranslator(identifier, typeAssignmentContext.asnType().builtinType(), typeAssignmentContext.asnType().constraint());
             } else {
                 abstractTranslator = getTranslator(typeAssignmentContext.asnType());
             }
-            abstractTranslator.setName(identifier);
             typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
             return abstractTranslator;
         }
     }
 
-    private AbstractTranslator createTranslator(ASN1Parser.AsnTypeContext asnTypeContext, ASN1Parser.ParameterListContext parameterListContext) {
+    private AbstractTranslator createTranslator(String translatorIdentifier, ASN1Parser.AsnTypeContext asnTypeContext, ASN1Parser.ParameterListContext parameterListContext) {
         if (asnTypeContext.builtinType() != null) {
             if (asnTypeContext.builtinType().sequenceOfType() != null) {
-                return abstractTranslatorFactory.sequenceOfTranslator().init(this, asnTypeContext.builtinType().sequenceOfType(), parameterListContext);
+                AbstractSequenceOfTranslator abstractTranslator = abstractTranslatorFactory.sequenceOfTranslator();
+                abstractTranslator.setName(translatorIdentifier);
+                return abstractTranslator.init(this, asnTypeContext.builtinType().sequenceOfType(), parameterListContext);
+
             } else if (asnTypeContext.builtinType().sequenceType() != null) {
-                return abstractTranslatorFactory.sequenceTranslator().init(this, asnTypeContext.builtinType().sequenceType(), parameterListContext);
+                AbstractSequenceTranslator abstractSequenceTranslator = abstractTranslatorFactory.sequenceTranslator();
+                abstractSequenceTranslator.setName(translatorIdentifier);
+                return abstractSequenceTranslator.init(this, asnTypeContext.builtinType().sequenceType(), parameterListContext);
             } else {
                 throw new NotHandledCaseException(asnTypeContext.getText());
             }
         } else {
-            return new ReferenceTranslator().init(this, asnTypeContext.referencedType(), parameterListContext);
+            ReferenceTranslator referenceTranslator = new ReferenceTranslator();
+            referenceTranslator.setName(translatorIdentifier);
+            return referenceTranslator.init(this, asnTypeContext.referencedType(), parameterListContext);
         }
     }
 
-    private AbstractTranslator createTranslator(ASN1Parser.BuiltinTypeContext builtinTypeContext, List<ASN1Parser.ConstraintContext> constraintContexts) throws NotHandledCaseException {
+    private AbstractTranslator createTranslator(String identifier, ASN1Parser.BuiltinTypeContext builtinTypeContext, List<ASN1Parser.ConstraintContext> constraintContexts) throws NotHandledCaseException {
         if (builtinTypeContext.octetStringType() != null) {
-            return abstractTranslatorFactory.octetStringTranslator().init(this, constraintContexts);
+            AbstractOctetStringTranslator octetStringTranslator = abstractTranslatorFactory.octetStringTranslator();
+            octetStringTranslator.setName(identifier);
+            return octetStringTranslator.init(this, constraintContexts);
         } else if (builtinTypeContext.bitStringType() != null) {
-            return abstractTranslatorFactory.bitStringTranslator().init(builtinTypeContext.bitStringType(), this, constraintContexts);
+            AbstractBitStringTranslator bitStringTranslator = abstractTranslatorFactory.bitStringTranslator();
+            bitStringTranslator.setName(identifier);
+            return bitStringTranslator.init(builtinTypeContext.bitStringType(), this, constraintContexts);
         } else if (builtinTypeContext.choiceType() != null) {
-            return abstractTranslatorFactory.choiceTranslator().init(this, builtinTypeContext.choiceType());
+            AbstractChoiceTranslator choiceTranslator = abstractTranslatorFactory.choiceTranslator();
+            choiceTranslator.setName(identifier);
+            return choiceTranslator.init(this, builtinTypeContext.choiceType());
         } else if (builtinTypeContext.enumeratedType() != null) {
-            return abstractTranslatorFactory.enumeratedTranslator().init(builtinTypeContext.enumeratedType());
+            AbstractEnumeratedTranslator enumeratedTranslator = abstractTranslatorFactory.enumeratedTranslator();
+            enumeratedTranslator.setName(identifier);
+            return enumeratedTranslator.init(builtinTypeContext.enumeratedType());
         } else if (builtinTypeContext.integerType() != null) {
-            return abstractTranslatorFactory.integerTranslator().init(this, builtinTypeContext.integerType(), constraintContexts);
+            AbstractIntegerTranslator integerTranslator = abstractTranslatorFactory.integerTranslator();
+            integerTranslator.setName(identifier);
+            return integerTranslator.init(this, builtinTypeContext.integerType(), constraintContexts);
         } else if (builtinTypeContext.sequenceType() != null) {
-            return abstractTranslatorFactory.sequenceTranslator().init(this, builtinTypeContext.sequenceType());
+            AbstractSequenceTranslator sequenceTranslator = abstractTranslatorFactory.sequenceTranslator();
+            sequenceTranslator.setName(identifier);
+            return sequenceTranslator.init(this, builtinTypeContext.sequenceType());
         } else if (builtinTypeContext.sequenceOfType() != null) {
-            return abstractTranslatorFactory.sequenceOfTranslator().init(this, builtinTypeContext.sequenceOfType());
+            AbstractSequenceOfTranslator sequenceOfTranslator = abstractTranslatorFactory.sequenceOfTranslator();
+            sequenceOfTranslator.setName(identifier);
+            return sequenceOfTranslator.init(this, builtinTypeContext.sequenceOfType());
         } else if (builtinTypeContext.objectClassFieldType() != null) {
-            return abstractTranslatorFactory.objectClassFieldTypeTranslator().init(this, builtinTypeContext.objectClassFieldType(), constraintContexts);
+            AbstractObjectClassFieldTranslator objectClassFieldTranslator = abstractTranslatorFactory.objectClassFieldTypeTranslator();
+            objectClassFieldTranslator.setName(identifier);
+            return objectClassFieldTranslator.init(this, builtinTypeContext.objectClassFieldType(), constraintContexts);
         } else if (builtinTypeContext.characterStringType() != null) {
-            return abstractTranslatorFactory.characterStringTranslator().init(this, builtinTypeContext.characterStringType(), constraintContexts);
+            AbstractRestrictedCharacterStringTranslator restrictedCharacterStringTranslator = abstractTranslatorFactory.characterStringTranslator();
+            restrictedCharacterStringTranslator.setName(identifier);
+            return restrictedCharacterStringTranslator.init(this, builtinTypeContext.characterStringType(), constraintContexts);
         } else if (builtinTypeContext.realType() != null) {
-            return abstractTranslatorFactory.realTranslator();
+            AbstractRealTranslator realTranslator = abstractTranslatorFactory.realTranslator();
+            realTranslator.setName(identifier);
+            return realTranslator;
         } else if (builtinTypeContext.BOOLEAN_LITERAL() != null) {
-            return abstractTranslatorFactory.booleanTranslator();
+            AbstractBooleanTranslator abstractBooleanTranslator = abstractTranslatorFactory.booleanTranslator();
+            abstractBooleanTranslator.setName(identifier);
+            return abstractBooleanTranslator;
         } else if (builtinTypeContext.NULL_LITERAL() != null) {
-            return abstractTranslatorFactory.nullTranslator();
+            NullTranslator nullTranslator = abstractTranslatorFactory.nullTranslator();
+            nullTranslator.setName(identifier);
+            return nullTranslator;
         } else if (builtinTypeContext.objectidentifiertype() != null) {
-            return abstractTranslatorFactory.objectIdentifierTranslator();
+            AbstractObjectIdentifierTranslator objectIdentifierTranslator = abstractTranslatorFactory.objectIdentifierTranslator();
+            objectIdentifierTranslator.setName(identifier);
+            return objectIdentifierTranslator;
         } else {
             throw new NotHandledCaseException("Can't create a translator for " + builtinTypeContext.getText());
         }

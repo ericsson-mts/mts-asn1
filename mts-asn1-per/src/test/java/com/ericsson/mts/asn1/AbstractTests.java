@@ -23,7 +23,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
@@ -40,6 +42,8 @@ public class AbstractTests {
     void test(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
         testEncode(type, binaryPath, expectedJsonPath, expectedXmlPath);
         testDecode(type, binaryPath, expectedJsonPath, expectedXmlPath);
+
+//        updateDataformatFileTest(type, binaryPath, expectedJsonPath, expectedXmlPath);
     }
 
     void testDecode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
@@ -105,6 +109,45 @@ public class AbstractTests {
                 bitArray1.write(expectedInputStream.read());
             }
             assertEquals(bitArray1.getBinaryMessage(), bitArray.getBinaryMessage());
+        }
+    }
+
+    /**
+     * Update xml and json test file in the target folder.
+     * <p>
+     * WARNING : Be sure that encoding and decoding are correct before using this method.
+     *
+     * @param type           Entry point for a given protocol (protocol dependant)
+     * @param binaryPath     File binary path
+     * @param targetJsonPath Target JSON file
+     * @param targetXmlPath  Target XML file
+     * @throws Exception Encoding exception
+     */
+    void updateDataformatFileTest(String type, String binaryPath, String targetJsonPath, String targetXmlPath) throws Exception {
+        //JSON decode test
+        {
+            JSONFormatWriter formatWriter = new JSONFormatWriter();
+            asn1Translator.decode(type, this.getClass().getResourceAsStream(binaryPath), formatWriter);
+            PrintWriter printWriter = new PrintWriter(new File(this.getClass().getResource(targetJsonPath).getPath()));
+            printWriter.print(writer.writeValueAsString(formatWriter.getJsonNode()));
+            printWriter.close();
+        }
+
+        //XML decode test
+        {
+            XMLFormatWriter formatWriter = new XMLFormatWriter();
+            asn1Translator.decode(type, this.getClass().getResourceAsStream(binaryPath), formatWriter);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(formatWriter.getResult()), new StreamResult(writer));
+            PrintWriter printWriter = new PrintWriter(new File(this.getClass().getResource(targetXmlPath).getPath()));
+            printWriter.print(writer.toString());
+            printWriter.close();
         }
     }
 

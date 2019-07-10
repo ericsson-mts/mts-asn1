@@ -33,8 +33,6 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
     @Override
     public void doEncode(BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> inputFieldList, Map<String, String> registry) throws Exception {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
-
-
         if (hasEllipsis || optionalExtensionMarker || (extensionAndException != -1)) {
             int isAdditionnalValuePresent = 0;
             for (Field field : additionnalFieldList) {
@@ -45,7 +43,6 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
             }
             s.writeBit(isAdditionnalValuePresent);
         }
-
 
         //Build preamble (bit-map)
         BigInteger preambleLength = BigInteger.ZERO;

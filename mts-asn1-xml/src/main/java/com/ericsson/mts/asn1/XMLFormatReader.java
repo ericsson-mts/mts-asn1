@@ -37,6 +37,7 @@ public class XMLFormatReader implements FormatReader {
         currentNode = rootNode;
         ignoredObject = type;
     }
+
     public XMLFormatReader(File file, String type) throws Exception {
         this(new FileInputStream(file), type);
     }

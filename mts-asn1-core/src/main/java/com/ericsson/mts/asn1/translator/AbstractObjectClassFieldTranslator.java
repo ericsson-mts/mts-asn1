@@ -11,13 +11,19 @@
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.ASN1Parser;
+import com.ericsson.mts.asn1.BitArray;
+import com.ericsson.mts.asn1.BitInputStream;
+import com.ericsson.mts.asn1.TranslatorContext;
 import com.ericsson.mts.asn1.classhandler.ClassHandler;
 import com.ericsson.mts.asn1.constraint.Constraints;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
+import com.ericsson.mts.asn1.factory.FormatReader;
+import com.ericsson.mts.asn1.factory.FormatWriter;
 import com.ericsson.mts.asn1.registry.MainRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractObjectClassFieldTranslator extends AbstractTranslator {
     protected ClassHandler classHandler;
@@ -49,6 +55,23 @@ public abstract class AbstractObjectClassFieldTranslator extends AbstractTransla
         parameters.add(new Parameter("classObjectSet", constraints.getObjectSetName()));
         return this;
     }
+
+
+    @Override
+    public final void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
+        doEncode(name, s, reader, translatorContext, getRegister(parameters));
+    }
+
+    @Override
+    public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
+        doDecode(name, s, writer, translatorContext, getRegister(parameters));
+    }
+
+    public abstract void doEncode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, Map<String, String> registry) throws Exception;
+
+
+    protected abstract void doDecode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws Exception;
+
 
     @Override
     public String toString() {
