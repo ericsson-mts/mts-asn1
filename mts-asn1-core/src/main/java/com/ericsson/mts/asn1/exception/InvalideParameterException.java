@@ -10,8 +10,8 @@
 
 package com.ericsson.mts.asn1.exception;
 
-public class UnknownIdentifier extends RuntimeException {
-    public UnknownIdentifier(String message) {
+public class InvalideParameterException extends RuntimeException {
+    public InvalideParameterException(String message) {
         super(message);
     }
 }

@@ -16,6 +16,7 @@ import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.TranslatorContext;
 import com.ericsson.mts.asn1.classhandler.ClassHandler;
 import com.ericsson.mts.asn1.constraint.Constraints;
+import com.ericsson.mts.asn1.exception.InvalideParameterException;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
@@ -84,7 +85,7 @@ public abstract class AbstractObjectClassFieldTranslator extends AbstractTransla
     public List<String> getParameters() {
         List<String> parameterList = new ArrayList<>();
         if (constraints.getObjectSetName() == null) {
-            throw new RuntimeException();
+            throw new InvalideParameterException("Need an object set name");
         }
         parameterList.add(constraints.getObjectSetName());
         return parameterList;

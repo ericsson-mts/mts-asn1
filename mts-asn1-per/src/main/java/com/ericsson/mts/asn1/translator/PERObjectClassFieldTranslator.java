@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTranslator {
     //Use for debug
-    private static int OPEN_TYPE_TAG = 0;
+    private static int openTypeTag = 0;
     private PERTranscoder perTranscoder;
 
     public PERObjectClassFieldTranslator(PERTranscoder perTranscoder) {
@@ -39,9 +39,6 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
 
         if (constraints.getTargetComponent() == null) {
             AbstractTranslator typeTranslator = classHandler.getTypeTranslator(fieldName);
-            if (typeTranslator == null) {
-                throw new RuntimeException("Unknown field " + fieldName + " in class " + classHandler.toString());
-            }
             typeTranslator.encode(name, s, reader, translatorContext);
         } else {
             AbstractTranslator typeTranslator = classHandler.getTypeTranslator(fieldName);
@@ -50,7 +47,7 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
             } else {
                 String uniqueKey = translatorContext.get(constraints.getTargetComponent());
                 if (uniqueKey == null) {
-                    throw new RuntimeException("Unique key not found in context for field " + fieldName + " target component " + constraints.getTargetComponent());
+                    throw new NullPointerException("Unique key not found in context for field " + fieldName + " target component " + constraints.getTargetComponent());
                 }
 
                 //OpenType
@@ -59,14 +56,14 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
                 if (typeTranslator == null) {
                     throw new RuntimeException("Unknown field " + fieldName + " in object with " + toString());
                 }
-                int tag = OPEN_TYPE_TAG;
-                OPEN_TYPE_TAG++;
-                logger.trace("Enter open type : tag=" + tag + " , name=" + this.name);
+                int tag = openTypeTag;
+                openTypeTag++;
+                logger.trace("Enter open type : tag={} , name={}", tag, this.name);
 
                 reader.enterObject(name);
                 typeTranslator.encode(typeTranslator.getName(), bitArray, reader, translatorContext);
-                logger.trace("Leave open type : tag=" + tag + " , name=" + name);
-                logger.trace("Open type for field " + name + ": octet length=" + perTranscoder.toByteCount(bitArray.getLength().intValueExact()));
+                logger.trace("Leave open type : tag={} , name={}", tag, name);
+                logger.trace("Open type for field {} : octet length={}", name, perTranscoder.toByteCount(bitArray.getLength().intValueExact()));
                 perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(perTranscoder.toByteCount((bitArray.getLength()).intValueExact())));
                 perTranscoder.skipAlignedBits(bitArray);
                 s.concatBitArray(bitArray);
@@ -84,9 +81,6 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
 
         if (constraints.getTargetComponent() == null) {
             AbstractTranslator typeTranslator = classHandler.getTypeTranslator(fieldName);
-            if (typeTranslator == null) {
-                throw new RuntimeException("Unknown field " + fieldName + " in class " + classHandler.toString());
-            }
             typeTranslator.decode(name, s, writer, translatorContext);
         } else {
             AbstractTranslator typeTranslator = classHandler.getTypeTranslator(fieldName);
@@ -95,16 +89,14 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
             } else {
                 String uniqueKey = translatorContext.get(constraints.getTargetComponent());
                 if (uniqueKey == null) {
-                    throw new RuntimeException("Unique key not found in context for field " + fieldName + " target component " + constraints.getTargetComponent());
+                    throw new NullPointerException("Unique key not found in context for field " + fieldName + " target component " + constraints.getTargetComponent());
                 }
 
                 //OpenType
                 typeTranslator = classHandler.getTypeTranslator(fieldName, registry.get(constraints.getObjectSetName()), uniqueKey);
-                if (typeTranslator == null) {
-                    throw new RuntimeException("Unknown field " + fieldName + " in object with " + toString());
+                if (perTranscoder.decodeLengthDeterminant(s) >= 16384) {
+                    throw new NotHandledCaseException("Open type fragmentation");
                 }
-
-                int n = perTranscoder.decodeLengthDeterminant(s);
                 writer.enterObject(name);
                 typeTranslator.decode(typeTranslator.getName(), s, writer, translatorContext);
                 writer.leaveObject(name);

@@ -26,7 +26,7 @@ import java.util.HashSet;
 
 class IdentifierVisitor {
     private IdentifierVisitorInner identifierVisitorInner;
-    private HashSet<String> insertedName = new HashSet<String>();
+    private HashSet<String> insertedName = new HashSet<>();
 
     IdentifierVisitor(TypeSpec.Builder typeSpec) {
         identifierVisitorInner = new IdentifierVisitorInner(typeSpec);

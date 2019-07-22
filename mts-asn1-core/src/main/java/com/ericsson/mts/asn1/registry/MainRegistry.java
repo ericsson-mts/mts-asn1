@@ -17,7 +17,7 @@ import com.ericsson.mts.asn1.classhandler.ClassObjectSet;
 import com.ericsson.mts.asn1.constant.AbstractConstant;
 import com.ericsson.mts.asn1.constant.IntegerConstant;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
-import com.ericsson.mts.asn1.exception.UnknownIdentifier;
+import com.ericsson.mts.asn1.exception.UnknownIdentifierException;
 import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
 import com.ericsson.mts.asn1.translator.*;
 import org.slf4j.Logger;
@@ -95,7 +95,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getConstantsIdentifier();
         for (String identifier : identifiers) {
             if (null == getConstantFromName(identifier)) {
-                throw new UnknownIdentifier(identifier);
+                throw new UnknownIdentifierException(identifier);
             }
         }
     }
@@ -163,7 +163,7 @@ public class MainRegistry {
                 throw new NotHandledCaseException(parameterizedAssignmentContext.getChild(2).getClass().getSimpleName());
             }
         }
-        throw new UnknownIdentifier(identifier);
+        throw new UnknownIdentifierException(identifier);
     }
 
     private AbstractTranslator createTranslator(String translatorIdentifier, ASN1Parser.AsnTypeContext asnTypeContext, ASN1Parser.ParameterListContext parameterListContext) {
@@ -241,7 +241,7 @@ public class MainRegistry {
             objectIdentifierTranslator.setName(identifier);
             return objectIdentifierTranslator;
         } else {
-            throw new UnknownIdentifier(builtinTypeContext.getText());
+            throw new UnknownIdentifierException(builtinTypeContext.getText());
         }
     }
 
@@ -249,14 +249,14 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getTranslatorsIdentifier();
         for (String identifier : identifiers) {
             if (null == getTranslatorFromName(identifier)) {
-                throw new UnknownIdentifier(identifier);
+                throw new UnknownIdentifierException(identifier);
             }
         }
 
         identifiers = indexingRegistry.getParameterizedTranslatorsIdentifier();
         for (String identifier : identifiers) {
             if (null == getTranslatorFromName(identifier)) {
-                throw new UnknownIdentifier(identifier);
+                throw new UnknownIdentifierException(identifier);
             }
         }
     }
@@ -283,7 +283,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getObjectsContextdentifier();
         for (String identifier : identifiers) {
             if (null == getClassObject(identifier)) {
-                throw new UnknownIdentifier(identifier);
+                throw new UnknownIdentifierException(identifier);
             }
         }
     }
@@ -298,11 +298,11 @@ public class MainRegistry {
 
         ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
         if (null == parameterizedAssignmentContext) {
-            throw new UnknownIdentifier(identifier);
+            throw new UnknownIdentifierException(identifier);
         }
 
         if (null == parameterizedAssignmentContext.objectSet() || null == parameterizedAssignmentContext.definedObjectClass()) {
-            throw new UnknownIdentifier(identifier);
+            throw new UnknownIdentifierException(identifier);
         } else {
             classObjectSet = new ClassObjectSet().init(this, this.getClassHandler(parameterizedAssignmentContext.definedObjectClass().getText()), parameterizedAssignmentContext.objectSet());
             classObjectSetParsedRegistry.add(identifier, classObjectSet);
@@ -314,7 +314,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getObjectSetAssignment();
         for (String identifier : identifiers) {
             if (null == getClassObjectSet(identifier)) {
-                throw new UnknownIdentifier(identifier);
+                throw new UnknownIdentifierException(identifier);
             }
         }
     }
@@ -323,7 +323,7 @@ public class MainRegistry {
 
     public ClassHandler getClassHandler(String identifier) {
         if (null == identifier) {
-            throw new UnknownIdentifier(identifier);
+            throw new UnknownIdentifierException(identifier);
         }
         ClassHandler classHandler = classHandlerParsedRegistry.get(identifier);
         if (null != classHandler) {
@@ -343,7 +343,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getClassHandlersdentifier();
         for (String identifier : identifiers) {
             if (null == getClassHandler(identifier)) {
-                throw new UnknownIdentifier(identifier);
+                throw new UnknownIdentifierException(identifier);
             }
         }
     }
