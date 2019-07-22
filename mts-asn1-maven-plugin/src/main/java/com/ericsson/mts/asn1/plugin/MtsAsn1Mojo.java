@@ -8,28 +8,44 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Test;
+package com.ericsson.mts.asn1.plugin;
 
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+@Mojo(name = "generateJavaFile")
+public class MtsAsn1Mojo extends AbstractMojo {
+    @Parameter(defaultValue = "CDRConstants")
+    private String className;
 
-public class ConstantsGeneratorSampleTest {
+    @Parameter(defaultValue = "target/generated-sources")
+    private String outputFile;
 
-    @Test
-    void testSample() throws IOException {
-        List<String> grammarFiles = new ArrayList<>();
-        grammarFiles.add("/grammar/sample/examplev2.asn");
-        ConstantsGenerator constantsGenerator = new ConstantsGenerator("SampleConstants",
-                grammarFiles,
-                "");
-        String result = constantsGenerator.getCode();
-        String expected = IOUtils.toString(this.getClass().getResourceAsStream("/result/SampleConstants.java"), StandardCharsets.UTF_8);
-        assertEquals(result, expected);
+    @Parameter
+    private String outputPackage;
+
+    @Parameter
+    private List<String> grammarFiles;
+
+    public void execute() throws MojoExecutionException {
+        if (outputPackage == null) {
+            outputPackage = "";
+        }
+
+        ConstantsGenerator constantsGenerator = null;
+        try {
+            constantsGenerator = new ConstantsGenerator(className,
+                    grammarFiles,
+                    outputPackage);
+            constantsGenerator.writeFile(new File(outputFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
 }

@@ -8,10 +8,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package com.ericsson.mts.asn1.plugin;
+
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
 import javax.lang.model.element.Modifier;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -23,15 +27,19 @@ public class ConstantsGenerator {
         TypeSpec.Builder builder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         for (String grammarFile : grammarFiles) {
-            builder = new IdentifierVisitor(builder).beginVisit(this.getClass().getResourceAsStream(grammarFile));
+            builder = new IdentifierVisitor(builder).beginVisit(new FileInputStream(new File(grammarFile)));
         }
-
         this.javaFile = JavaFile.builder(generatedPackageName, builder.build())
                 .build();
     }
 
     public void writeFile(Path filePath) throws IOException {
         javaFile.writeTo(filePath);
+    }
+
+    public void writeFile(File file) throws IOException {
+        file.mkdirs();
+        javaFile.writeTo(file);
     }
 
     public String getCode() {

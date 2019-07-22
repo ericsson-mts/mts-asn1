@@ -125,7 +125,7 @@ public class PERTranscoder {
 
         BigInteger len;
         if (max.compareTo(BigInteger.valueOf(0xFFFF)) <= 0) {
-            // 10.9. NOTE 2 � (Tutorial) In the case of the ALIGNED variant
+            // 10.9. NOTE 2  (Tutorial) In the case of the ALIGNED variant
             // if the length count is bounded above by an upper bound that is
             // less than 64K, then the constrained whole number encoding
             // is used for the length.

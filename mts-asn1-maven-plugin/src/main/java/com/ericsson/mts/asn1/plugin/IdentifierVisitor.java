@@ -8,6 +8,8 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package com.ericsson.mts.asn1.plugin;
+
 import com.ericsson.mts.asn1.ASN1Lexer;
 import com.ericsson.mts.asn1.ASN1Parser;
 import com.ericsson.mts.asn1.ASN1ParserBaseVisitor;
@@ -21,103 +23,75 @@ import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Stack;
 
-public class IdentifierVisitor {
+class IdentifierVisitor {
     private IdentifierVisitorInner identifierVisitorInner;
-    private Stack<String> parentNameStack = new Stack<>();
-    private HashSet<String> insertedName = new HashSet<String>() {
-        @Override
-        public boolean add(String o) {
-            if (this.contains(o)) {
-                throw new RuntimeException();
-            }
-            return super.add(o);
-        }
-    };
+    private HashSet<String> insertedName = new HashSet<String>();
 
-    public IdentifierVisitor(TypeSpec.Builder typeSpec) {
+    IdentifierVisitor(TypeSpec.Builder typeSpec) {
         identifierVisitorInner = new IdentifierVisitorInner(typeSpec);
     }
 
-    public TypeSpec.Builder beginVisit(InputStream stream) throws IOException {
+    TypeSpec.Builder beginVisit(InputStream stream) throws IOException {
         return identifierVisitorInner.beginVisit(stream);
     }
 
 
     private class IdentifierVisitorInner extends ASN1ParserBaseVisitor {
-
         private TypeSpec.Builder builder;
 
+        /**
+         * Constructor
+         *
+         * @param builder javapoet builder
+         */
         IdentifierVisitorInner(TypeSpec.Builder builder) {
             this.builder = builder;
         }
 
+        /**
+         * Visit asn file and return completed builder
+         * @param stream asn file
+         * @return javapoet builder
+         * @throws IOException output file error
+         */
         TypeSpec.Builder beginVisit(InputStream stream) throws IOException {
             CharStream inputStream = CharStreams.fromStream(stream);
             ASN1Lexer asn1Lexer = new ASN1Lexer(inputStream);
             CommonTokenStream commonTokenStream = new CommonTokenStream(asn1Lexer);
             ASN1Parser asn1Parser = new ASN1Parser(commonTokenStream);
             visitModuleDefinition(asn1Parser.moduleDefinition());
-            if (!parentNameStack.empty()) {
-                throw new RuntimeException();
-            }
             return builder;
         }
 
-        @Override
-        public Object visitAssignment(ASN1Parser.AssignmentContext ctx) {
-            addConstant(ctx.IDENTIFIER().getText(), ctx.IDENTIFIER().getText());
-            parentNameStack.push(ctx.IDENTIFIER().getText());
-            Object o = super.visitAssignment(ctx);
-            if (!ctx.IDENTIFIER().getText().equals(parentNameStack.pop())) {
-                throw new RuntimeException();
-            }
-            return o;
-        }
-
-        /***** Fields *****/
 
         @Override
         public Object visitNamedNumber(ASN1Parser.NamedNumberContext ctx) {
             addField(ctx.IDENTIFIER().getText(), ctx.IDENTIFIER().getText());
-            parentNameStack.push(addParentName(ctx.IDENTIFIER().getText()));
-            Object o = super.visitNamedNumber(ctx);
-            parentNameStack.pop();
-            return o;
+            return super.visitNamedNumber(ctx);
         }
+
 
         @Override
         public Object visitNamedType(ASN1Parser.NamedTypeContext ctx) {
             addField(ctx.IDENTIFIER().getText(), ctx.IDENTIFIER().getText());
-            parentNameStack.push(addParentName(ctx.IDENTIFIER().getText()));
-            Object o = super.visitNamedType(ctx);
-            parentNameStack.pop();
-            return o;
+            return super.visitNamedType(ctx);
         }
 
-        /***** Format *****/
-
-        private void addConstant(String constantName, String constantValue) {
-            String inputName = constantName.replace("-", "_").toUpperCase();
-            insertedName.add(inputName);
-            builder.addField(FieldSpec.builder(String.class, inputName)
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("$S", constantValue)
-                    .build());
-        }
-
+        /**
+         * add a field to javapoet Builder
+         * @param fieldName name of the field
+         * @param fieldValue value of the field
+         */
         private void addField(String fieldName, String fieldValue) {
-            String inputName = addParentName(fieldName).replace("-", "_").toUpperCase();
-            insertedName.add(inputName);
-            builder.addField(FieldSpec.builder(String.class, inputName)
-                    .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
-                    .initializer("$S", fieldValue)
-                    .build());
-        }
-
-        private String addParentName(String fieldName) {
-            return parentNameStack.peek() + "." + fieldName;
+            String inputName = fieldName.replace("-", "_").toUpperCase();
+            if (!insertedName.contains(fieldName)) {
+                insertedName.add(fieldName);
+                builder.addField(FieldSpec.builder(String.class, inputName)
+                        .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                        .initializer("$S", fieldValue)
+                        .build());
+            }
         }
     }
 }

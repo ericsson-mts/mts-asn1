@@ -25,7 +25,7 @@
         <module>mts-asn1-json</module>
         <module>mts-asn1-xml</module>
         <module>mts-asn1-per</module>
-        <module>mts-asn1-plugin</module>
+        <module>mts-asn1-maven-plugin</module>
     </modules>
 
     <properties>
