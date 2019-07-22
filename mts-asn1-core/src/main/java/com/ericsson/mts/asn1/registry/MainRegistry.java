@@ -20,8 +20,6 @@ import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.exception.UnknownIdentifierException;
 import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
 import com.ericsson.mts.asn1.translator.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -42,8 +40,6 @@ public class MainRegistry {
     private ParsedRegistry<ClassObject> classObjectParsedRegistry = new ParsedRegistry<>();
     //Object set
     private ParsedRegistry<ClassObjectSet> classObjectSetParsedRegistry = new ParsedRegistry<>();
-
-    private Logger logger = LoggerFactory.getLogger(MainRegistry.class.getSimpleName());
 
     public MainRegistry(AbstractTranslatorFactory abstractTranslatorFactory) {
         this.abstractTranslatorFactory = abstractTranslatorFactory;
@@ -323,7 +319,7 @@ public class MainRegistry {
 
     public ClassHandler getClassHandler(String identifier) {
         if (null == identifier) {
-            throw new UnknownIdentifierException(identifier);
+            throw new NullPointerException();
         }
         ClassHandler classHandler = classHandlerParsedRegistry.get(identifier);
         if (null != classHandler) {

@@ -41,8 +41,8 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
         }
 
         if (constraints.isExtensible()) {
-            if (value.compareTo(lb) < 0 || value.compareTo(ub) > 0) {
-                //Look at 13.2.6 b) before removing this exception !
+            if ((lb != null && value.compareTo(lb) < 0) || (ub != null && value.compareTo(ub) > 0)) {
+                //WARNING : Look at 13.2.6 b) before removing this exception !
                 throw new NotHandledCaseException();
             } else {
                 s.writeBit(0);

@@ -13,6 +13,8 @@ package com.ericsson.mts.asn1.translator;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.PERTranscoder;
+import com.ericsson.mts.asn1.exception.NotHandledCaseException;
+import com.ericsson.mts.asn1.exception.UnknownIdentifierException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 import org.javatuples.Pair;
@@ -30,15 +32,15 @@ public class PERChoiceTranslator extends AbstractChoiceTranslator {
     @Override
     public void doEncode(BitArray s, FormatReader reader, String choiceValue) throws Exception {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
-        int index = -1;
-        AbstractTranslator abstractTranslator = null;
+        int index;
+        AbstractTranslator abstractTranslator;
 
         if (fieldList.size() == 1) {
             if (fieldList.get(0).getValue0().equals(choiceValue)) {
                 fieldList.get(0).getValue1().encode(choiceValue, s, reader, null);
                 return;
             } else {
-                throw new RuntimeException("Wrong choice value : " + choiceValue);
+                throw new UnknownIdentifierException(choiceValue + " isn't part of translator " + this.name);
             }
         }
 
@@ -55,7 +57,7 @@ public class PERChoiceTranslator extends AbstractChoiceTranslator {
             }
         }
         //Encode optional extension bit 1 also !
-        throw new RuntimeException("Need length to encode additional extension");
+        throw new NotHandledCaseException("Need length to encode additional extension");
     }
 
     @Override

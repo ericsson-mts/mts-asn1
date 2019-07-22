@@ -99,7 +99,7 @@ public class ClassObject {
     private void parseUnknowFields(List<String> unknowFields) {
         int current_component = 0;
         int consumed_component = 0;
-        String current_component_string = "";
+        String current_component_string;
         ArrayList<String> classfields = classtype.getSyntaxFields();
         HashMap<String, String> row = new HashMap<>();
         while (consumed_component < unknowFields.size()) {

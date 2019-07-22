@@ -286,8 +286,6 @@ public class Constraints {
      * @param registry parameter registry
      */
     public void updateSingleValueConstraints(Map<String, String> registry) {
-        singleValueConstraintList.forEach(singleValueConstraint -> {
-            singleValueConstraint.updateValue(registry);
-        });
+        singleValueConstraintList.forEach(singleValueConstraint -> singleValueConstraint.updateValue(registry));
     }
 }

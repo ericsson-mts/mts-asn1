@@ -42,7 +42,7 @@ public class MtsAsn1Mojo extends AbstractMojo {
             outputPackage = "";
         }
 
-        ConstantsGenerator constantsGenerator = null;
+        ConstantsGenerator constantsGenerator;
         try {
             constantsGenerator = new ConstantsGenerator(className,
                     grammarFiles,

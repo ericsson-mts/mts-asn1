@@ -28,7 +28,6 @@ import java.util.List;
 public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
     protected Constraints constraints;
 
-    @SuppressWarnings("Duplicates")
     public AbstractTranslator init(MainRegistry mainRegistry, List<ASN1Parser.ConstraintContext> constraintContexts) throws NotHandledCaseException {
         constraints = new Constraints(mainRegistry);
         if (constraintContexts.size() == 0) {

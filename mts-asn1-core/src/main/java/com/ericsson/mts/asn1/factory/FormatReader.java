@@ -15,25 +15,25 @@ import java.util.List;
 
 public interface FormatReader {
 
-    public void enterObject(String name);
+    void enterObject(String name);
 
-    public void leaveObject(String name);
+    void leaveObject(String name);
 
-    public int enterArray(String name);
+    int enterArray(String name);
 
-    public void leaveArray(String name);
+    void leaveArray(String name);
 
-    public boolean booleanValue(String name);
+    boolean booleanValue(String name);
 
-    public String bitsValue(String name);
+    String bitsValue(String name);
 
-    public String bytesValue(String name);
+    String bytesValue(String name);
 
-    public BigInteger intValue(String name);
+    BigInteger intValue(String name);
 
-    public List<String> fieldsValue();
+    List<String> fieldsValue();
 
-    public String stringValue(String name);
+    String stringValue(String name);
 
-    public String printCurrentnode();
+    String printCurrentnode();
 }

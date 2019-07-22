@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
 public abstract class AbstractEnumeratedTranslator extends AbstractTranslator {
     protected ArrayList<String> fieldList = new ArrayList<>();
     protected boolean exceptionSpec = false;

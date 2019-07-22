@@ -12,18 +12,17 @@ package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.PERTranscoder;
+import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 
 import java.math.BigDecimal;
 
 public class PERRealTranslator extends AbstractRealTranslator {
-    private PERTranscoder perTranscoder;
 
     public PERRealTranslator(PERTranscoder perTranscoder) {
-        this.perTranscoder = perTranscoder;
     }
 
     @Override
     public BigDecimal doDecode(BitInputStream s) {
-        throw new RuntimeException("Real decoding is not implemented yet");
+        throw new NotHandledCaseException("Real decoding is not implemented yet");
     }
 }

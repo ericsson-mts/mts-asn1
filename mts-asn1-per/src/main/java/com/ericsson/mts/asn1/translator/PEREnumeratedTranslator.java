@@ -47,17 +47,13 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
     public String doDecode(BitInputStream s, FormatWriter writer) throws IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         // read the extension bit and returns the extension status, if grammar indicates it can be extended
-        boolean isExtendedValue = false;
-        isExtendedValue = hasExtensionMarker && (1 == s.readBit());
-
-        String enumValue = null;
+        boolean isExtendedValue = hasExtensionMarker && (1 == s.readBit());
 
         if (!isExtendedValue) {
-            enumValue = fieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L), s).intValueExact());
+            return fieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L), s).intValueExact());
         } else {
-            throw new RuntimeException(); //"probably not working"
+            throw new NotHandledCaseException("Extended enumeration : " + this.name); //"probably not working"
             //enumValue = extensionMapping.get(translator.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(extensionMapping.size() - 1), bs).intValueExact());
         }
-        return enumValue;
     }
 }

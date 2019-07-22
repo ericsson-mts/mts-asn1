@@ -12,6 +12,8 @@ package com.ericsson.mts.asn1.plugin;
 
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.lang.model.element.Modifier;
 import java.io.File;
@@ -22,8 +24,9 @@ import java.util.List;
 
 public class ConstantsGenerator {
     private JavaFile javaFile;
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-    public ConstantsGenerator(String className, List<String> grammarFiles, String generatedPackageName) throws IOException {
+    ConstantsGenerator(String className, List<String> grammarFiles, String generatedPackageName) throws IOException {
         TypeSpec.Builder builder = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         for (String grammarFile : grammarFiles) {
@@ -37,8 +40,10 @@ public class ConstantsGenerator {
         javaFile.writeTo(filePath);
     }
 
-    public void writeFile(File file) throws IOException {
-        file.mkdirs();
+    void writeFile(File file) throws IOException {
+        if (file.mkdirs()) {
+            logger.trace("Create directories for path : {}", file.getAbsolutePath());
+        }
         javaFile.writeTo(file);
     }
 

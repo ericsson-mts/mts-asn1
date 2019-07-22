@@ -86,7 +86,7 @@ public class PERRestrictedCharacterStringTranslator extends AbstractRestrictedCh
                     //Note 1
                     perTranscoder.skipAlignedBits(s);
                 }
-                perTranscoder.encodeBitField(s, new BigInteger(value.getBytes(StandardCharsets.US_ASCII)), bitLength.intValueExact());
+                perTranscoder.encodeRestrictedCharacterString(s, new BigInteger(value.getBytes(StandardCharsets.US_ASCII)), bitLength.intValueExact());
             } else {
                 throw new NotHandledCaseException();
             }

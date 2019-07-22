@@ -10,6 +10,8 @@
 
 package com.ericsson.mts.asn1;
 
+import com.ericsson.mts.asn1.exception.EncodingException;
+import com.ericsson.mts.asn1.exception.InvalidParameterException;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +36,9 @@ public class PERTranscoder {
      * (Tutorial) This subclause is referenced by other clauses, and itself
      * references earlier clauses for the production of a
      * nonnegative-data-integer or a 2's-complement-data-integer encoding.
-     * @param lb lower bound
-     * @param ub upper bound
+     *
+     * @param lb     lower bound
+     * @param ub     upper bound
      * @param stream binary stream
      * @return number decoded
      * @throws IOException Input exception
@@ -114,8 +117,9 @@ public class PERTranscoder {
     /**
      * Decode the constraint length determinant. ITU-T X.691. 10.9. General
      * rules for encoding a length determinant
-     * @param min lower bound
-     * @param max upper bound
+     *
+     * @param min    lower bound
+     * @param max    upper bound
      * @param stream binary stream
      * @return length decoded
      * @throws IOException Input exception
@@ -145,6 +149,7 @@ public class PERTranscoder {
      * procedure is used when encoding a non-negative whole number that is
      * expected to be small, but whose size is potentially unlimited due to the
      * presence of an extension marker. An example is a choice index.
+     *
      * @param stream binary stream
      * @return normally small number
      * @throws IOException input exception
@@ -179,7 +184,8 @@ public class PERTranscoder {
      * lower bound into the minimum number of octets as a
      * non-negative-data-integer, and requires an explicit length encoding
      * (typically a single octet) as specified in later procedures.
-     * @param lb lower bound
+     *
+     * @param lb     lower bound
      * @param stream binary input
      * @return unsigned integer
      * @throws IOException input exception
@@ -227,6 +233,7 @@ public class PERTranscoder {
     /**
      * Decode the length determinant ITU-T X.691. 10.9. General rules for
      * encoding a length determinant
+     *
      * @param stream binary streaù
      * @return length determinant
      * @throws IOException input exception
@@ -234,32 +241,34 @@ public class PERTranscoder {
     public int decodeLengthDeterminant(BitInputStream stream) throws IOException {
         skipAlignedBits(stream);
         int result = stream.read();
-        if ((result & 0b10000000) == 0b00000000) {
-            // NOTE 2. a) ("n" less than 128)
-            // a single octet containing "n" with bit 8 set to zero;
-        } else if ((result & 0b11000000) == 0b10000000) {
-            // NOTE 2. b) ("n" less than 16K) two octets
-            // containing "n" with bit 8 of the first octet
-            // set to 1 and bit 7 set to zero;
-            result = (result & 0x3f) << 8;
-            result |= stream.read();
-        } else if ((result & 0b11000000) == 0b11000000) {
-            // WARNING! Large N doesn't supported NOW!
-            // NOTE 2. b) (large "n") a single octet containing a count "m"
-            // with bit 8 set to 1 and bit 7 set to 1.
-            // The count "m" is one to four, and the length indicates that
-            // a fragment of the material follows (a multiple "m" of 16K items).
-            // For all values of "m", the fragment is then followed
-            // by another length encoding for the remainder of the material.
-            throw new UnsupportedOperationException("number of 16k chunks not supported");
+        if ((result & 0b10000000) != 0b00000000) {
+            if ((result & 0b11000000) == 0b10000000) {
+                // NOTE 2. b) ("n" less than 16K) two octets
+                // containing "n" with bit 8 of the first octet
+                // set to 1 and bit 7 set to zero;
+                result = (result & 0x3f) << 8;
+                result |= stream.read();
+            } else if ((result & 0b11000000) == 0b11000000) {
+                // WARNING! Large N doesn't supported NOW!
+                // NOTE 2. b) (large "n") a single octet containing a count "m"
+                // with bit 8 set to 1 and bit 7 set to 1.
+                // The count "m" is one to four, and the length indicates that
+                // a fragment of the material follows (a multiple "m" of 16K items).
+                // For all values of "m", the fragment is then followed
+                // by another length encoding for the remainder of the material.
+                throw new UnsupportedOperationException("number of 16k chunks not supported");
+            }
         }
+        // NOTE 2. a) ("n" less than 128)
+        // a single octet containing "n" with bit 8 set to zero;
         return result;
     }
 
     /**
      * Decode an octet string ITU-T X.691. 17. Encoding the octetstring type
+     *
      * @param stream binary stream
-     * @param len octet string length
+     * @param len    octet string length
      * @return octet string as a byte array
      * @throws IOException input exception
      */
@@ -312,6 +321,7 @@ public class PERTranscoder {
 
     /**
      * Aligned bits of the binary input stream
+     *
      * @param stream binary stream
      */
     public void skipAlignedBits(InputStream stream) {
@@ -323,6 +333,7 @@ public class PERTranscoder {
 
     /**
      * Aligned bits of the binary output stream
+     *
      * @param stream binary stream
      * @throws IOException output stream exception
      */
@@ -345,10 +356,11 @@ public class PERTranscoder {
 
     /**
      * Encode a constrained whole number : X.691 11.5
-     * @param s binary ouput stream
+     *
+     * @param s      binary ouput stream
      * @param number value to encode
-     * @param lb lower bound
-     * @param ub upper bound
+     * @param lb     lower bound
+     * @param ub     upper bound
      * @throws IOException ouput stream exception
      */
     public void encodeConstrainedWholeNumber(BitArray s, BigInteger number, BigInteger lb, BigInteger ub) throws IOException {
@@ -356,33 +368,36 @@ public class PERTranscoder {
         BigInteger range = ub.subtract(lb).add(ONE);
         BigInteger value = number.subtract(lb);
         if (range.compareTo(ZERO) <= 0) {
-            throw new RuntimeException("Bad range " + range);
-        } else if (range.equals(ONE)) {
-            return;
-        } else if (range.compareTo(BigInteger.valueOf(255)) <= 0) {
-            this.addBitField(s, value, range.subtract(BigInteger.valueOf(1)).bitLength());
-        } else if (range.compareTo(BigInteger.valueOf(256)) == 0) {
-            if (aligned) {
-                s.skipAlignedBits();
-            }
-            this.addBitField(s, value, 8);
-        } else if (range.compareTo(BigInteger.valueOf(65536)) <= 0) {
-            if (aligned) {
-                s.skipAlignedBits();
-            }
-            this.addBitField(s, value, 16);
+            throw new InvalidParameterException("Bad range " + range);
         } else {
-            //11.5.7.4 (The indefinite length case.) Otherwise, the value ("n" – "lb") shall be encoded as a
-            // non-negative-binary-integer in a bit-field (octet-aligned in the ALIGNED variant) with the minimum number
-            // of octets as specified in 11.3, and the number of octets "len" used in the encoding is used by other
-            // clauses that reference this subclause to specify an encoding of the length.
-            this.addBitField(s, value, toByteCount(value.bitLength()) * 8);
+            if (!range.equals(ONE)) {
+                if (range.compareTo(BigInteger.valueOf(255)) <= 0) {
+                    this.encodeBitField(s, value, range.subtract(BigInteger.valueOf(1)).bitLength());
+                } else if (range.compareTo(BigInteger.valueOf(256)) == 0) {
+                    if (aligned) {
+                        s.skipAlignedBits();
+                    }
+                    this.encodeBitField(s, value, 8);
+                } else if (range.compareTo(BigInteger.valueOf(65536)) <= 0) {
+                    if (aligned) {
+                        s.skipAlignedBits();
+                    }
+                    this.encodeBitField(s, value, 16);
+                } else {
+                    //11.5.7.4 (The indefinite length case.) Otherwise, the value ("n" – "lb") shall be encoded as a
+                    // non-negative-binary-integer in a bit-field (octet-aligned in the ALIGNED variant) with the minimum number
+                    // of octets as specified in 11.3, and the number of octets "len" used in the encoding is used by other
+                    // clauses that reference this subclause to specify an encoding of the length.
+                    this.encodeBitField(s, value, toByteCount(value.bitLength()) * 8);
+                }
+            }
         }
     }
 
     /**
      * Encode a normally  whole number : X.691 11.6
-     * @param s binary ouput streaù
+     *
+     * @param s      binary ouput streaù
      * @param number value to encode
      * @throws IOException ouput stream exception
      */
@@ -390,7 +405,7 @@ public class PERTranscoder {
         if ((number.compareTo(BigInteger.valueOf(63)) <= 0) && (number.compareTo(BigInteger.valueOf(0)) >= 0)) {
             logger.trace("encodeNormallySmallWholeNumber : number=" + number.intValueExact() + " , length=6");
             s.writeBit(0);
-            addBitField(s, number, 6);
+            encodeBitField(s, number, 6);
         } else if (number.compareTo(BigInteger.valueOf(64)) >= 0) {
             logger.trace("encodeNormallySmallWholeNumber : number=" + number.toString(10) + " , length=6");
             s.writeBit(1);
@@ -402,12 +417,14 @@ public class PERTranscoder {
 
     /**
      * Add a bits array to a given binary output stream
-     * @param s binary output stream
-     * @param value bits array (aligned left)
-     * @param length bits array length
+     *
+     * @param s      binary output stream
+     * @param string  string to encode
+     * @param length length of the string
      * @throws IOException ouput stream exception
      */
-    public void addBitField(BitArray s, int[] value, int length) throws IOException {
+    public void encodeBitField(BitArray s, String string, int length) throws IOException {
+        int[] value = stringToBytes(string);
         int i = 0, j = 0;
         int currentByte;
         while (i < length) {
@@ -424,12 +441,35 @@ public class PERTranscoder {
         }
     }
 
+    public void encodeBitString(BitArray s, String string) throws IOException {
+        byte[] bytes = string.getBytes();
+        for (byte digit : bytes) {
+            if (digit == 49) {
+                s.writeBit(1);
+            } else if (digit == 48) {
+                s.writeBit(0);
+            } else {
+                throw new EncodingException("Not equals to 1 or 0 : " + digit);
+            }
+        }
+    }
+
+    private int[] stringToBytes(String value) {
+        String[] strings = value.split("");
+        int[] result = new int[value.length()];
+        for (int i = 0; i < value.length(); i++) {
+            result[i] = Integer.parseInt(strings[i], 16);
+        }
+        return result;
+    }
+
     /**
      * Encoding a constrained length determinant X.691 13.2.6
-     * @param s binary output stream
+     *
+     * @param s      binary output stream
      * @param length length to encode
-     * @param lb lower bound
-     * @param ub upper bound
+     * @param lb     lower bound
+     * @param ub     upper bound
      * @throws IOException output stream exception
      */
     public void encodeConstrainedLengthDeterminant(BitArray s, BigInteger length, BigInteger lb, BigInteger ub) throws IOException {
@@ -443,7 +483,8 @@ public class PERTranscoder {
 
     /**
      * Encode a length determinant X.691 11.9
-     * @param s binary ouput streaù
+     *
+     * @param s      binary ouput streaù
      * @param length length to encode
      * @throws IOException output stream exception
      */
@@ -464,21 +505,29 @@ public class PERTranscoder {
     }
 
     /**
-     * Write a bit field (should use addBitField instead), can cause bug with a bit field who begin with zero
-     * @param s binary output stream
+     * Write a bit field (should use encodeBitField instead), can cause bug with a bit field who begin with zero
+     *
+     * @param s      binary output stream
      * @param number bit field to encode
      * @param length bit field length
      * @throws IOException output stream exception
      */
-    @Deprecated
-    public void encodeBitField(BitArray s, BigInteger number, int length) throws IOException {
-        logger.trace("encodeBitField : number=" + String.format("%x", number).toUpperCase() + " , length=" + length);
-        addBitField(s, number, length);
+    public void encodeRestrictedCharacterString(BitArray s, BigInteger number, int length) throws IOException {
+        logger.trace("encodeRestrictedCharacterString : number=" + String.format("%x", number).toUpperCase() + " , length=" + length);
+        encodeBitField(s, number, length);
     }
 
-    private void addBitField(BitArray s, BigInteger number, int length) throws IOException {
+    /**
+     * Encode a bit field
+     *
+     * @param s        bit array
+     * @param bitField bit field to encode
+     * @param length   length of the bit field
+     * @throws IOException output stream exception
+     */
+    private void encodeBitField(BitArray s, BigInteger bitField, int length) throws IOException {
         for (int i = length - 1; i >= 0; i--) {
-            if (((number.shiftRight(i)).and(ONE)).equals(ONE)) {
+            if (((bitField.shiftRight(i)).and(ONE)).equals(ONE)) {
                 s.writeBit(1);
             } else {
                 s.writeBit(0);
@@ -488,8 +537,9 @@ public class PERTranscoder {
 
     /**
      * Encode a semi constrained whole number X.691 11.7
-     * @param s binary ouput streaù
-     * @param lb lower bound
+     *
+     * @param s      binary ouput streaù
+     * @param lb     lower bound
      * @param number number to encode
      * @throws IOException output stream exception
      */

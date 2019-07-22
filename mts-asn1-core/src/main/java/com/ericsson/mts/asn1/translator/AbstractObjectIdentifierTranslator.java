@@ -13,6 +13,7 @@ package com.ericsson.mts.asn1.translator;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.TranslatorContext;
+import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
 
@@ -22,11 +23,11 @@ public class AbstractObjectIdentifierTranslator extends AbstractTranslator {
 
     @Override
     public final void encode(String name, BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> parameters) throws Exception {
-        throw new RuntimeException();
+        throw new NotHandledCaseException();
     }
 
     @Override
     public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
-        throw new RuntimeException();
+        throw new NotHandledCaseException();
     }
 }

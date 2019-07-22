@@ -16,7 +16,7 @@ import java.math.BigInteger;
 
 public interface FormatWriter {
 
-    public static String bytesToHex(byte[] bytes) {
+    static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X", b));
@@ -24,25 +24,25 @@ public interface FormatWriter {
         return sb.toString();
     }
 
-    public void enterObject(String name);
+    void enterObject(String name);
 
-    public void leaveObject(String name);
+    void leaveObject(String name);
 
-    public void enterArray(String name);
+    void enterArray(String name);
 
-    public void leaveArray(String name);
+    void leaveArray(String name);
 
-    public void stringValue(String name, String value);
+    void stringValue(String name, String value);
 
-    public void booleanValue(String name, boolean value);
+    void booleanValue(String name, boolean value);
 
-    public void realValue(String name, BigDecimal value);
+    void realValue(String name, BigDecimal value);
 
-    public void bytesValue(String name, byte[] value);
+    void bytesValue(String name, byte[] value);
 
-    public void intValue(String name, BigInteger value, String namedValue);
+    void intValue(String name, BigInteger value, String namedValue);
 
-    public void nullValue(String name);
+    void nullValue(String name);
 
-    public void bitsValue(String name, String value);
+    void bitsValue(String name, String value);
 }

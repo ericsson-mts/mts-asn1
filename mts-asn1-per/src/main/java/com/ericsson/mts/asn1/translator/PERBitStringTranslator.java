@@ -70,17 +70,17 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
             }
         }
 
-        value = value.replaceAll("[\\t\\n\\r ]", "");
+        value = value.trim();
 
         if (BigInteger.ZERO.equals(ub)) {
-            throw new RuntimeException();
+            throw new NotHandledCaseException();
         } else if (lb.equals(ub) && BigInteger.valueOf(16).compareTo(ub) >= 0) {
             //16.9
-            perTranscoder.encodeBitField(s, new BigInteger(value, 2), value.length());
+            perTranscoder.encodeBitString(s, value);
         } else if (lb.equals(ub) && BigInteger.valueOf(65536).compareTo(ub) >= 0) {
             //16.10
             perTranscoder.skipAlignedBits(s);
-            perTranscoder.encodeBitField(s, new BigInteger(value, 2), value.length());
+            perTranscoder.encodeBitString(s, value);
         } else {
             //16.11
             if (!ubUnset && ub.compareTo(BigInteger.valueOf(65536)) <= 0) {
@@ -92,9 +92,9 @@ public class PERBitStringTranslator extends AbstractBitStringTranslator {
             }
 
             perTranscoder.skipAlignedBits(s);
-            perTranscoder.encodeBitField(s, new BigInteger(value, 2), value.length());
-            logger.trace("Encode value={} , length={}", value, value.length());
+            perTranscoder.encodeBitString(s, value);
         }
+        logger.trace("Encode value={} , length={}", value, value.length());
     }
 
     @Override

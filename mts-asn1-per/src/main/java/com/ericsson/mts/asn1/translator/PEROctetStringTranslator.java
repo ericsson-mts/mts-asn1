@@ -56,28 +56,26 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
 
         value = value.trim();
 
-        if (BigInteger.ZERO.equals(ub)) {
-            //17.5
-            return;
-        } else if (lb.equals(ub) && lb.compareTo(BigInteger.valueOf(2)) <= 0) {
-            //17.6
-            perTranscoder.encodeBitField(s, new BigInteger(value, 16), ub.intValueExact() * 8);
-        } else if (lb.equals(ub) && new BigInteger("65536").compareTo(ub) > 0) {
-            //17.7
-            perTranscoder.skipAlignedBits(s);
-            BigInteger bigInteger = new BigInteger(value, 16);
-            perTranscoder.encodeBitField(s, bigInteger, ub.intValueExact() * 8);
-        } else {
-            //17.8
-            if (ub != null) {
-                throw new NotHandledCaseException();
+        //17.5
+        if (!BigInteger.ZERO.equals(ub)) {
+            if (lb.equals(ub) && lb.compareTo(BigInteger.valueOf(2)) <= 0) {
+                //17.6
+                perTranscoder.encodeBitField(s, value, value.length() * 4);
+            } else if (lb.equals(ub) && new BigInteger("65536").compareTo(ub) > 0) {
+                //17.7
+                perTranscoder.skipAlignedBits(s);
+                perTranscoder.encodeBitField(s, value, value.length() * 4);
             } else {
-                perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(value.length() / 2L + value.length() % 2).subtract(lb));
-                s.skipAlignedBits();
-                perTranscoder.addBitField(s, stringToBytes(value), value.length() * 4);
+                //17.8
+                if (ub != null) {
+                    throw new NotHandledCaseException();
+                } else {
+                    perTranscoder.encodeLengthDeterminant(s, BigInteger.valueOf(value.length() / 2L + value.length() % 2).subtract(lb));
+                    s.skipAlignedBits();
+                    perTranscoder.encodeBitField(s, value, value.length() * 4);
+                }
             }
         }
-
     }
 
     @Override
@@ -129,14 +127,5 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
         }
         logger.trace("Result " + CoderUtils.bytesToHex(octetstring));
         return octetstring;
-    }
-
-    private int[] stringToBytes(String value) {
-        String[] strings = value.split("");
-        int[] result = new int[value.length()];
-        for (int i = 0; i < value.length(); i++) {
-            result[i] = Integer.parseInt(strings[i], 16);
-        }
-        return result;
     }
 }

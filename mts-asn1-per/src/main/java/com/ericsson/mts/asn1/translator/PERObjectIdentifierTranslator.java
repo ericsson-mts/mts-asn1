@@ -13,9 +13,7 @@ package com.ericsson.mts.asn1.translator;
 import com.ericsson.mts.asn1.PERTranscoder;
 
 public class PERObjectIdentifierTranslator extends AbstractObjectIdentifierTranslator {
-    private PERTranscoder perTranscoder;
 
     public PERObjectIdentifierTranslator(PERTranscoder perTranscoder) {
-        this.perTranscoder = perTranscoder;
     }
 }

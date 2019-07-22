@@ -14,6 +14,7 @@ import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.BitInputStream;
 import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.TranslatorContext;
+import com.ericsson.mts.asn1.exception.InvalidParameterException;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
@@ -34,14 +35,12 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
     public void doEncode(BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> inputFieldList, Map<String, String> registry) throws Exception {
         logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
         if (hasEllipsis || optionalExtensionMarker || (extensionAndException != -1)) {
-            int isAdditionnalValuePresent = 0;
             for (Field field : additionnalFieldList) {
                 if (inputFieldList.contains(field.getName())) {
-                    isAdditionnalValuePresent = 1;
                     throw new NotHandledCaseException();
                 }
             }
-            s.writeBit(isAdditionnalValuePresent);
+            s.writeBit(0);
         }
 
         //Build preamble (bit-map)
@@ -78,7 +77,7 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
                 }
             } else {
                 if (!field.getOptionnal()) {
-                    throw new RuntimeException("Sequence " + name + " need field " + field.getName());
+                    throw new InvalidParameterException("Sequence " + name + " need field " + field.getName());
                 }
             }
         }
@@ -110,7 +109,7 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
         int optionalBitmapIndex = 0;
 
         for (Field field : fieldList) {
-            if (!field.getOptionnal() || (field.getOptionnal() && optionalBitmap[optionalBitmapIndex++])) {
+            if (!field.getOptionnal() || optionalBitmap[optionalBitmapIndex++]) {
                 logger.trace("Decode field {} ", field.getName());
                 AbstractTranslator typeTranslator = field.getType();
                 List<String> parameters = typeTranslator.getParameters();
@@ -145,9 +144,9 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
                     int len = perTranscoder.decodeLengthDeterminant(s);
                     byte[] data = new byte[len];
                     if (-1 == s.read(data)) {
-                        throw new RuntimeException();
+                        throw new NotHandledCaseException();
                     }
-                    throw new RuntimeException("unsupported");
+                    throw new NotHandledCaseException("Extended sequence : " + this.name);
                 }
             }
         }
