@@ -17,6 +17,7 @@ import com.ericsson.mts.asn1.classhandler.ClassObjectSet;
 import com.ericsson.mts.asn1.constant.AbstractConstant;
 import com.ericsson.mts.asn1.constant.IntegerConstant;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
+import com.ericsson.mts.asn1.exception.UnknownIdentifier;
 import com.ericsson.mts.asn1.factory.AbstractTranslatorFactory;
 import com.ericsson.mts.asn1.translator.*;
 import org.slf4j.Logger;
@@ -69,7 +70,7 @@ public class MainRegistry {
         return abstractConstant;
     }
 
-    public AbstractConstant getConstant(ASN1Parser.BuiltinValueContext builtinValueContext) throws NotHandledCaseException {
+    public AbstractConstant getConstant(ASN1Parser.BuiltinValueContext builtinValueContext) {
         if (null != builtinValueContext.integerValue()) {
             //Primitive case
             return new IntegerConstant().init(builtinValueContext.integerValue().getText());
@@ -94,7 +95,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getConstantsIdentifier();
         for (String identifier : identifiers) {
             if (null == getConstantFromName(identifier)) {
-                throw new RuntimeException("Identifier : " + identifier);
+                throw new UnknownIdentifier(identifier);
             }
         }
     }
@@ -115,17 +116,8 @@ public class MainRegistry {
             return abstractTranslator;
         }
 
-        ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
-        if (parameterizedAssignmentContext != null) {
-            if (parameterizedAssignmentContext.asnType() != null) {
-                abstractTranslator = createTranslator(identifier, parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
-                typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
-                return abstractTranslator;
-            } else {
-                throw new NotHandledCaseException(parameterizedAssignmentContext.getChild(2).getClass().getSimpleName());
-            }
-        }
-        throw new RuntimeException("Can't find translator : " + identifier);
+        return getInternalParameterizedTranslator(identifier);
+
     }
 
     public AbstractTranslator getTranslator(ASN1Parser.AsnTypeContext asnTypeContext) {
@@ -148,17 +140,7 @@ public class MainRegistry {
                 if (asnTypeContext.referencedType().definedType().actualParameterList() != null) {
                     identifier = asnTypeContext.referencedType().definedType().IDENTIFIER(0).getText();
                 }
-                ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
-                if (parameterizedAssignmentContext != null) {
-                    if (parameterizedAssignmentContext.asnType() != null) {
-                        abstractTranslator = createTranslator(identifier, parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
-                        typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
-                        return abstractTranslator;
-                    } else {
-                        throw new NotHandledCaseException(parameterizedAssignmentContext.getChild(2).getClass().getSimpleName());
-                    }
-                }
-                throw new NullPointerException(identifier);
+                return getInternalParameterizedTranslator(identifier);
             }
             if (typeAssignmentContext.asnType().builtinType() != null) {
                 abstractTranslator = createTranslator(identifier, typeAssignmentContext.asnType().builtinType(), typeAssignmentContext.asnType().constraint());
@@ -168,6 +150,20 @@ public class MainRegistry {
             typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
             return abstractTranslator;
         }
+    }
+
+    private AbstractTranslator getInternalParameterizedTranslator(String identifier) {
+        ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
+        if (parameterizedAssignmentContext != null) {
+            if (parameterizedAssignmentContext.asnType() != null) {
+                AbstractTranslator abstractTranslator = createTranslator(identifier, parameterizedAssignmentContext.asnType(), parameterizedAssignmentContext.parameterList());
+                typeTranslatorParsedRegistry.add(identifier, abstractTranslator);
+                return abstractTranslator;
+            } else {
+                throw new NotHandledCaseException(parameterizedAssignmentContext.getChild(2).getClass().getSimpleName());
+            }
+        }
+        throw new UnknownIdentifier(identifier);
     }
 
     private AbstractTranslator createTranslator(String translatorIdentifier, ASN1Parser.AsnTypeContext asnTypeContext, ASN1Parser.ParameterListContext parameterListContext) {
@@ -245,7 +241,7 @@ public class MainRegistry {
             objectIdentifierTranslator.setName(identifier);
             return objectIdentifierTranslator;
         } else {
-            throw new NotHandledCaseException("Can't create a translator for " + builtinTypeContext.getText());
+            throw new UnknownIdentifier(builtinTypeContext.getText());
         }
     }
 
@@ -253,14 +249,14 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getTranslatorsIdentifier();
         for (String identifier : identifiers) {
             if (null == getTranslatorFromName(identifier)) {
-                throw new RuntimeException("Identifier : " + identifier);
+                throw new UnknownIdentifier(identifier);
             }
         }
 
         identifiers = indexingRegistry.getParameterizedTranslatorsIdentifier();
         for (String identifier : identifiers) {
             if (null == getTranslatorFromName(identifier)) {
-                throw new RuntimeException("Identifier : " + identifier);
+                throw new UnknownIdentifier(identifier);
             }
         }
     }
@@ -287,7 +283,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getObjectsContextdentifier();
         for (String identifier : identifiers) {
             if (null == getClassObject(identifier)) {
-                throw new RuntimeException("Identifier : " + identifier);
+                throw new UnknownIdentifier(identifier);
             }
         }
     }
@@ -302,11 +298,11 @@ public class MainRegistry {
 
         ASN1Parser.ParameterizedAssignmentContext parameterizedAssignmentContext = indexingRegistry.getParameterizedAssignementContext(identifier);
         if (null == parameterizedAssignmentContext) {
-            throw new NullPointerException("Can't find context for " + identifier);
+            throw new UnknownIdentifier(identifier);
         }
 
         if (null == parameterizedAssignmentContext.objectSet() || null == parameterizedAssignmentContext.definedObjectClass()) {
-            throw new RuntimeException(identifier + " is not an object set");
+            throw new UnknownIdentifier(identifier);
         } else {
             classObjectSet = new ClassObjectSet().init(this, this.getClassHandler(parameterizedAssignmentContext.definedObjectClass().getText()), parameterizedAssignmentContext.objectSet());
             classObjectSetParsedRegistry.add(identifier, classObjectSet);
@@ -318,7 +314,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getObjectSetAssignment();
         for (String identifier : identifiers) {
             if (null == getClassObjectSet(identifier)) {
-                throw new RuntimeException("Identifier : " + identifier);
+                throw new UnknownIdentifier(identifier);
             }
         }
     }
@@ -327,7 +323,7 @@ public class MainRegistry {
 
     public ClassHandler getClassHandler(String identifier) {
         if (null == identifier) {
-            throw new RuntimeException("Invalid identifier");
+            throw new UnknownIdentifier(identifier);
         }
         ClassHandler classHandler = classHandlerParsedRegistry.get(identifier);
         if (null != classHandler) {
@@ -347,7 +343,7 @@ public class MainRegistry {
         List<String> identifiers = indexingRegistry.getClassHandlersdentifier();
         for (String identifier : identifiers) {
             if (null == getClassHandler(identifier)) {
-                throw new RuntimeException("Identifier : " + identifier);
+                throw new UnknownIdentifier(identifier);
             }
         }
     }

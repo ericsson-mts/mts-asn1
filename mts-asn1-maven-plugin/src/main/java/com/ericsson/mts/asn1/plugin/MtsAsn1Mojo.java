@@ -14,6 +14,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Mojo(name = "generateJavaFile")
 public class MtsAsn1Mojo extends AbstractMojo {
+    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
     @Parameter(defaultValue = "CDRConstants")
     private String className;
 
@@ -45,7 +49,7 @@ public class MtsAsn1Mojo extends AbstractMojo {
                     outputPackage);
             constantsGenerator.writeFile(new File(outputFile));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getLocalizedMessage());
         }
     }
 }
