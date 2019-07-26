@@ -1,0 +1,56 @@
+{
+  "successfulOutcome": {
+    "procedureCode": 9,
+    "criticality": "reject",
+    "value": {
+      "InitialContextSetupResponse": {
+        "protocolIEs": [
+          {
+            "id": 0,
+            "criticality": "ignore",
+            "value": {
+              "MME-UE-S1AP-ID": 37
+            }
+          },
+          {
+            "id": 8,
+            "criticality": "ignore",
+            "value": {
+              "ENB-UE-S1AP-ID": 36
+            }
+          },
+          {
+            "id": 51,
+            "criticality": "ignore",
+            "value": {
+              "E-RABSetupListCtxtSURes": [
+                {
+                  "id": 50,
+                  "criticality": "ignore",
+                  "value": {
+                    "E-RABSetupItemCtxtSURes": {
+                      "e-RAB-ID": 5,
+                      "transportLayerAddress": "00001010111110111111110000001000",
+                      "gTP-TEID": "4B000000"
+                    }
+                  }
+                },
+                {
+                  "id": 50,
+                  "criticality": "ignore",
+                  "value": {
+                    "E-RABSetupItemCtxtSURes": {
+                      "e-RAB-ID": 6,
+                      "transportLayerAddress": "00001010111110111111110000001000",
+                      "gTP-TEID": "4C000000"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

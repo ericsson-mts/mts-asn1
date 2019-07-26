@@ -32,7 +32,12 @@ class S1APTests extends AbstractTests {
     }
 
     @Test
-    void testS1AP() throws Exception {
-        test("S1AP-PDU", "/data/S1AP/S1AP-1.bin", "/data/S1AP/S1AP-1.json", "/data/S1AP/S1AP-1.xml");
+    void testS1AP1() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/InitialContextSetup/InitialContextSetupRequest/S1AP-1.bin", "/data/S1AP/InitialContextSetup/InitialContextSetupRequest/S1AP-1.json", "/data/S1AP/InitialContextSetup/InitialContextSetupRequest/S1AP-1.xml");
+    }
+
+    @Test
+    void testS1AP2() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/InitialContextSetup/InitialContextSetupResponse/S1AP-2.bin", "/data/S1AP/InitialContextSetup/InitialContextSetupResponse/S1AP-2.json", "/data/S1AP/InitialContextSetup/InitialContextSetupResponse/S1AP-2.xml");
     }
 }
