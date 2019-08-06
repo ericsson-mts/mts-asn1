@@ -79,7 +79,7 @@ public class AbstractTests {
         }
     }
 
-    private void testEncode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
+    protected void testEncode(String type, String binaryPath, String expectedJsonPath, String expectedXmlPath) throws Exception {
         //JSON encode test
         {
 

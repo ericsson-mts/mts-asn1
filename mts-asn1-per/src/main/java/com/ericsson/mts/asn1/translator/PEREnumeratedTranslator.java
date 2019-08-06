@@ -16,15 +16,12 @@ import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigInteger;
 
 public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
     private PERTranscoder perTranscoder;
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     public PEREnumeratedTranslator(PERTranscoder perTranscoder) {
         this.perTranscoder = perTranscoder;

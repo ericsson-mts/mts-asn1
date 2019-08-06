@@ -17,8 +17,6 @@ import com.ericsson.mts.asn1.TranslatorContext;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ public abstract class AbstractEnumeratedTranslator extends AbstractTranslator {
     protected boolean exceptionSpec = false;
     protected boolean hasExtensionMarker = false;
     protected ArrayList<String> addtionnalfieldList = new ArrayList<>();
-    private Logger logger = LoggerFactory.getLogger(AbstractEnumeratedTranslator.class.getSimpleName());
 
     public AbstractTranslator init(ASN1Parser.EnumeratedTypeContext enumeratedTypeContext) {
         if (enumeratedTypeContext.enumerations().ELLIPSIS() != null)
