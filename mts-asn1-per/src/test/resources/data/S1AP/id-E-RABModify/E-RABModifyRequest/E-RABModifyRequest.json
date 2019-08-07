@@ -1,0 +1,62 @@
+{
+  "initiatingMessage": {
+    "procedureCode": 6,
+    "criticality": "reject",
+    "value": {
+      "E-RABModifyRequest": {
+        "protocolIEs": [
+          {
+            "id": 0,
+            "criticality": "reject",
+            "value": {
+              "MME-UE-S1AP-ID": 97009616
+            }
+          },
+          {
+            "id": 8,
+            "criticality": "reject",
+            "value": {
+              "ENB-UE-S1AP-ID": 646862
+            }
+          },
+          {
+            "id": 66,
+            "criticality": "reject",
+            "value": {
+              "UEAggregateMaximumBitrate": {
+                "uEaggregateMaximumBitRateDL": 204800000,
+                "uEaggregateMaximumBitRateUL": 204800000
+              }
+            }
+          },
+          {
+            "id": 30,
+            "criticality": "reject",
+            "value": {
+              "E-RABToBeModifiedListBearerModReq": [
+                {
+                  "id": 36,
+                  "criticality": "reject",
+                  "value": {
+                    "E-RABToBeModifiedItemBearerModReq": {
+                      "e-RAB-ID": 5,
+                      "e-RABLevelQoSParameters": {
+                        "qCI": 6,
+                        "allocationRetentionPriority": {
+                          "priorityLevel": 1,
+                          "pre-emptionCapability": "shall-not-trigger-pre-emption",
+                          "pre-emptionVulnerability": "pre-emptable"
+                        }
+                      },
+                      "nAS-PDU": "279523C609029F4D7D259DA8541D64E92DAD3223700FCB756CB03C2B9D5DB0A94C7EBCADD22655"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

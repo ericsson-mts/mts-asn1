@@ -40,4 +40,14 @@ class S1APTests extends AbstractTests {
     void testS1AP2() throws Exception {
         test("S1AP-PDU", "/data/S1AP/InitialContextSetup/InitialContextSetupResponse/S1AP-2.bin", "/data/S1AP/InitialContextSetup/InitialContextSetupResponse/S1AP-2.json", "/data/S1AP/InitialContextSetup/InitialContextSetupResponse/S1AP-2.xml");
     }
+
+    @Test
+    void testS1AP3() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/id-E-RABModify/E-RABModifyRequest/E-RABModifyRequest.bin", "/data/S1AP/id-E-RABModify/E-RABModifyRequest/E-RABModifyRequest.json", "/data/S1AP/id-E-RABModify/E-RABModifyRequest/E-RABModifyRequest.xml");
+    }
+
+    @Test
+    void testS1AP4() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/id-E-RABModify/E-RABModifyResponse/E-RABModifyResponse.bin", "/data/S1AP/id-E-RABModify/E-RABModifyResponse/E-RABModifyResponse.json", "/data/S1AP/id-E-RABModify/E-RABModifyResponse/E-RABModifyResponse.xml");
+    }
 }

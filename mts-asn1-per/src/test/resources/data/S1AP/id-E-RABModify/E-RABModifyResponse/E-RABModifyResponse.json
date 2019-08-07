@@ -1,0 +1,43 @@
+{
+  "successfulOutcome": {
+    "procedureCode": 6,
+    "criticality": "reject",
+    "value": {
+      "E-RABModifyResponse": {
+        "protocolIEs": [
+          {
+            "id": 0,
+            "criticality": "ignore",
+            "value": {
+              "MME-UE-S1AP-ID": 97009616
+            }
+          },
+          {
+            "id": 8,
+            "criticality": "ignore",
+            "value": {
+              "ENB-UE-S1AP-ID": 646862
+            }
+          },
+          {
+            "id": 31,
+            "criticality": "ignore",
+            "value": {
+              "E-RABModifyListBearerModRes": [
+                {
+                  "id": 37,
+                  "criticality": "ignore",
+                  "value": {
+                    "E-RABModifyItemBearerModRes": {
+                      "e-RAB-ID": 5
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

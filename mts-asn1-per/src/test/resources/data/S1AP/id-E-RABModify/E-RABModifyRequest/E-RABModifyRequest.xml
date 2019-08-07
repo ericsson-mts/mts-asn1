@@ -1,0 +1,75 @@
+<!--
+  ~ Copyright 2019 Ericsson, https://www.ericsson.com/en
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<S1AP-PDU>
+    <initiatingMessage>
+        <procedureCode>6</procedureCode>
+        <criticality>reject</criticality>
+        <value>
+            <E-RABModifyRequest>
+                <protocolIEs>
+                    <protocolIEs>
+                        <id>0</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <MME-UE-S1AP-ID>97009616</MME-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>8</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <ENB-UE-S1AP-ID>646862</ENB-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>66</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <UEAggregateMaximumBitrate>
+                                <uEaggregateMaximumBitRateDL>204800000</uEaggregateMaximumBitRateDL>
+                                <uEaggregateMaximumBitRateUL>204800000</uEaggregateMaximumBitRateUL>
+                            </UEAggregateMaximumBitrate>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>30</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <E-RABToBeModifiedListBearerModReq>
+                                <E-RABToBeModifiedListBearerModReq>
+                                    <id>36</id>
+                                    <criticality>reject</criticality>
+                                    <value>
+                                        <E-RABToBeModifiedItemBearerModReq>
+                                            <e-RAB-ID>5</e-RAB-ID>
+                                            <e-RABLevelQoSParameters>
+                                                <qCI>6</qCI>
+                                                <allocationRetentionPriority>
+                                                    <priorityLevel>1</priorityLevel>
+                                                    <pre-emptionCapability>shall-not-trigger-pre-emption
+                                                    </pre-emptionCapability>
+                                                    <pre-emptionVulnerability>pre-emptable</pre-emptionVulnerability>
+                                                </allocationRetentionPriority>
+                                            </e-RABLevelQoSParameters>
+                                            <nAS-PDU>
+                                                279523C609029F4D7D259DA8541D64E92DAD3223700FCB756CB03C2B9D5DB0A94C7EBCADD22655
+                                            </nAS-PDU>
+                                        </E-RABToBeModifiedItemBearerModReq>
+                                    </value>
+                                </E-RABToBeModifiedListBearerModReq>
+                            </E-RABToBeModifiedListBearerModReq>
+                        </value>
+                    </protocolIEs>
+                </protocolIEs>
+            </E-RABModifyRequest>
+        </value>
+    </initiatingMessage>
+</S1AP-PDU>
