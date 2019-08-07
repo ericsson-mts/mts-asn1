@@ -1,0 +1,53 @@
+{
+  "initiatingMessage": {
+    "procedureCode": 12,
+    "criticality": "ignore",
+    "value": {
+      "InitialUEMessage": {
+        "protocolIEs": [
+          {
+            "id": 8,
+            "criticality": "reject",
+            "value": {
+              "ENB-UE-S1AP-ID": 2060817
+            }
+          },
+          {
+            "id": 26,
+            "criticality": "reject",
+            "value": {
+              "NAS-PDU": "0748720B29071855102132713A85895805F0F0C040105C1004570200003103E5E0349011035758825D0100C1"
+            }
+          },
+          {
+            "id": 67,
+            "criticality": "reject",
+            "value": {
+              "TAI": {
+                "pLMNidentity": "132102",
+                "tAC": "3039"
+              }
+            }
+          },
+          {
+            "id": 100,
+            "criticality": "ignore",
+            "value": {
+              "EUTRAN-CGI": {
+                "pLMNidentity": "132102",
+                "cell-ID": "0000000100010000000001000011"
+              }
+            }
+          },
+          {
+            "id": 134,
+            "criticality": "ignore",
+            "value": {
+              "RRC-Establishment-Cause": "mo-Signalling"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

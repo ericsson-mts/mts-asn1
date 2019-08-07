@@ -1,0 +1,26 @@
+<S1AP-PDU>
+    <successfulOutcome>
+        <procedureCode>23</procedureCode>
+        <criticality>reject</criticality>
+        <value>
+            <UEContextReleaseComplete>
+                <protocolIEs>
+                    <protocolIEs>
+                        <id>0</id>
+                        <criticality>ignore</criticality>
+                        <value>
+                            <MME-UE-S1AP-ID>3692817881</MME-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>8</id>
+                        <criticality>ignore</criticality>
+                        <value>
+                            <ENB-UE-S1AP-ID>2060817</ENB-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                </protocolIEs>
+            </UEContextReleaseComplete>
+        </value>
+    </successfulOutcome>
+</S1AP-PDU>

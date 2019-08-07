@@ -1,0 +1,33 @@
+<S1AP-PDU>
+    <initiatingMessage>
+        <procedureCode>11</procedureCode>
+        <criticality>ignore</criticality>
+        <value>
+            <DownlinkNASTransport>
+                <protocolIEs>
+                    <protocolIEs>
+                        <id>0</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <MME-UE-S1AP-ID>3692815053</MME-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>8</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <ENB-UE-S1AP-ID>2060816</ENB-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>26</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <NAS-PDU>076060</NAS-PDU>
+                        </value>
+                    </protocolIEs>
+                </protocolIEs>
+            </DownlinkNASTransport>
+        </value>
+    </initiatingMessage>
+</S1AP-PDU>

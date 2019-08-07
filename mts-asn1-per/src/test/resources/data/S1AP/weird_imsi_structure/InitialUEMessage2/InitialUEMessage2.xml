@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright 2019 Ericsson, https://www.ericsson.com/en
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<S1AP-PDU>
+    <initiatingMessage>
+        <procedureCode>12</procedureCode>
+        <criticality>ignore</criticality>
+        <value>
+            <InitialUEMessage>
+                <protocolIEs>
+                    <protocolIEs>
+                        <id>8</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <ENB-UE-S1AP-ID>2060816</ENB-UE-S1AP-ID>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>26</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <NAS-PDU>
+                                0748720B29071855102132713A85895805F0F0C040105C1004570200003103E5E0349011035758825D0100C1
+                            </NAS-PDU>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>67</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <TAI>
+                                <pLMNidentity>132102</pLMNidentity>
+                                <tAC>3039</tAC>
+                            </TAI>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>100</id>
+                        <criticality>ignore</criticality>
+                        <value>
+                            <EUTRAN-CGI>
+                                <pLMNidentity>132102</pLMNidentity>
+                                <cell-ID>0000000100010000000001000011</cell-ID>
+                            </EUTRAN-CGI>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>134</id>
+                        <criticality>ignore</criticality>
+                        <value>
+                            <RRC-Establishment-Cause>mo-Signalling</RRC-Establishment-Cause>
+                        </value>
+                    </protocolIEs>
+                </protocolIEs>
+            </InitialUEMessage>
+        </value>
+    </initiatingMessage>
+</S1AP-PDU>
