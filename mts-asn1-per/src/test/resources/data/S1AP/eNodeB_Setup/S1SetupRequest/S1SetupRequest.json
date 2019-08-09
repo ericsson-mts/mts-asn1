@@ -1,0 +1,70 @@
+{
+  "initiatingMessage": {
+    "procedureCode": 17,
+    "criticality": "reject",
+    "value": {
+      "S1SetupRequest": {
+        "protocolIEs": [
+          {
+            "id": 59,
+            "criticality": "reject",
+            "value": {
+              "Global-ENB-ID": {
+                "pLMNidentity": "00F110",
+                "eNB-ID": {
+                  "macroENB-ID": "00000111000010000000"
+                }
+              }
+            }
+          },
+          {
+            "id": 60,
+            "criticality": "ignore",
+            "value": {
+              "ENBname": "aric-eNB"
+            }
+          },
+          {
+            "id": 64,
+            "criticality": "reject",
+            "value": {
+              "SupportedTAs": [
+                {
+                  "tAC": "000C",
+                  "broadcastPLMNs": [
+                    "00F110"
+                  ]
+                },
+                {
+                  "tAC": "000B",
+                  "broadcastPLMNs": [
+                    "00F110"
+                  ]
+                },
+                {
+                  "tAC": "000A",
+                  "broadcastPLMNs": [
+                    "00F110"
+                  ]
+                },
+                {
+                  "tAC": "0009",
+                  "broadcastPLMNs": [
+                    "00F110"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": 137,
+            "criticality": "reject",
+            "value": {
+              "PagingDRX": "v32"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

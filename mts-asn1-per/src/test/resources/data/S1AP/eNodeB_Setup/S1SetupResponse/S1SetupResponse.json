@@ -1,0 +1,45 @@
+{
+  "successfulOutcome": {
+    "procedureCode": 17,
+    "criticality": "reject",
+    "value": {
+      "S1SetupResponse": {
+        "protocolIEs": [
+          {
+            "id": 61,
+            "criticality": "ignore",
+            "value": {
+              "MMEname": "mme81"
+            }
+          },
+          {
+            "id": 105,
+            "criticality": "reject",
+            "value": {
+              "ServedGUMMEIs": [
+                {
+                  "servedPLMNs": [
+                    "00F110"
+                  ],
+                  "servedGroupIDs": [
+                    "032B"
+                  ],
+                  "servedMMECs": [
+                    "51"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "id": 87,
+            "criticality": "ignore",
+            "value": {
+              "RelativeMMECapacity": 255
+            }
+          }
+        ]
+      }
+    }
+  }
+}
