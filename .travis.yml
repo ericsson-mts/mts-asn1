@@ -13,4 +13,9 @@ addons:
 
 script:
   # other script steps might be done before running the actual analysis
-  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=com.ericsson.mts:mts-asn1
+  - mvn clean verify sonar:sonar -Pcoverage
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
