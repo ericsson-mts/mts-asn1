@@ -1,0 +1,33 @@
+<S1AP-PDU>
+    <initiatingMessage>
+        <procedureCode>23</procedureCode>
+        <criticality>reject</criticality>
+        <value>
+            <UEContextReleaseCommand>
+                <protocolIEs>
+                    <protocolIEs>
+                        <id>99</id>
+                        <criticality>reject</criticality>
+                        <value>
+                            <UE-S1AP-IDs>
+                                <uE-S1AP-ID-pair>
+                                    <mME-UE-S1AP-ID>3692815053</mME-UE-S1AP-ID>
+                                    <eNB-UE-S1AP-ID>2060816</eNB-UE-S1AP-ID>
+                                </uE-S1AP-ID-pair>
+                            </UE-S1AP-IDs>
+                        </value>
+                    </protocolIEs>
+                    <protocolIEs>
+                        <id>2</id>
+                        <criticality>ignore</criticality>
+                        <value>
+                            <Cause>
+                                <nas>unspecified</nas>
+                            </Cause>
+                        </value>
+                    </protocolIEs>
+                </protocolIEs>
+            </UEContextReleaseCommand>
+        </value>
+    </initiatingMessage>
+</S1AP-PDU>
