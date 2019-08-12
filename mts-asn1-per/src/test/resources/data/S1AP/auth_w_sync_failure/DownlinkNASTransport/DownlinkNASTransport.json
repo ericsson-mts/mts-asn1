@@ -1,0 +1,33 @@
+{
+  "initiatingMessage": {
+    "procedureCode": 11,
+    "criticality": "ignore",
+    "value": {
+      "DownlinkNASTransport": {
+        "protocolIEs": [
+          {
+            "id": 0,
+            "criticality": "reject",
+            "value": {
+              "MME-UE-S1AP-ID": 0
+            }
+          },
+          {
+            "id": 8,
+            "criticality": "reject",
+            "value": {
+              "ENB-UE-S1AP-ID": 1
+            }
+          },
+          {
+            "id": 26,
+            "criticality": "reject",
+            "value": {
+              "NAS-PDU": "0752004711471147114711471147114711471110389046869A1CB9B94D4FC785B83D07DD"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
