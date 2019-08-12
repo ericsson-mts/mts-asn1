@@ -1,0 +1,1 @@
+{"initiatingMessage":{"procedureCode":23,"criticality":"reject","value":{"UEContextReleaseCommand":{"protocolIEs":[{"id":99,"criticality":"reject","value":{"UE-S1AP-IDs":{"uE-S1AP-ID-pair":{"mME-UE-S1AP-ID":3692815053,"eNB-UE-S1AP-ID":2060816}}}},{"id":2,"criticality":"ignore","value":{"Cause":{"nas":"unspecified"}}}]}}}}
