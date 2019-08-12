@@ -51,7 +51,7 @@ public abstract class AbstractEnumeratedTranslator extends AbstractTranslator {
         if (enumeratedTypeContext.enumerations().additionalEnumeration() != null) {
             enumeratedTypeContext.enumerations().additionalEnumeration().enumeration().enumerationItem().forEach(enumerationItemContext -> {
                 if (enumerationItemContext.IDENTIFIER() != null) {
-                    fieldList.add(enumerationItemContext.IDENTIFIER().getText());
+                    addtionnalfieldList.add(enumerationItemContext.IDENTIFIER().getText());
                 } else if (enumerationItemContext.namedNumber() != null) {
                     if (enumerationItemContext.namedNumber().definedValue() != null) {
                         throw new NotHandledCaseException();

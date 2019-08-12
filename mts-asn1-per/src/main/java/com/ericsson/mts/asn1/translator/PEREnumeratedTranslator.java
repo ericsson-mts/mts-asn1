@@ -49,8 +49,8 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
         if (!isExtendedValue) {
             return fieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(fieldList.size() - 1L), s).intValueExact());
         } else {
-            throw new NotHandledCaseException("Extended enumeration : " + this.name); //"probably not working"
-            //enumValue = extensionMapping.get(translator.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(extensionMapping.size() - 1), bs).intValueExact());
+            return addtionnalfieldList.get(perTranscoder.decodeConstrainedNumber(BigInteger.ZERO, BigInteger.valueOf(addtionnalfieldList.size() - 1L), s).intValueExact());
+//            throw new NotHandledCaseException("Extended enumeration : " + this.name); //"probably not working"
         }
     }
 }

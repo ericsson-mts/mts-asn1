@@ -36,10 +36,10 @@ public class S1APWeirdIMSIStructureTests extends AbstractTests {
         test("S1AP-PDU", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport/DownlinkNASTransport.bin", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport/DownlinkNASTransport.json", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport/DownlinkNASTransport.xml");
     }
 
-//    @Test
-//    void testUEContextReleaseCommand() throws Exception {
-//        updateDataformatFileTest("S1AP-PDU", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand/UEContextReleaseCommand.bin", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand/UEContextReleaseCommand.json", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand/UEContextReleaseCommand.xml");
-//    }
+    @Test
+    void testUEContextReleaseCommand() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand/UEContextReleaseCommand.bin", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand/UEContextReleaseCommand.json", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand/UEContextReleaseCommand.xml");
+    }
 
     @Test
     void testUEContextReleaseComplete() throws Exception {
@@ -56,10 +56,10 @@ public class S1APWeirdIMSIStructureTests extends AbstractTests {
         test("S1AP-PDU", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport2/DownlinkNASTransport2.bin", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport2/DownlinkNASTransport2.json", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport2/DownlinkNASTransport2.xml");
     }
 
-//    @Test
-//    void testUEContextReleaseCommand2() throws Exception {
-//        updateDataformatFileTest("S1AP-PDU", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand2/UEContextReleaseCommand2.bin", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand2/UEContextReleaseCommand2.json", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand2/UEContextReleaseCommand2.xml");
-//    }
+    @Test
+    void testUEContextReleaseCommand2() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand2/UEContextReleaseCommand2.bin", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand2/UEContextReleaseCommand2.json", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand2/UEContextReleaseCommand2.xml");
+    }
 
     @Test
     void testUEContextReleaseComplete2() throws Exception {
@@ -76,10 +76,10 @@ public class S1APWeirdIMSIStructureTests extends AbstractTests {
         test("S1AP-PDU", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport3/DownlinkNASTransport3.bin", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport3/DownlinkNASTransport3.json", "/data/S1AP/weird_imsi_structure/DownlinkNASTransport3/DownlinkNASTransport3.xml");
     }
 
-//    @Test
-//    void testUEContextReleaseCommand3() throws Exception {
-//        updateDataformatFileTest("S1AP-PDU", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand3/UEContextReleaseCommand3.bin", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand3/UEContextReleaseCommand3.json", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand3/UEContextReleaseCommand3.xml");
-//    }
+    @Test
+    void testUEContextReleaseCommand3() throws Exception {
+        test("S1AP-PDU", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand3/UEContextReleaseCommand3.bin", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand3/UEContextReleaseCommand3.json", "/data/S1AP/weird_imsi_structure/UEContextReleaseCommand3/UEContextReleaseCommand3.xml");
+    }
 
     @Test
     void testUEContextReleaseComplete3() throws Exception {
