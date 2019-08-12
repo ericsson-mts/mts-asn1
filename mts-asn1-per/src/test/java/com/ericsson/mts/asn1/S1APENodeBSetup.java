@@ -20,7 +20,7 @@ public class S1APENodeBSetup extends AbstractTests {
     @BeforeAll
     static void init() {
         try {
-            asn1Translator = new ASN1Translator(new PERTranslatorFactory(true), Collections.singletonList(S1APOrangeTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
+            asn1Translator = new ASN1Translator(new PERTranslatorFactory(true), Collections.singletonList(S1APENodeBSetup.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
         } catch (Exception e) {
             e.printStackTrace();
         }

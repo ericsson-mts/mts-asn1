@@ -20,7 +20,7 @@ public class S1APWeirdIMSIStructureTests extends AbstractTests {
     @BeforeAll
     static void init() {
         try {
-            asn1Translator = new ASN1Translator(new PERTranslatorFactory(true), Collections.singletonList(S1APTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
+            asn1Translator = new ASN1Translator(new PERTranslatorFactory(true), Collections.singletonList(S1APWeirdIMSIStructureTests.class.getResourceAsStream("/grammar/S1AP/S1AP.asn")));
         } catch (Exception e) {
             e.printStackTrace();
         }
