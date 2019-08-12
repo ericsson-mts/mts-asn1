@@ -31,7 +31,7 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
         if (hasExtensionMarker && addtionnalfieldList.indexOf(value) != -1) {
-            throw new NotHandledCaseException();
+            throw new NotHandledCaseException(value);
         } else {
             if (hasExtensionMarker) {
                 s.writeBit(0);
