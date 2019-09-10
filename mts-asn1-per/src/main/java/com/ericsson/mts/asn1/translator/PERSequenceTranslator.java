@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
@@ -18,13 +17,17 @@ import com.ericsson.mts.asn1.exception.InvalidParameterException;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class PERSequenceTranslator extends AbstractSequenceTranslator {
+
     private PERTranscoder perTranscoder;
 
     public PERSequenceTranslator(PERTranscoder perTranscoder) {
@@ -85,13 +88,15 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
 
     @Override
     public void doDecode(BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws Exception {
-        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
+        logger.trace("{} : {}", this.name, this);
         boolean rootSequenceHasOptional = false;
         boolean isExtendedSequence = false;
 
         if (hasEllipsis || optionalExtensionMarker || (extensionAndException != -1)) {
             isExtendedSequence = (1 == s.readBit());
         }
+
+        logger.trace("{} : isExtendedSequence : {}", this.name, isExtendedSequence);
 
         for (Field field : fieldList) {
             if (field.getOptionnal()) {
@@ -106,11 +111,13 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
             }
         }
 
+        logger.trace("{} : optional bitmap is {}", this.name, optionalBitmap);
+
         int optionalBitmapIndex = 0;
 
         for (Field field : fieldList) {
             if (!field.getOptionnal() || optionalBitmap[optionalBitmapIndex++]) {
-                logger.trace("Decode field {} ", field.getName());
+                logger.trace("{} : decode field {} ", this.name, field.getName());
                 AbstractTranslator typeTranslator = field.getType();
                 List<String> parameters = typeTranslator.getParameters();
                 if (parameters.isEmpty()) {
@@ -127,26 +134,53 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
         }
 
         if (isExtendedSequence) {
-            logger.trace("isExtendedSequence");
-            boolean[] additionalBitmap = new boolean[perTranscoder.decodeNormallySmallNumber(s).intValue()];
+            logger.trace("{} : is and extended sequence", this.name);
 
-            logger.trace("additionalBitmap is {}", additionalBitmap);
+            int extensionsCount = perTranscoder.decodeNormallySmallNumber(s).intValueExact() + 1;
+
+            if (0 == extensionsCount) {
+                throw new IOException("\"n\" cannot be zero, as this procedure is only invoked if there is at least one extension addition being encoded");
+            }
+
+            logger.trace("{} : extensions count is {}", this.name, extensionsCount);
+
+            boolean[] additionalBitmap = new boolean[extensionsCount];
 
             for (int i = 0; i < additionalBitmap.length; i++) {
                 additionalBitmap[i] = (1 == s.readBit());
             }
 
-            // ALIGNED ONLY
-            perTranscoder.skipAlignedBits(s);
+            logger.trace("{} : additional bitmap is {}", this.name, additionalBitmap);
 
-            for (boolean additionalbit : additionalBitmap) {
-                if (additionalbit) {
-                    int len = perTranscoder.decodeLengthDeterminant(s);
-                    byte[] data = new byte[len];
-                    if (-1 == s.read(data)) {
-                        throw new NotHandledCaseException();
+            // ALIGNED ONLY
+            if (perTranscoder.isAligned()) {
+                perTranscoder.skipAlignedBits(s);
+            }
+
+            Iterator<Field> additionalFieldsIterator = this.additionnalFieldList.iterator();
+            for (boolean additionalBit : additionalBitmap) {
+                Field field;
+                if (additionalFieldsIterator.hasNext()) {
+                    field = additionalFieldsIterator.next();
+                } else {
+                    field = null;
+                }
+
+                if (additionalBit) {
+                    byte[] data = s.readAlignedByteArray(perTranscoder.decodeLengthDeterminant(s));
+                    // TODO : decode for real (and display octetstring for unknown)
+                    AbstractTranslator typeTranslator;
+                    if (null != field) {
+                        typeTranslator = field.getType();
+                        List<String> parameters = typeTranslator.getParameters();
+                        if (parameters.isEmpty()) {
+                            typeTranslator.decode(field.getName(), new BitInputStream(new ByteArrayInputStream(data)), writer, translatorContext);
+                        } else {
+                            throw new NotHandledCaseException("Case of extension with parameters not handled yet");
+                        }
+                    } else {
+                        logger.error("skipped additional field of " + data.length + " bytes");
                     }
-                    throw new NotHandledCaseException("Extended sequence : " + this.name);
                 }
             }
         }
