@@ -30,8 +30,10 @@ public class PEREnumeratedTranslator extends AbstractEnumeratedTranslator {
     @Override
     public void doEncode(BitArray s, FormatReader reader, String value) throws IOException {
         logger.trace("Encode {}", this);
-        if (hasExtensionMarker && additionalFieldsList.indexOf(value) != -1) {
-            throw new NotHandledCaseException(value);
+        int additionalIndex = additionalFieldsList.indexOf(value);
+        if (hasExtensionMarker && additionalIndex != -1) {
+            s.writeBit(1);
+            perTranscoder.encodeNormallySmallWholeNumber(s, BigInteger.valueOf(additionalIndex));
         } else {
             if (hasExtensionMarker) {
                 s.writeBit(0);
