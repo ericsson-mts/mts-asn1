@@ -80,7 +80,7 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
 
     @Override
     public byte[] doDecode(BitInputStream s, FormatWriter writer) throws IOException {
-        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
+        logger.trace("Enter {} : {} translator", this.name, this);
         byte[] octetstring;
         boolean isExtendedOctetString = false;
         BigInteger ub, lb;
@@ -102,21 +102,21 @@ public class PEROctetStringTranslator extends AbstractOctetStringTranslator {
         }
 
         if (isExtendedOctetString) {
-            //17.3
+            //16.3
             throw new NotHandledCaseException();
         }
 
         if (BigInteger.ZERO.equals(ub)) {
-            //17.5
+            //16.5
             return null;
-        } else if (lb.equals(ub) && BigInteger.valueOf(16).compareTo(lb) > 0) {
-            //17.6
+        } else if (lb.equals(ub) && BigInteger.valueOf(16).compareTo(lb) >= 0) {
+            //16.6
             octetstring = perTranscoder.decodeOctetString(s, lb);
-        } else if (lb.equals(ub) && new BigInteger("65536").compareTo(ub) > 0) {
-            //17.7
+        } else if (lb.equals(ub) && BigInteger.valueOf(65536).compareTo(ub) >= 0) {
+            //16.7
             throw new NotHandledCaseException();
         } else {
-            //17.8
+            //16.8
             BigInteger length;
             if (ub != null) {
                 length = perTranscoder.decodeConstrainedNumber(lb, ub, s);
