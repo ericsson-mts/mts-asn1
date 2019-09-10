@@ -29,7 +29,7 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
 
     @Override
     public void doEncode(BitArray s, BigInteger value) throws IOException {
-        logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
+        logger.trace("Enter {}", this);
         BigInteger lb = null, ub = null;
         if (constraints.hasSingleValueConstraints()) {
             throw new NotHandledCaseException();
@@ -79,7 +79,7 @@ public class PERIntegerTranslator extends AbstractIntegerTranslator {
 
     @Override
     public BigInteger doDecode(BitInputStream s) throws NotHandledCaseException, IOException {
-        logger.trace("Enter {} translator, name {}", this.getClass().getSimpleName(), this.name);
+        logger.trace("Enter {}", this);
         boolean isExtendedInteger = false;
         BigInteger number;
 

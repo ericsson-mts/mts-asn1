@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.ASN1Parser;
@@ -23,14 +22,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractEnumeratedTranslator extends AbstractTranslator {
+
     protected ArrayList<String> fieldList = new ArrayList<>();
     protected boolean exceptionSpec = false;
     protected boolean hasExtensionMarker = false;
-    protected ArrayList<String> addtionnalfieldList = new ArrayList<>();
+    protected ArrayList<String> additionalFieldsList = new ArrayList<>();
 
     public AbstractTranslator init(ASN1Parser.EnumeratedTypeContext enumeratedTypeContext) {
-        if (enumeratedTypeContext.enumerations().ELLIPSIS() != null)
+        if (enumeratedTypeContext.enumerations().ELLIPSIS() != null) {
             hasExtensionMarker = true;
+        }
         enumeratedTypeContext.enumerations().rootEnumeration().enumeration().enumerationItem().forEach(enumerationItemContext -> {
             if (enumerationItemContext.IDENTIFIER() != null) {
                 fieldList.add(enumerationItemContext.IDENTIFIER().getText());
@@ -51,12 +52,12 @@ public abstract class AbstractEnumeratedTranslator extends AbstractTranslator {
         if (enumeratedTypeContext.enumerations().additionalEnumeration() != null) {
             enumeratedTypeContext.enumerations().additionalEnumeration().enumeration().enumerationItem().forEach(enumerationItemContext -> {
                 if (enumerationItemContext.IDENTIFIER() != null) {
-                    addtionnalfieldList.add(enumerationItemContext.IDENTIFIER().getText());
+                    additionalFieldsList.add(enumerationItemContext.IDENTIFIER().getText());
                 } else if (enumerationItemContext.namedNumber() != null) {
                     if (enumerationItemContext.namedNumber().definedValue() != null) {
                         throw new NotHandledCaseException();
                     } else {
-                        addtionnalfieldList.add(enumerationItemContext.namedNumber().IDENTIFIER().getText());
+                        additionalFieldsList.add(enumerationItemContext.namedNumber().IDENTIFIER().getText());
                     }
                 } else {
                     throw new NotHandledCaseException();
@@ -82,10 +83,10 @@ public abstract class AbstractEnumeratedTranslator extends AbstractTranslator {
 
     @Override
     public String toString() {
-        return "AbstractEnumeratedTranslator{" +
-                "fieldList=" + fieldList +
-                ", exceptionSpec=" + exceptionSpec +
-                ", addtionnalfieldList=" + addtionnalfieldList +
-                '}';
+        return "AbstractEnumeratedTranslator{"
+                + "fieldList=" + fieldList
+                + ", exceptionSpec=" + exceptionSpec
+                + ", addtionnalfieldList=" + additionalFieldsList
+                + '}';
     }
 }

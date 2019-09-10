@@ -24,56 +24,57 @@ import java.util.concurrent.ConcurrentHashMap;
  * Use to store context from .asn files which is parse with TopLevelVisitor
  */
 class IndexingRegistry {
-    private Map<String, ASN1Parser.ValueAssignmentContext> valueindicingregistry = new ConcurrentHashMap<>();
-    private Map<String, ASN1Parser.TypeAssignmentContext> typeindicingregistry = new ConcurrentHashMap<>();
-    private Map<String, ASN1Parser.ParameterizedAssignmentContext> parameterizedindicingregistry = new ConcurrentHashMap<>();
-    private Map<String, ASN1Parser.ObjectClassAssignmentContext> objectclassindicingregistry = new ConcurrentHashMap<>();
+    private final static Logger LOG = LoggerFactory.getLogger(IndexingRegistry.class.getSimpleName());
+    
+    private Map<String, ASN1Parser.ValueAssignmentContext> valueIndexingRegistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.TypeAssignmentContext> typeIndixingRegistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.ParameterizedAssignmentContext> parameterizedIndixingregistry = new ConcurrentHashMap<>();
+    private Map<String, ASN1Parser.ObjectClassAssignmentContext> objectClassIndexingRegistry = new ConcurrentHashMap<>();
     private Map<String, ASN1Parser.ObjectAssignmentContext> objectAssignmentContextHashMap = new ConcurrentHashMap<>();
-    private Logger logger = LoggerFactory.getLogger(IndexingRegistry.class.getSimpleName());
 
     void addAssignment(ASN1Parser.AssignmentContext assignmentContext) {
         if (null != assignmentContext.valueAssignment()) {
-            valueindicingregistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.valueAssignment());
+            valueIndexingRegistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.valueAssignment());
         } else if (null != assignmentContext.typeAssignment()) {
-            typeindicingregistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.typeAssignment());
+            typeIndixingRegistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.typeAssignment());
         } else if (null != assignmentContext.parameterizedAssignment()) {
-            parameterizedindicingregistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.parameterizedAssignment());
+            parameterizedIndixingregistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.parameterizedAssignment());
         } else if (null != assignmentContext.objectAssignment()) {
             objectAssignmentContextHashMap.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.objectAssignment());
         } else {
-            objectclassindicingregistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.objectClassAssignment());
+            objectClassIndexingRegistry.put(assignmentContext.IDENTIFIER().getText(), assignmentContext.objectClassAssignment());
         }
     }
 
     ASN1Parser.ValueAssignmentContext getConstantContext(String identifier) {
-        logger.trace("Parse " + identifier + " as a constant");
-        return valueindicingregistry.remove(identifier);
+        LOG.trace("Parse " + identifier + " as a constant");
+        return valueIndexingRegistry.remove(identifier);
     }
 
     ASN1Parser.TypeAssignmentContext getTranslatorContext(String identifier) {
-        logger.trace("Parse " + identifier + " as a translator");
-        return typeindicingregistry.remove(identifier);
+        LOG.trace("Parse " + identifier + " as a translator");
+        return typeIndixingRegistry.remove(identifier);
     }
 
     ASN1Parser.ParameterizedAssignmentContext getParameterizedAssignementContext(String identifier) {
-        logger.trace("Parse " + identifier + " as a parameterized assignment");
-        return parameterizedindicingregistry.remove(identifier);
+        LOG.trace("Parse " + identifier + " as a parameterized assignment");
+        return parameterizedIndixingregistry.remove(identifier);
     }
 
     ASN1Parser.ObjectAssignmentContext getObjectContext(String identifier) {
-        logger.trace("Parse " + identifier + " as an object");
+        LOG.trace("Parse " + identifier + " as an object");
         return objectAssignmentContextHashMap.remove(identifier);
     }
 
     ASN1Parser.ObjectClassAssignmentContext getClassHandlerContext(String identifier) {
-        logger.trace("Parse " + identifier + " as a class");
-        return objectclassindicingregistry.remove(identifier);
+        LOG.trace("Parse " + identifier + " as a class");
+        return objectClassIndexingRegistry.remove(identifier);
     }
 
     /***** Use to pre-parse ASN.1 object *****/
 
     List<String> getConstantsIdentifier() {
-        Iterator it = valueindicingregistry.keySet().iterator();
+        Iterator it = valueIndexingRegistry.keySet().iterator();
         List<String> arrayList = new ArrayList<>();
         while (it.hasNext()) {
             arrayList.add((String) it.next());
@@ -82,7 +83,7 @@ class IndexingRegistry {
     }
 
     List<String> getTranslatorsIdentifier() {
-        Iterator it = typeindicingregistry.keySet().iterator();
+        Iterator it = typeIndixingRegistry.keySet().iterator();
         List<String> arrayList = new ArrayList<>();
         while (it.hasNext()) {
             arrayList.add((String) it.next());
@@ -91,11 +92,11 @@ class IndexingRegistry {
     }
 
     List<String> getParameterizedTranslatorsIdentifier() {
-        Iterator it = parameterizedindicingregistry.keySet().iterator();
+        Iterator it = parameterizedIndixingregistry.keySet().iterator();
         List<String> arrayList = new ArrayList<>();
         while (it.hasNext()) {
             String key = (String) it.next();
-            if (parameterizedindicingregistry.get(key).asnType() != null) {
+            if (parameterizedIndixingregistry.get(key).asnType() != null) {
                 arrayList.add(key);
             }
         }
@@ -103,7 +104,7 @@ class IndexingRegistry {
     }
 
     List<String> getClassHandlersdentifier() {
-        Iterator it = objectclassindicingregistry.keySet().iterator();
+        Iterator it = objectClassIndexingRegistry.keySet().iterator();
         List<String> arrayList = new ArrayList<>();
         while (it.hasNext()) {
             arrayList.add((String) it.next());
@@ -112,11 +113,11 @@ class IndexingRegistry {
     }
 
     List<String> getObjectSetAssignment() {
-        Iterator it = parameterizedindicingregistry.keySet().iterator();
+        Iterator it = parameterizedIndixingregistry.keySet().iterator();
         List<String> arrayList = new ArrayList<>();
         while (it.hasNext()) {
             String key = (String) it.next();
-            if (parameterizedindicingregistry.get(key).objectSet() != null) {
+            if (parameterizedIndixingregistry.get(key).objectSet() != null) {
                 arrayList.add(key);
             }
         }
@@ -136,6 +137,6 @@ class IndexingRegistry {
      * @return true if all contexts are consume, false otherwise
      */
     boolean checkRegistry() {
-        return valueindicingregistry.isEmpty() && typeindicingregistry.isEmpty() && parameterizedindicingregistry.isEmpty() && objectclassindicingregistry.isEmpty() && objectAssignmentContextHashMap.isEmpty();
+        return valueIndexingRegistry.isEmpty() && typeIndixingRegistry.isEmpty() && parameterizedIndixingregistry.isEmpty() && objectClassIndexingRegistry.isEmpty() && objectAssignmentContextHashMap.isEmpty();
     }
 }
