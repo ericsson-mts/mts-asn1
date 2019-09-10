@@ -431,13 +431,13 @@ elementSetSpecs
 value  :   builtinValue
 ;
 builtinValue :
-		enumeratedValue
-	|	integerValue
+            integerValue
 	|   realValue
-	|	choiceValue
-	|	objectIdentifierValue
+        |   enumeratedValue
+	|   choiceValue
+	|   objectIdentifierValue
 	|   octetStringValue
-	|	booleanValue
+	|   booleanValue
  ;
 
 objectIdentifierValue : L_BRACE  (objIdComponentsList|definedValue objIdComponentsList) R_BRACE
@@ -462,7 +462,7 @@ objIdComponents  :
 numberForm : NUMBER | definedValue
 ;
 
-integerValue :  signedNumber | IDENTIFIER
+integerValue :  signedNumber
 ;
 
 realValue : numericRealValue //| specialRealValue  | sequenceValue
@@ -479,7 +479,7 @@ choiceValue  :    IDENTIFIER COLON value
 enumeratedValue  : IDENTIFIER
 ;
 
-signedNumber :  (MINUS)? NUMBER
+signedNumber :  MINUS? NUMBER
 ;
 choiceType    : CHOICE_LITERAL L_BRACE alternativeTypeLists R_BRACE
 ;
