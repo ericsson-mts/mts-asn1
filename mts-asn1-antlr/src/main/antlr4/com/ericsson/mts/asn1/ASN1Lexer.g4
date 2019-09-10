@@ -95,6 +95,10 @@ MINUS
 	:	'-'
 	;
 
+UNDERSCORE
+	:	'_'
+	;
+
 ENUMERATED_LITERAL
 	:	'ENUMERATED'
 	;
@@ -451,11 +455,10 @@ EscapeSequence
 /**I found this char range in JavaCC's grammar, but Letter and Digit overlap.
    Still works, but...
  */
-fragment
-LETTER
+/*fragment LETTER
     :  '\u0024' |
-    	'\u002d' |
-     '\u0041'..'\u005a' |
+       '\u002d' |
+       '\u0041'..'\u005a' |
        '\u005f' |
        '\u0061'..'\u007a' |
        '\u00c0'..'\u00d6' |
@@ -467,7 +470,9 @@ LETTER
        '\u3400'..'\u3d2d' |
        '\u4e00'..'\u9fff' |
        '\uf900'..'\ufaff'
-    ;
+    ;*/
+fragment LETTER : (UPPER|LOWER)+ ;
+
 
 fragment
 JavaIDDigit
@@ -494,6 +499,6 @@ JavaIDDigit
 //	;
 
 IDENTIFIER
-	: LETTER (LETTER|JavaIDDigit)*
+	: LETTER(LETTER|DIGIT|MINUS|UNDERSCORE)*
 	;
 	
