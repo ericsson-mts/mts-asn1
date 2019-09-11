@@ -57,7 +57,7 @@ public class PERChoiceTranslator extends AbstractChoiceTranslator {
             }
         }
         //Encode optional extension bit 1 also !
-        throw new NotHandledCaseException("Need length to encode additional extension");
+        throw new NotHandledCaseException("In " + this.name + ", need length to encode additional extension choice " + choiceValue);
     }
 
     @Override
