@@ -20,7 +20,7 @@ before_install:
     - openssl aes-256-cbc -K $encrypted_12d6162c3240_key -iv $encrypted_12d6162c3240_iv -in .gnupg/secring.gpg.enc -out .gnupg/secring.gpg -d
 
 install:
-    - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
+#    - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
     - mvn -B -Ptravis --settings .mvn/settings.xml clean deploy
     
 #addons:
