@@ -34,6 +34,6 @@ install:
 #  # other script steps might be done before running the actual analysis
 #  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.host.url=https://sonarcloud.io
 
-#cache:
-#  directories:
-#    - '$HOME/.m2/repository'
+cache:
+  directories:
+    - '$HOME/.m2/repository'
