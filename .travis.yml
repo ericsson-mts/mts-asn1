@@ -21,7 +21,7 @@ before_install:
 
 install:
     - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
-    - mvn -B -Ptravis --settings .mvn/settings clean deploy
+    - mvn -B -Ptravis --settings .mvn/settings.xml clean deploy
     
 #addons:
 #  sonarcloud:
