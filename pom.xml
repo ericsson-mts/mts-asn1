@@ -91,9 +91,8 @@
         <profile>
             <id>travis</id>
             <properties>
-                <gpg.executable>gpg1</gpg.executable>
-                <gpg.homedir>${env.GPG_DIR}</gpg.homedir>
-                <gpg.keyname>160F4AB1</gpg.keyname>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.keyname>${env.GPG_KEYNAME}</gpg.keyname>
                 <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
                 <gpg.defaultKeyring>false</gpg.defaultKeyring>
                 <gpg.publicKeyring>${env.GPG_DIR}/pubring.gpg</gpg.publicKeyring>

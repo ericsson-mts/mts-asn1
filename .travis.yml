@@ -17,6 +17,7 @@ global:
     - secure: "MS6LIBHDRC9LSLcqjrWCeuyx+kJP/ckJ32FMVerwxcSbA3/CBgnYlBPAFXk7zlDTAYQ4UaTT7FMTncSCaWvghxi+pTqLi2+r1gbmloM+KxVWWpRKXKlN2K7XBoRG86aWeIYVRf0B/jch/QFpnLUEMjLaaNemIpKHTtYmVSUuEzWBks8y3wLBwJ+ugUpXkX2FcOwpvRA2uZvUHKjMavdpt1fXK+VbtsCYIQY7+dsQ/iXIC7pQ+06TaiLP5DvwKLaIfrXfF0FOf8khhons5VRuyQGIuuzRT8NPPKrgFm2YTCTFVkb5MSsEyTglZdgTo8/29SDO35D9pkGCBAYo8q7l+SyhibzXBLdjX5AyrXkH2/Nj83o1qosWxGUPMQMusjW7McQo2GT4v/uY5hq0neY8LAT4MX2g324JLf2KLltuhfUJbfVRvumWQQQBFQAlyGbQ3xCaz19FuxC3lBKcOrkofCRfde4ubp3ACbTlWvzNJBBqEjpn651EktoCid4oX8YVtDxRvWGI5Q8drv5qwua9xU6nH/a9FxWqqdTujmKjOFVS7PRzyuxOVJ7ghQv4oTiT+u1w2xwZlNj0Zj2HoKqFQGr7M+7RBijT3djWmsozYVghWbIqQ0GIkWVVyFj/6v/RsLRDcAHtUnsEupoGKJ0b/UDa5ELR71K51vesE9noKZc="
 
 install:
+    - pwd
     - gpg --version
     - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc -out $GPG_DIR/pubring.gpg -d
     - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc -out $GPG_DIR/secring.gpg -d
@@ -33,6 +34,6 @@ install:
 #  # other script steps might be done before running the actual analysis
 #  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.host.url=https://sonarcloud.io
 
-cache:
-  directories:
-    - '$HOME/.m2/repository'
+#cache:
+#  directories:
+#    - '$HOME/.m2/repository'
