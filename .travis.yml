@@ -6,9 +6,8 @@ sudo: false
 env:
     global:
         # ENCRYPTION_PASSWORD
-        - secure: "ZEyjtndbOi/NM7Fb3yS5fBGF8RCLygNLoM+imLR5IAB5DHgl0ysJ2yNLl87Pny+zSOHZbk11NUBEDPJUQQ1OlA+sJuKT6v1WVIujEP/1YzJeHhVEFUBpJrWW48hnLU0HB4wO7Pa1iYrCRJuuNlUE+i7GatEO/WfguSqbKjkQydILsl9xLOeShfmijHb9V0GOD/QK6UHNf0dVsx9JrmoPsu1B8VbZX+jF4asYJmM4kflGnhBilR0YlvHnwfBF3YgW4+AcPAKJb/iDkynSOrM4Z8OSaYSOzZktZCt/nn5wKygw2WWJu0+ONukKBsTgMj0UC9sCY8V3t0L2HDprbWF68qXi+EPNyLsRIZsN6ox1w9v+kz3auZdfHff7ihAVg7K6FEa/nzQ8YWdh7AAvwdTmAgxWJ44ivM1N8RIzz/mAIy7lJVEw5L331gu2WBKKbHtHx/9AT7Wmg1+rBA5cd5w3nikLs3yYh/cAVBIkONVzZRtjxTMC1M4mkTbltn2neH0nqRA0BFu9OJoU1BcUdQI8ZQXzxF4aX83vhBsiu4G4EkYKUuuU9BpjSiAOBUkT03tSDYGiKKwh5q+mCMkvi+441vRYSZGt0E4byigS7oGG8atX40iYUD1yMWMbiNQo61A4FjAMPjopOeaj4BiNlMfOCa+1qcPprSREVfqxK14rsI8="
-        - GPG_DIR=.gnupg
-        - GPG_DIR_TEST=$TRAVIS_BUILD_DIR/.gnupg
+        - secure: "DyFjEFftdTWDsHsDQEPjL0ZTqCE2TD7pryVUFZU2JBTi7uO6nZfJoGYtuYX3RDcSJfHle8N7c52rV1bQDwYyF33oBuu6IdQgcPz/9DQfOZj3pkjBJdQHRK7LxKSciBuhA8pxnG2YYXQYwCa+ActEsLCGiPVlRIIcaBbfzYHLL34/rVLg/OUi16ypaN5hDwEtYcUqu4O9KVAjPnFvoh2JjP//v7n/hfWnShFkNck8tqxPdpH9YxuTCfAhAr3BFBtiVTCtmDulKrEe1H8uXxftuM3gs5i0Zsf4Ieladiq68CBDqoav3Nf57addRb+K3gN53lE1yNCNj/5LPpJ785JfKZT/qRX9HstsKkiph6DnyxcSmyl00l5xsSxyqbJiQ9BJrQ9YpeeRB9cbwboL0uB3OOy+mFPZOndkbm9idy5mEWHPbAXHkzlVmhCiOpXvFo51g/7sj01rzM+6XbTacNVXD3e3Ak2F6NlIwCocVzEGwYI3XKzRLlX75WLNbAR8GmF8VUHfSRuNUGZLTxT88GyuE3Ezs7Ndh5D+xn+/OP9JrpqKO34mVLSXdZoImenfXsaYheYrH3k1DfaaqwmvfPiX383vxjRIn+TNI1NfePZr0ERjY5Up3m5yN3C7dAzUDjasw9kcFQj+jG4iaxnL+ta08WqhtmGYQ4V+/X8V5wEku0o="
+        - GPG_DIR=$TRAVIS_BUILD_DIR/.gnupg
         # GPG_KEYNAME=...
         - secure: "jzBl/6Wa8FVG7ZSifCXqET3cporWquLaPqXYQ75x6ptBkDbJq++MrwZEMQiVXHh8M0etuh1a0fUWNx/uedsHRFYN1bYMSZg+qRMHskzhkATR+/0HDhagBScjc+ku7rHeh/UMfL+K4TS+klWYO/7QSARgGaM3nma7PiRofWTL+o+g7x+HsS9x1XFqZQTprqRHab98BsMN3Y277V42aJ0egV6gbcU8ud2PkzV11qSJVET08WtfpjHfwKjUdfoVI+Q++QtuHdi65scz6PDcT0VTg2+61aZTcrYD+T3dlYXGyym5V2Ue9cOYJ+UJJh6g+yOzL9E3JoWBHWVPIyM5bFPiOEI8066++bIVJ9ACIBggOkZMrWCj/9DJPH1RD6tIjGImAZhgkCH/PSCBs5E16zWq1zEtMkRfRKxHvW8nmGV1aEriGQMFvdxWXS0cHGLY7BRUBhaaVNpRX1xzV9feqWoKpanw7/oI2jAbEyhWzVpkCebUkcuOrFd4/FeNE0PTeHkO15XeMWKOuaDxzSOnqAOiBzDGS7zmuMhvUhJC+gm2/fVIljiO7b5SHBAXdmfm+Rd9bt3H6rfcqqfdkuVPflJt63yQupTg7j+s6yNCLtATjfsTsNuw8bTe/RCfs2WKeEYcILbuGWWMw5QsGftacYFi6XkcrKXcbl9lk/fzimefSJk="
         # GPG_PASSPHRASE=...
@@ -19,14 +18,8 @@ env:
         - secure: "MS6LIBHDRC9LSLcqjrWCeuyx+kJP/ckJ32FMVerwxcSbA3/CBgnYlBPAFXk7zlDTAYQ4UaTT7FMTncSCaWvghxi+pTqLi2+r1gbmloM+KxVWWpRKXKlN2K7XBoRG86aWeIYVRf0B/jch/QFpnLUEMjLaaNemIpKHTtYmVSUuEzWBks8y3wLBwJ+ugUpXkX2FcOwpvRA2uZvUHKjMavdpt1fXK+VbtsCYIQY7+dsQ/iXIC7pQ+06TaiLP5DvwKLaIfrXfF0FOf8khhons5VRuyQGIuuzRT8NPPKrgFm2YTCTFVkb5MSsEyTglZdgTo8/29SDO35D9pkGCBAYo8q7l+SyhibzXBLdjX5AyrXkH2/Nj83o1qosWxGUPMQMusjW7McQo2GT4v/uY5hq0neY8LAT4MX2g324JLf2KLltuhfUJbfVRvumWQQQBFQAlyGbQ3xCaz19FuxC3lBKcOrkofCRfde4ubp3ACbTlWvzNJBBqEjpn651EktoCid4oX8YVtDxRvWGI5Q8drv5qwua9xU6nH/a9FxWqqdTujmKjOFVS7PRzyuxOVJ7ghQv4oTiT+u1w2xwZlNj0Zj2HoKqFQGr7M+7RBijT3djWmsozYVghWbIqQ0GIkWVVyFj/6v/RsLRDcAHtUnsEupoGKJ0b/UDa5ELR71K51vesE9noKZc="
 
 install:
-    - pwd
-    - echo $GPG_DIR
-    - echo $GPG_DIR_TEST
-    - echo $TRAVIS_BUILD_DIR
-    - echo "$(pwd)/.gnupg"
-    - gpg --version
-    - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $TRAVIS_BUILD_DIR/$GPG_DIR/pubring.gpg.enc -out $TRAVIS_BUILD_DIR/$GPG_DIR/pubring.gpg -d
-    - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $TRAVIS_BUILD_DIR/$GPG_DIR/secring.gpg.enc -out $TRAVIS_BUILD_DIR/$GPG_DIR/secring.gpg -d
+    - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/pubring.gpg.enc -out $GPG_DIR/pubring.gpg -d
+    - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in $GPG_DIR/secring.gpg.enc -out $GPG_DIR/secring.gpg -d
     - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
     - mvn -B -Ptravis deploy
     
