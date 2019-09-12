@@ -91,8 +91,9 @@
         <profile>
             <id>travis</id>
             <properties>
-                <gpg.executable>gpg2</gpg.executable>
-                <gpg.passphrase>the_pass_phrase</gpg.passphrase>
+                <gpg.executable>gpg</gpg.executable>
+                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+                <gpg.keyname>39D17AF2090C73A3D170743BBD3083F671873D53</gpg.keyname>
             </properties>
             <build>
                 <plugins>
