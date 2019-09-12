@@ -3,7 +3,9 @@ dist: trusty
 jdk:
   - openjdk8
 sudo: false
-
+global:
+    - SONATYPE_USERNAME=egwepas
+    - secure: "MS6LIBHDRC9LSLcqjrWCeuyx+kJP/ckJ32FMVerwxcSbA3/CBgnYlBPAFXk7zlDTAYQ4UaTT7FMTncSCaWvghxi+pTqLi2+r1gbmloM+KxVWWpRKXKlN2K7XBoRG86aWeIYVRf0B/jch/QFpnLUEMjLaaNemIpKHTtYmVSUuEzWBks8y3wLBwJ+ugUpXkX2FcOwpvRA2uZvUHKjMavdpt1fXK+VbtsCYIQY7+dsQ/iXIC7pQ+06TaiLP5DvwKLaIfrXfF0FOf8khhons5VRuyQGIuuzRT8NPPKrgFm2YTCTFVkb5MSsEyTglZdgTo8/29SDO35D9pkGCBAYo8q7l+SyhibzXBLdjX5AyrXkH2/Nj83o1qosWxGUPMQMusjW7McQo2GT4v/uY5hq0neY8LAT4MX2g324JLf2KLltuhfUJbfVRvumWQQQBFQAlyGbQ3xCaz19FuxC3lBKcOrkofCRfde4ubp3ACbTlWvzNJBBqEjpn651EktoCid4oX8YVtDxRvWGI5Q8drv5qwua9xU6nH/a9FxWqqdTujmKjOFVS7PRzyuxOVJ7ghQv4oTiT+u1w2xwZlNj0Zj2HoKqFQGr7M+7RBijT3djWmsozYVghWbIqQ0GIkWVVyFj/6v/RsLRDcAHtUnsEupoGKJ0b/UDa5ELR71K51vesE9noKZc="
 install:
     - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
     - mvn install
