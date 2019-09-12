@@ -1,8 +1,7 @@
 language: java
-dist: trusty
+dist: bionic
 jdk:
   - openjdk8
-sudo: false
 env:
     global:
         # ENCRYPTION_PASSWORD
@@ -22,7 +21,7 @@ before_install:
 
 install:
     - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
-    - mvn -B -Ptravis install
+    - mvn -B -Ptravis --settings .mvn/settings clean deploy
     
 #addons:
 #  sonarcloud:
