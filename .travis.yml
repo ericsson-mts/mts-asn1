@@ -21,9 +21,11 @@ install:
 
 jobs:
   include:
-    - script: mvn versions:set -DnewVersion=$TRAVIS_TAG
+    - stage: set version to tag, if any
+      script: mvn versions:set -DnewVersion=$TRAVIS_TAG
       if: tag IS present
-    - script: mvn -B -Ptravis --settings .mvn/settings.xml clean deploy
+    - stage: build, test, then deploy
+      script: mvn -B -Ptravis --settings .mvn/settings.xml clean deploy
 
 #addons:
 #  sonarcloud:
