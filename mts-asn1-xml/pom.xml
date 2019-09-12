@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mts-asn1</artifactId>
         <groupId>io.github.ericsson-mts</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>master-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>io.github.ericsson-mts</groupId>
             <artifactId>mts-asn1-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>master-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
