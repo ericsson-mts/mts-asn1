@@ -13,6 +13,7 @@ global:
     - secure: "Kpsfjdf2BFjzjh0VYVW8DtrnWVTozlKyPpZHIEmKQfF2v8JODdZoC5FZb8w3yoH6hKvSF+qAtkqpuzl8u1hTRd7g4VjnHUnvXJ1boHLduk50eRAR2BTbZAeUnD4lMWeA6Fo4dbfaiGST9KCJXJU9jFqnzXUzyrg0NIWBtAf9tyiwoo7JV1upV8JzWKbSMhdM7opHOHhd5eZ95ZNuXFL9f9uWxeyi+tLRSnIrKe8X1XBZQboQT/kHIC+QTZTqCANDIttwjiNdyE/zargek1r8dkktdsT0mxYh3GNE6KqEM4IVDfjWpbdHDwNazpEh/sxWarGQeaw+ZfXvj6vEwFcBnombd4SFNJE/gy62FSA1yPRxI06CIEvFM+XwqnAWsMZMFYTY4eBzCR/OlzRRBsjJg+qiRleSsMuvdyc+CLFIq4kVwJGTGto8Cs20Ov27nX22iWn83hFuJV2QqPCiT9CrbNedbPC6JCRI7FM2BrDabIeOsjUsdv1VY32L4QZSHm/dkXjmHJa++uEgvB2rHprbDuRDMkGyg/Ueh35LRdPtLbkBSKHt3F2OKpjlkUNG0dyVNARaipSTvM2US0p33OztMCu0A0F3EALWuXMZMAvZx4och0CjP/K0cnQUbPl2J8vVQ1Bfl8B5nZbjf1+dE/Vp4GOGUtBERhoSMYH0rJQFFyo="
 
 install:
+    - gpg --version
     - mvn versions:set -DnewVersion=$TRAVIS_BRANCH
     - mvn -B -Ptravis install
     
