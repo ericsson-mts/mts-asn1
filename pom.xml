@@ -20,7 +20,7 @@
     <packaging>pom</packaging>
     <name>mts-asn1</name>
     <description>A library to encode and decode ASN1 data, from and to other formats, like JSON or XML</description>
-    
+    <url>https://github.com/ericsson-mts/mts-asn1</url>
     <developers>
         <developer>
             <id>egwepas</id>
