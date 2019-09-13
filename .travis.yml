@@ -21,7 +21,7 @@ install:
 
 script:
   - |
-    [[ ! -z $TRAVIS_TAG ]] &&; then
+    if [[ ! -z $TRAVIS_TAG ]]; then
         mvn versions:set -DnewVersion=$TRAVIS_TAG
     fi
   - mvn -B -Ptravis --settings .mvn/settings.xml clean deploy
