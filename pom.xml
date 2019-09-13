@@ -18,7 +18,19 @@
     <artifactId>mts-asn1</artifactId>
     <version>master-SNAPSHOT</version>
     <packaging>pom</packaging>
-
+    <name>mts-asn1</name>
+    <description>A library to encode and decode ASN1 data, from and to other formats, like JSON or XML</description>
+    
+    <developers>
+        <developer>
+            <id>egwepas</id>
+            <name>Gwenhaël PASQUIERS</name>
+            <organization>Ericsson</organization>
+            <timezone>Europe/Paris</timezone>
+            <email>gwenhael.pasquiers@ericsson.com</email>
+        </developer>
+    </developers>
+    
     <licenses>
         <license>
             <name>MIT License</name>
