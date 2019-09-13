@@ -176,7 +176,7 @@
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <!-- explicit matching using the staging profile id -->
                             <stagingProfileId>7edbe315063867</stagingProfileId>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <!--autoReleaseAfterClose>true</autoReleaseAfterClose-->
                         </configuration>
                     </plugin>
                 </plugins>
