@@ -175,8 +175,8 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <!-- explicit matching using the staging profile id -->
-                            <stagingProfileId>7edbe315063867</stagingProfileId>
-                            <!--autoReleaseAfterClose>true</autoReleaseAfterClose-->
+                            <!--stagingProfileId>7edbe315063867</stagingProfileId-->
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                 </plugins>
