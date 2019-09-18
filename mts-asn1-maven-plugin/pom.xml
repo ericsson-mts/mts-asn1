@@ -22,19 +22,11 @@
     <artifactId>mts-asn1-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
-
     <dependencies>
         <dependency>
             <groupId>io.github.ericsson-mts</groupId>
             <artifactId>mts-asn1-antlr</artifactId>
             <version>master-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.4.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.squareup</groupId>
@@ -42,17 +34,10 @@
             <version>1.11.1</version>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>3.6.0</version>
         </dependency>
-
-        <!-- dependencies to annotations -->
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
@@ -62,11 +47,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M3</version>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
