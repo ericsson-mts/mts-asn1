@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.BitArray;
@@ -17,11 +16,13 @@ import com.ericsson.mts.asn1.TranslatorContext;
 import com.ericsson.mts.asn1.exception.NotHandledCaseException;
 import com.ericsson.mts.asn1.factory.FormatReader;
 import com.ericsson.mts.asn1.factory.FormatWriter;
+import java.io.ByteArrayInputStream;
 
 import java.math.BigInteger;
 import java.util.Map;
 
 public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTranslator {
+
     //Use for debug
     private static int openTypeTag = 0;
     private PERTranscoder perTranscoder;
@@ -94,12 +95,30 @@ public class PERObjectClassFieldTranslator extends AbstractObjectClassFieldTrans
 
                 //OpenType
                 typeTranslator = classHandler.getTypeTranslator(fieldName, registry.get(constraints.getObjectSetName()), uniqueKey);
-                if (perTranscoder.decodeLengthDeterminant(s) >= 16384) {
+                int len = perTranscoder.decodeLengthDeterminant(s);
+                if (len >= 16384) {
                     throw new NotHandledCaseException("Open type fragmentation");
                 }
+
+                
                 writer.enterObject(name);
-                typeTranslator.decode(typeTranslator.getName(), s, writer, translatorContext);
-                writer.leaveObject(name);
+                byte[] data = s.readAlignedByteArray(len);
+                try {
+                    typeTranslator.decode(typeTranslator.getName(), new BitInputStream(new ByteArrayInputStream(data)), writer, translatorContext);
+                } catch (Exception e) {
+                    writer.enterObject("mts-asn1-error");
+                    writer.stringValue("message", e.getMessage());
+                    writer.stringValue("type", typeTranslator.getName());
+                    writer.bytesValue("data", data);
+                    writer.leaveObject("mts-asn1-error");
+                    if (!this.perTranscoder.isPermissive()) {
+                        throw e;
+                    } else {
+                        logger.warn("Error decoding opentype content", e);
+                    }
+                } finally {
+                    writer.leaveObject(name);
+                }
             }
         }
     }

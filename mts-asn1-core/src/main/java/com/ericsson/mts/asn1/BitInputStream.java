@@ -9,6 +9,7 @@
  */
 package com.ericsson.mts.asn1;
 
+import java.io.EOFException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,12 +19,21 @@ import java.math.BigInteger;
 
 public class BitInputStream extends InputStream {
     private final InputStream byteStream;
-    private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
     private int currentBit = 0;
     private int currentByte;
 
-    public BitInputStream(InputStream byteStream) {
-        this.byteStream = byteStream;
+    public BitInputStream(final InputStream byteStream) {
+        this.byteStream = new InputStream(){
+            @Override
+            public int read() throws IOException {
+                int value = byteStream.read();
+                if(-1 == value){
+                    throw new RuntimeException("reached end of stream");
+                } else {
+                    return value;
+                }
+            }
+        };
     }
 
     public synchronized int read() throws IOException {

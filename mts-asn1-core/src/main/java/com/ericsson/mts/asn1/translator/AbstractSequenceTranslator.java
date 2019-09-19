@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.ASN1Parser;
@@ -26,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class AbstractSequenceTranslator extends AbstractTranslator {
+
     protected List<Field> fieldList = new ArrayList<>();
     protected List<Field> additionnalFieldList = new ArrayList<>();
     protected boolean hasEllipsis = false;
@@ -36,14 +36,15 @@ public abstract class AbstractSequenceTranslator extends AbstractTranslator {
 
     public AbstractTranslator init(MainRegistry mainRegistry, ASN1Parser.SequenceTypeContext ctx) throws NotHandledCaseException {
         AtomicReference<Boolean> isOptionnal = new AtomicReference<>(false);
-        if (ctx.extensionAndException() != null)
+        if (ctx.extensionAndException() != null) {
             hasEllipsis = true;
-        else {
+        } else {
             if (ctx.componentTypeLists().getChild(0).getClass().getSimpleName().compareTo(ASN1Parser.RootComponentTypeListContext.class.getSimpleName()) == 0) {
                 ctx.componentTypeLists().rootComponentTypeList(0).componentTypeList().componentType().forEach(componentTypeContext -> {
                     if (componentTypeContext.namedType() != null) {
-                        if (componentTypeContext.DEFAULT_LITERAL() != null)
+                        if (componentTypeContext.DEFAULT_LITERAL() != null) {
                             throw new NotHandledCaseException();
+                        }
                         if (componentTypeContext.OPTIONAL_LITERAL() != null) {
                             isOptionnal.set(true);
                             rootSequenceOptionalCount++;
@@ -64,7 +65,6 @@ public abstract class AbstractSequenceTranslator extends AbstractTranslator {
                             }
                         }
 
-
                         fieldList.add(field);
                         isOptionnal.set(false);
                     } else {
@@ -73,15 +73,17 @@ public abstract class AbstractSequenceTranslator extends AbstractTranslator {
                 });
                 if (ctx.componentTypeLists().extensionAndException() != null) {
                     extensionAndException = fieldList.size() + 1;
-                    if (ctx.componentTypeLists().extensionAndException().exceptionSpec() != null)
+                    if (ctx.componentTypeLists().extensionAndException().exceptionSpec() != null) {
                         throw new NotHandledCaseException();
+                    }
                     if (ctx.componentTypeLists().extensionAdditions() != null) {
                         if (ctx.componentTypeLists().extensionAdditions().extensionAdditionList() != null) {
                             ctx.componentTypeLists().extensionAdditions().extensionAdditionList().extensionAddition().forEach(extensionAdditionContext -> {
                                 if (extensionAdditionContext.componentType() != null) {
                                     if (extensionAdditionContext.componentType().namedType() != null) {
-                                        if (extensionAdditionContext.componentType().DEFAULT_LITERAL() != null)
+                                        if (extensionAdditionContext.componentType().DEFAULT_LITERAL() != null) {
                                             throw new NotHandledCaseException();
+                                        }
                                         if (extensionAdditionContext.componentType().OPTIONAL_LITERAL() != null) {
                                             isOptionnal.set(true);
                                         }
@@ -112,8 +114,9 @@ public abstract class AbstractSequenceTranslator extends AbstractTranslator {
                             });
                         }
                     }
-                    if (ctx.componentTypeLists().optionalExtensionMarker() != null)
+                    if (ctx.componentTypeLists().optionalExtensionMarker() != null) {
                         optionalExtensionMarker = true;
+                    }
                 }
             } else if (ctx.componentTypeLists().getChild(0).getClass().getSimpleName().compareTo(ASN1Parser.ExtensionAndExceptionContext.class.getSimpleName()) == 0) {
                 throw new NotHandledCaseException();
@@ -165,26 +168,30 @@ public abstract class AbstractSequenceTranslator extends AbstractTranslator {
     @Override
     public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         writer.enterObject(name);
-        doDecode(s, writer, new TranslatorContext(), getRegister(parameters));
-        writer.leaveObject(name);
+        try {
+            doDecode(s, writer, new TranslatorContext(), getRegister(parameters));
+        } finally {
+            writer.leaveObject(name);
+        }
     }
 
     protected abstract void doDecode(BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, Map<String, String> registry) throws Exception;
 
     @Override
     public String toString() {
-        return "AbstractSequenceTranslator{" +
-                "fieldList=" + fieldList +
-                ", additionnalFieldList=" + additionnalFieldList +
-                ", hasEllipsis=" + hasEllipsis +
-                ", extensionAndException=" + extensionAndException +
-                ", optionalExtensionMarker=" + optionalExtensionMarker +
-                ", rootSequenceOptionalCount=" + rootSequenceOptionalCount +
-                ", optionalBitmap=" + Arrays.toString(optionalBitmap) +
-                '}';
+        return "AbstractSequenceTranslator{"
+                + "fieldList=" + fieldList
+                + ", additionnalFieldList=" + additionnalFieldList
+                + ", hasEllipsis=" + hasEllipsis
+                + ", extensionAndException=" + extensionAndException
+                + ", optionalExtensionMarker=" + optionalExtensionMarker
+                + ", rootSequenceOptionalCount=" + rootSequenceOptionalCount
+                + ", optionalBitmap=" + Arrays.toString(optionalBitmap)
+                + '}';
     }
 
     protected class Field {
+
         String name;
         AbstractTranslator type;
         boolean isOptionnal;

@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.ASN1Parser;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractChoiceTranslator extends AbstractTranslator {
+
     protected List<Pair<String, AbstractTranslator>> fieldList = new ArrayList<>();
     protected List<Pair<String, AbstractTranslator>> extensionFieldList = new ArrayList<>();
     protected boolean optionalExtensionMarker = false;
@@ -51,8 +51,9 @@ public abstract class AbstractChoiceTranslator extends AbstractTranslator {
                     }
                 });
                 if (ctx.alternativeTypeLists().optionalExtensionMarker() != null) {
-                    if (ctx.alternativeTypeLists().optionalExtensionMarker().ELLIPSIS() != null)
+                    if (ctx.alternativeTypeLists().optionalExtensionMarker().ELLIPSIS() != null) {
                         optionalExtensionMarker = true;
+                    }
                 }
             }
         }
@@ -71,18 +72,20 @@ public abstract class AbstractChoiceTranslator extends AbstractTranslator {
     @Override
     public void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         writer.enterObject(name);
-        doDecode(s, writer);
-        writer.leaveObject(name);
+        try {
+            doDecode(s, writer);
+        } finally {
+            writer.leaveObject(name);
+        }
     }
 
     public abstract void doDecode(BitInputStream s, FormatWriter writer) throws Exception;
 
-
     @Override
     public String toString() {
-        return "AbstractChoiceTranslator{" +
-                "fieldList=" + fieldList +
-                ", optionalExtensionMarker=" + optionalExtensionMarker +
-                '}';
+        return "AbstractChoiceTranslator{"
+                + "fieldList=" + fieldList
+                + ", optionalExtensionMarker=" + optionalExtensionMarker
+                + '}';
     }
 }

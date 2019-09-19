@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.translator;
 
 import com.ericsson.mts.asn1.ASN1Parser;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
+
     protected AbstractTranslator typeTranslator;
     protected Constraints constraints;
     protected List<String> actualParameters = new ArrayList<>();
@@ -88,20 +88,23 @@ public abstract class AbstractSequenceOfTranslator extends AbstractTranslator {
     @Override
     public final void decode(String name, BitInputStream s, FormatWriter writer, TranslatorContext translatorContext, List<String> parameters) throws Exception {
         writer.enterArray(name);
-        doDecode(s, writer, getRegister(parameters));
-        writer.leaveArray(name);
+        try {
+            doDecode(s, writer, getRegister(parameters));
+        } finally {
+            writer.leaveArray(name);
+        }
     }
 
     protected abstract void doDecode(BitInputStream s, FormatWriter writer, Map<String, String> registry) throws Exception;
 
     @Override
     public String toString() {
-        return "AbstractSequenceOfTranslator{" +
-                "typeTranslator=" + typeTranslator +
-                ", constraints=" + constraints +
-                ", actualParameters=" + actualParameters +
-                ", name='" + name + '\'' +
-                ", parameters=" + parameters +
-                '}';
+        return "AbstractSequenceOfTranslator{"
+                + "typeTranslator=" + typeTranslator
+                + ", constraints=" + constraints
+                + ", actualParameters=" + actualParameters
+                + ", name='" + name + '\''
+                + ", parameters=" + parameters
+                + '}';
     }
 }

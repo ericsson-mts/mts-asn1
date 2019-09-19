@@ -20,6 +20,10 @@ public class PERTranslatorFactory extends AbstractTranslatorFactory {
     public PERTranslatorFactory(boolean aligned) {
         perTranscoder = new PERTranscoder(aligned);
     }
+    
+    public PERTranslatorFactory(PERTranscoder perTranscoder) {
+        this.perTranscoder = perTranscoder;
+    }
 
     @Override
     public AbstractBitStringTranslator bitStringTranslator() {

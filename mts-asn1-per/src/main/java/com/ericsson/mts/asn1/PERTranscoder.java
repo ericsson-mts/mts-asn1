@@ -25,14 +25,25 @@ import static java.math.BigInteger.ZERO;
 public class PERTranscoder {
 
     private final boolean aligned;
+    private final boolean permissive;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
     public PERTranscoder(boolean aligned) {
+        this(aligned, false);
+    }
+
+    public PERTranscoder(boolean aligned, boolean permissive) {
         this.aligned = aligned;
+        this.permissive = permissive;
     }
 
     public boolean isAligned() {
         return aligned;
+    }
+
+    public boolean isPermissive() {
+        return permissive;
     }
 
     /**

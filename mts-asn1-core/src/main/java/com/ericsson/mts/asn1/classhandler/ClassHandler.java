@@ -7,7 +7,6 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.ericsson.mts.asn1.classhandler;
 
 import com.ericsson.mts.asn1.ASN1Parser;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
  * Handle keyword CLASS
  */
 public class ClassHandler {
+
     private static Logger logger = LoggerFactory.getLogger(ClassHandler.class.getSimpleName());
     private ArrayList<Field> fields = new ArrayList<>();
     private MainRegistry mainRegistry;
@@ -31,7 +31,7 @@ public class ClassHandler {
      * Parse CLASS keyword context
      *
      * @param mainRegistry main registry
-     * @param ctx          CLASS keyword context
+     * @param ctx CLASS keyword context
      */
     public ClassHandler(MainRegistry mainRegistry, ASN1Parser.ObjectClassDefnContext ctx) {
         this.mainRegistry = mainRegistry;
@@ -113,7 +113,9 @@ public class ClassHandler {
     }
 
     /**
-     * Return the unique key syntax or the name otherwise ( example : CODE or code in oss made simple 6)
+     * Return the unique key syntax or the name otherwise ( example : CODE or
+     * code in oss made simple 6)
+     *
      * @return unique key
      */
     public String getUniqueKeyName() {
@@ -130,7 +132,9 @@ public class ClassHandler {
     }
 
     /**
-     * Use in open type case. Get the translator with an objectSet and identify with a field name and an unique key
+     * Use in open type case. Get the translator with an objectSet and identify
+     * with a field name and an unique key
+     *
      * @param fieldName open type field name
      * @param objectSetIdentifier target object set
      * @param uniqueKey unique key which identify an object
@@ -139,16 +143,17 @@ public class ClassHandler {
     public AbstractTranslator getTypeTranslator(String fieldName, String objectSetIdentifier, String uniqueKey) {
         AbstractTranslator abstractTranslator = mainRegistry.getClassObjectSet(objectSetIdentifier).getTranslatorForField(uniqueKey, fieldName);
         if (abstractTranslator == null) {
-            throw new RuntimeException();
+            throw new RuntimeException("Failed to get ClassObjectSet for identifier " + objectSetIdentifier + ", key " + uniqueKey + " and fieldName " + fieldName);
         }
         return abstractTranslator;
     }
 
     /**
      * USe to get translator associate with a field name
+     *
      * @param fieldName field name
-     * @return translator if it's not an open type field, null if it's an open type field or throw an Exception if
-     * field isn't in the class
+     * @return translator if it's not an open type field, null if it's an open
+     * type field or throw an Exception if field isn't in the class
      */
     public AbstractTranslator getTypeTranslator(String fieldName) {
         for (Field field : fields) {
@@ -163,6 +168,7 @@ public class ClassHandler {
 
     /**
      * For a given field name, get its syntax
+     *
      * @param fieldName field name
      * @return syntax name
      */
@@ -177,6 +183,7 @@ public class ClassHandler {
 
     /**
      * Use during classObject parsing.
+     *
      * @return syntax fields
      */
     public ArrayList<String> getSyntaxFields() {
@@ -189,10 +196,10 @@ public class ClassHandler {
 
     @Override
     public String toString() {
-        return "ClassHandler{" +
-                "fields=" + fields +
-                ", mainRegistry=" + mainRegistry +
-                '}';
+        return "ClassHandler{"
+                + "fields=" + fields
+                + ", mainRegistry=" + mainRegistry
+                + '}';
     }
 
     public enum FIELDTYPE {
@@ -203,6 +210,7 @@ public class ClassHandler {
      * Handle field within class
      */
     private class Field {
+
         private String name;
         private AbstractTranslator type;
         private FIELDTYPE qualifier = null;
@@ -210,8 +218,9 @@ public class ClassHandler {
         private String defaultValue = null;
 
         public String getDefaultValue() {
-            if (getQualifier() == FIELDTYPE.DEFAULT)
+            if (getQualifier() == FIELDTYPE.DEFAULT) {
                 return defaultValue;
+            }
             return null;
         }
 
@@ -221,13 +230,13 @@ public class ClassHandler {
 
         @Override
         public String toString() {
-            return "Field{" +
-                    "name='" + getName() + '\'' +
-                    ", type=" + getType() +
-                    ", qualifier=" + getQualifier() +
-                    ", syntax='" + getSyntax() + '\'' +
-                    ", defaultValue='" + defaultValue + '\'' +
-                    '}';
+            return "Field{"
+                    + "name='" + getName() + '\''
+                    + ", type=" + getType()
+                    + ", qualifier=" + getQualifier()
+                    + ", syntax='" + getSyntax() + '\''
+                    + ", defaultValue='" + defaultValue + '\''
+                    + '}';
         }
 
         public String getName() {
