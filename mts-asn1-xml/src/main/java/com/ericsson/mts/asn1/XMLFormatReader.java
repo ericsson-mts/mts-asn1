@@ -91,11 +91,11 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public int enterArray(String name) {
         if (name != null) {
-            //Get parent node
             currentNode = getChildNode(currentNode, name);
         } else {
             throw new RuntimeException();
         }
+        
         currentNode.setAttribute(IS_ARRAY, IS_ARRAY);
         arrayStack.push(getChildNode(currentNode, currentNode.getNodeName()));
 
@@ -113,7 +113,7 @@ public class XMLFormatReader implements FormatReader {
     @Override
     public void leaveArray(String name) {
         logger.trace("Leave array {}", name);
-        if (currentNode.getAttribute(IS_ARRAY).equals("")) {
+        if (!IS_ARRAY.equals(currentNode.getAttribute(IS_ARRAY))) {
             throw new RuntimeException();
         }
         currentNode.removeAttribute(IS_ARRAY);
@@ -194,7 +194,7 @@ public class XMLFormatReader implements FormatReader {
                 return (Element) nodeList.item(i);
             }
         }
-        return node;
+        throw new RuntimeException("Could not find element " + name + ", child of " + node.getNodeName());
     }
 
     private Element getFromStack(Element node) {
