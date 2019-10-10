@@ -36,7 +36,7 @@ public class PERSequenceTranslator extends AbstractSequenceTranslator {
 
     @Override
     public void doEncode(BitArray s, FormatReader reader, TranslatorContext translatorContext, List<String> inputFieldList, Map<String, String> registry) throws Exception {
-        logger.trace("Enter {} encoder, name {}", this.getClass().getSimpleName(), this.name);
+        logger.trace("Enter {} encoder, name {}, with input fields {}", this.getClass().getSimpleName(), this.name, inputFieldList);
         if (hasEllipsis || optionalExtensionMarker || (extensionAndException != -1)) {
             for (Field field : additionnalFieldList) {
                 if (inputFieldList.contains(field.getName())) {
