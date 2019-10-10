@@ -51,9 +51,7 @@ public abstract class AbstractOctetStringTranslator extends AbstractTranslator {
         } else {
             BitArray bitArray = new BitArray();
             constraints.getContentTranslator().encode(name, bitArray, reader, translatorContext);
-            if (!bitArray.getLength().mod(BigInteger.valueOf(8)).equals(BigInteger.ZERO)) {
-                throw new RuntimeException("specification error ! X.682 : 11.4.a)");
-            }
+            bitArray.skipAlignedBits();
             doEncode(s, reader, bitArray.getBinaryMessage());
         }
     }
