@@ -169,6 +169,7 @@
                             <!-- explicit matching using the staging profile id -->
                             <!--stagingProfileId>7edbe315063867</stagingProfileId-->
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
                         </configuration>
                     </plugin>
                 </plugins>
