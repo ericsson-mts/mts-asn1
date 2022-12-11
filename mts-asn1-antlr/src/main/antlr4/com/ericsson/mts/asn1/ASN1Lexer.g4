@@ -416,7 +416,7 @@ WS
     ;
 
 Exponent
-    : ('e'|'E') ('+'|'-')? NUMBER
+    : ('e'|'E') ('+'|'-') NUMBER
     ;
 
 LINE_COMMENT
