@@ -14,7 +14,6 @@
     <properties>
         <antlr4.visitor>true</antlr4.visitor>
         <antlr4.listener>false</antlr4.listener>
-        <antlr4.version>4.7.2</antlr4.version>
     </properties>
 
 
@@ -22,12 +21,10 @@
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
-            <version>${antlr4.version}</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
-            <version>${antlr4.version}</version>
         </dependency>
     </dependencies>
 
