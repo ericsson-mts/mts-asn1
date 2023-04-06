@@ -1,6 +1,5 @@
 # **mts-asn1**
-[![Build Status](https://travis-ci.org/ericsson-mts/mts-asn1.svg?branch=master)](https://travis-ci.org/ericsson-mts/mts-asn1) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.ericsson.mts%3Amts-asn1&metric=bugs)](https://sonarcloud.io/dashboard?id=com.ericsson.mts%3Amts-asn1)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.ericsson.mts%3Amts-asn1&metric=coverage)](https://sonarcloud.io/dashboard?id=com.ericsson.mts%3Amts-asn1)
+[![Build Status](https://github.com/ericsson-mts/mts-asn1/actions/workflows/maven-publish-release.yml/badge.svg?event=push)](https://github.com/ericsson-mts/mts-asn1)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ericsson-mts/mts-asn1/blob/master/LICENSE.txt)
 
 ## Description
