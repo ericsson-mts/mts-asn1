@@ -155,12 +155,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <build>
-        <plugins>
-            
-        </plugins>
-    </build>
-
     <profiles>
         <profile>
             <id>coverage</id>
@@ -189,15 +183,10 @@
             </build>
         </profile>
         <profile>
-            <id>travis</id>
-            <properties>
-                <gpg.executable>gpg</gpg.executable>
-                <gpg.keyname>${env.GPG_KEYNAME}</gpg.keyname>
-                <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
-                <gpg.defaultKeyring>false</gpg.defaultKeyring>
-                <gpg.publicKeyring>${env.TRAVIS_BUILD_DIR}/.gnupg/pubring.gpg</gpg.publicKeyring>
-                <gpg.secretKeyring>${env.TRAVIS_BUILD_DIR}/.gnupg/secring.gpg</gpg.secretKeyring>
-            </properties>
+            <id>ossrh</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -216,6 +205,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -228,7 +218,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -236,12 +226,19 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.7</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -265,18 +262,16 @@
                             <!-- explicit matching using the staging profile id -->
                             <!--stagingProfileId>7edbe315063867</stagingProfileId-->
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                            <stagingProgressTimeoutMinutes>15</stagingProgressTimeoutMinutes>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+            </distributionManagement>
         </profile>
     </profiles>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
