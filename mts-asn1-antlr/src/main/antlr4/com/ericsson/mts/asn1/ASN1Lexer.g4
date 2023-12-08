@@ -378,10 +378,6 @@ ENCODED_LITERAL
 	:	'ENCODED'
 	;
 
-COMMENT
-    :	'--'
-    ;
-
 PRINTABLE_STRING
     : 'PrintableString'
     ;
@@ -416,7 +412,11 @@ Exponent
     ;
 
 LINE_COMMENT
-    : '--' ~('\n'|'\r')* '\r'? '\n' ->skip
+    : '--' (.*? ('--'|'\r'? '\n')) ->skip
+    ;
+
+BLOCK_COMMENT
+    : '/*' (BLOCK_COMMENT | .)*? '*/' ->skip
     ;
 
 BSTRING
