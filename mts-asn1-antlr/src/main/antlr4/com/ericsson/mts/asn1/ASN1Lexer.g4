@@ -378,10 +378,6 @@ ENCODED_LITERAL
 	:	'ENCODED'
 	;
 
-COMMENT
-    :	'--'
-    ;
-
 PRINTABLE_STRING
     : 'PrintableString'
     ;
@@ -389,10 +385,6 @@ PRINTABLE_STRING
 
 UNRESTRICTEDCHARACTERSTRINGTYPE
     : CHARACTER_LITERAL STRING_LITERAL
-    ;
-
-EXTENSTIONENDMARKER
-    :  COMMA  ELLIPSIS
     ;
 
 fragment DIGIT
@@ -416,11 +408,15 @@ WS
     ;
 
 Exponent
-    : ('e'|'E') ('+'|'-')? NUMBER
+    : ('e'|'E') ('+'|'-') NUMBER
     ;
 
 LINE_COMMENT
-    : '--' ~('\n'|'\r')* '\r'? '\n' ->skip
+    : '--' (.*? ('--'|'\r'? '\n')) ->skip
+    ;
+
+BLOCK_COMMENT
+    : '/*' (BLOCK_COMMENT | .)*? '*/' ->skip
     ;
 
 BSTRING
@@ -494,11 +490,9 @@ JavaIDDigit
    ;
    
    
-//OBJECTCLASSREFERENCE
-//	: UPPER (UPPER | LOWER | '-')
-//	;
-
+// String beginning with LETTER and ending with LETTER or DIGIT or UNDERSCORE.
+// It can contain LETTER, DIGIT, MINUS and UNDERSCORE but not COMMENT (--)
 IDENTIFIER
-	: LETTER(LETTER|DIGIT|MINUS|UNDERSCORE)*
+	: LETTER(MINUS (LETTER|DIGIT|UNDERSCORE) | (LETTER|DIGIT|UNDERSCORE))*
 	;
 	

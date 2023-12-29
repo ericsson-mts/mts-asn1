@@ -90,10 +90,10 @@ optionalExtensionMarker :  ( COMMA  ELLIPSIS )?
 ;
 
 componentTypeLists :
-   rootComponentTypeList (COMMA  extensionAndException  extensionAdditions   (optionalExtensionMarker|(EXTENSTIONENDMARKER  COMMA  rootComponentTypeList)))?
+   rootComponentTypeList (COMMA  extensionAndException  extensionAdditions   (optionalExtensionMarker|(COMMA  ELLIPSIS  COMMA  rootComponentTypeList)))?
 //  |  rootComponentTypeList  COMMA  extensionAndException  extensionAdditions    optionalExtensionMarker
-//  |  rootComponentTypeList  COMMA  extensionAndException  extensionAdditions     EXTENSTIONENDMARKER  COMMA  rootComponentTypeList
-  |  extensionAndException  extensionAdditions  (optionalExtensionMarker | (EXTENSTIONENDMARKER  COMMA    rootComponentTypeList))
+//  |  rootComponentTypeList  COMMA  extensionAndException  extensionAdditions     COMMA  ELLIPSIS  COMMA  rootComponentTypeList
+  |  extensionAndException  extensionAdditions  (optionalExtensionMarker | (COMMA  ELLIPSIS  COMMA    rootComponentTypeList))
 //  |  extensionAndException  extensionAdditions  optionalExtensionMarker
 ;
 rootComponentTypeList  : componentTypeList
@@ -411,7 +411,7 @@ contentsConstraint :
 ;
 
 componentPresenceLists:
-   componentPresenceList? (EXTENSTIONENDMARKER (COMMA componentPresenceList)?)?
+   componentPresenceList? (COMMA  ELLIPSIS (COMMA componentPresenceList)?)?
   |  ELLIPSIS (COMMA componentPresenceList)?
 ;
 
